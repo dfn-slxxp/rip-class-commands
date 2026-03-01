@@ -1,130 +1,121 @@
 package com.stuypulse.robot.util;
 
-import java.util.concurrent.TransferQueue;
+import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonFormat.Feature;
-import com.stuypulse.robot.constants.Field;
-
-import edu.wpi.first.networktables.BooleanEntry;
-import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class FMSutil {
-    private Timer timer = new Timer();
-    private FieldState fieldState;
-    private double timeLeft;
-    boolean auto;
-    private boolean autoOveride = false;
-    private FieldState[] fieldStates = {fieldState.TRANSITION, fieldState.SHIFT1, fieldState.SHIFT2,
-            fieldState.SHIFT3, fieldState.SHIFT4, fieldState.ENDGAME };
+public class FMSUtil {
 
-    public static enum FieldState {
+    private final Timer timer = new Timer();
+    private boolean autoMode;
+    private boolean autoOverride = false;
+
+    public enum FieldState {
         AUTO(0.0, 20.0),
-        TRANSITION(0.0, 10),
-        SHIFT1(10.0, 35.0),
-        SHIFT2(35.0, 60.0),
-        SHIFT3(60.0, 85.0),
-        SHIFT4(85.0, 110.0),
+        TRANSITION(0.0, 10.0),
+        SHIFT_1(10.0, 35.0),
+        SHIFT_2(35.0, 60.0),
+        SHIFT_3(60.0, 85.0),
+        SHIFT_4(85.0, 110.0),
         ENDGAME(110.0, 140.0);
 
-        // public final do.0uble[] shiftStartTimes = {0.0, 10.0, 35.0, 60.0, 85.0, 110.0};
-        // public final double[] shiftEndTimes = {10.0, 35.0, 60.0, 85.0, 110.0, 140.0};
-        private double startT;
-        private double endT;
+        private final double startTime;
+        private final double endTime;
 
-        private FieldState(double startT, double endT) {
-            this.startT = startT;
-            this.endT = endT;
+        FieldState(double startTime, double endTime) {
+            this.startTime = startTime;
+            this.endTime = endTime;
         }
 
         public boolean isActive(double time) {
-            if (startT <= time && time < endT) {
-                return true;
-            } else {
-                return false;
-            }
+            return startTime <= time && time < endTime;
         }
 
         public double timeLeft(double time) {
-            return endT - time;
+            return Math.max(0.0, endTime - time);
         }
 
         public double timeElapsed(double time) {
-            return time - startT;
+            return Math.max(0.0, time - startTime);
         }
-    };
-
-
-    public FMSutil(boolean auto) {
-        timer = new Timer();
-        timer.start();
-        this.auto = auto;
-    }
-
-    public FMSutil() {
-        this(false);
-    }
-
-    public void resetTimer(boolean auto) {
-        timer.reset();
-        this.auto = auto;
-    }
-
-    public FieldState getFieldState() {
-        FieldState activeState = FieldState.AUTO;
-        if (auto) return FieldState.AUTO;
-        for (FieldState state : fieldStates) {
-            if (state.isActive(timer.get())) { activeState = state; break;}
-        }
-        return activeState;
     }
     
+    public FMSUtil(boolean autoMode) {
+        this.autoMode = autoMode;
+        timer.start();
+    }
+
+    public FMSUtil() {
+        this(true);
+    }
+
+    public void restartTimer(boolean autoMode) {
+        timer.restart();
+        this.autoMode = autoMode;
+    }
+
+    public FieldState getCurrentFieldState() {
+        if (autoMode) {
+            return FieldState.AUTO;
+        }
+
+        double time = timer.get();
+
+        for (FieldState state : FieldState.values()) {
+            if (state != FieldState.AUTO && state.isActive(time)) {
+                return state;
+            }
+        }
+
+        return FieldState.ENDGAME;
+    }
+
     public boolean isActiveShift() {
         boolean wonAuto = didWinAuto();
-        switch (getFieldState()) {
-            case AUTO: 
+
+        switch (getCurrentFieldState()) {
+            case AUTO:
                 return true;
-            case TRANSITION: 
+            case TRANSITION:
                 return true;
             case ENDGAME:
                 return true;
-            case SHIFT1:
-                return (wonAuto) ? true : false;
-            case SHIFT2: 
-                return (wonAuto) ? false : true;
-            case SHIFT3:
-                return (wonAuto) ? true : false;
-            case SHIFT4:
-                return (wonAuto) ? false : true;
+            case SHIFT_1:
+                return wonAuto;
+            case SHIFT_2:
+                return !wonAuto;
+            case SHIFT_3:
+                return wonAuto;
+            case SHIFT_4:
+                return !wonAuto;
             default:
                 return false;
         }
     }
 
-    public void overrideFMSAutoVictor(boolean didwin) {
-        this.autoOveride = didwin;
+    public void overrideFMSAutoVictor(boolean didWin) {
+        this.autoOverride = didWin;
     }
 
     public boolean didWinAuto() {
-        String winner = DriverStation.getGameSpecificMessage(); 
-        String currentAlliance = (DriverStation.getAlliance().get() == Alliance.Blue) ? "B" : "R";      
-        if (winner.isEmpty()) {
-            DriverStation.reportWarning("Arena Fault, no alliance won data", true);
-            SmartDashboard.putBoolean("FMSUtil/No Data on Auto Winner?", true);
-            return autoOveride;
-        } else if (currentAlliance.equalsIgnoreCase(winner)) {
-            return true;
-        } else {
-            return false;
+        String winner = DriverStation.getGameSpecificMessage();
+        Optional<Alliance> allianceOpt = DriverStation.getAlliance();
+
+        if (winner == null || winner.isEmpty() || allianceOpt.isEmpty()) {
+            DriverStation.reportWarning("No FMS auto winner data available", false);
+            SmartDashboard.putBoolean("FMSUtil/No Auto Winner Data", true);
+            return autoOverride;
         }
+
+        String allianceLetter = allianceOpt.get() == Alliance.Blue ? "B" : "R";
+
+        return allianceLetter.equalsIgnoreCase(winner);
     }
 
     public double getTimeLeftInShift() {
-        return Math.max(0, getFieldState().endT - timer.get());
+        return getCurrentFieldState().timeLeft(timer.get());
     }
-
-    
 }
