@@ -142,6 +142,7 @@ public class RobotContainer {
     private void configureDefaultCommands() {
         swerve.setDefaultCommand(new SwerveDriveDrive(driver));
         // climberHopper.setDefaultCommand(new ClimberHopperDefaultCommand());
+        turret.setDefaultCommand(new TurretDefaultCommand());
     }
 
     /***************/
@@ -176,8 +177,7 @@ public class RobotContainer {
             .onFalse(new SetIMUMode(0));
         
         driver.getTopButton()
-            .whileTrue(new TurretShoot())
-            .onFalse(new TurretIdle());
+            .whileTrue(new TurretShoot());
 
         driver.getBottomButton()
             .whileTrue(new SwerveDriveAlignTurretToHub());
