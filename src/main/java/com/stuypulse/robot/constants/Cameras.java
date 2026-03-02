@@ -20,6 +20,10 @@ public interface Cameras {
             new Camera("limelight-climber",
                     new Pose3d(-0.233, 0.375959, 0.20368,
                     new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(31.08), Units.degreesToRadians(-80))),
+                    RobotContainer.EnabledSubsystems.LIMELIGHT),
+            new Camera("limelight-shooter", 
+                    new Pose3d(Units.inchesToMeters(2.490), Units.inchesToMeters(14.8620), Units.inchesToMeters(5.920157), 
+                    new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(15.0), Units.degreesToRadians(251.))), 
                     RobotContainer.EnabledSubsystems.LIMELIGHT)
     };
 
