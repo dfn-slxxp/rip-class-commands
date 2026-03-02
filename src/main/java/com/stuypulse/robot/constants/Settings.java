@@ -210,7 +210,7 @@ public interface Settings {
             public interface Constraints {
                 public final double DEFAULT_MAX_VELOCITY = 4.93;
                 public final double DEFAULT_MAX_ACCELERATION = 15.0;
-                public final double DEFAULT_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(400.0);
+                public final double DEFAULT_MAX_ANGULAR_VELOCITY = Units.degreesToRadians(600.0);
                 public final double DEFAULT_MAX_ANGULAR_ACCELERATION = Units.degreesToRadians(900.0);
             }
 

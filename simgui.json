@@ -11,6 +11,12 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Autonomous": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/PathPlanner": "Alerts",
+      "/SmartDashboard/Robot/Override Down": "Command",
+      "/SmartDashboard/Robot/Override Stop": "Command",
+      "/SmartDashboard/Robot/Override Up": "Command",
+      "/SmartDashboard/Robot/Reset Pivot": "Command",
+      "/SmartDashboard/Robot/Zero Encoders": "Command",
       "/SmartDashboard/Visualizers/ClimberHopper": "Mechanism2d",
       "/SmartDashboard/Visualizers/Turret": "Mechanism2d"
     },
@@ -62,6 +68,12 @@
           "open": true
         },
         "States": {
+          "open": true
+        },
+        "Swerve": {
+          "open": true
+        },
+        "Turret": {
           "open": true
         },
         "open": true

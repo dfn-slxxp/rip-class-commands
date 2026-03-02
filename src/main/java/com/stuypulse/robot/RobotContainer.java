@@ -46,11 +46,12 @@ import com.stuypulse.robot.commands.intake.IntakeStow;
 import com.stuypulse.robot.commands.intake.SeedPivot;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
-import com.stuypulse.robot.commands.swerve.SwerveClimbAlign;
+import com.stuypulse.robot.commands.swerve.SwerveDriveAlignTurretToHub;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.commands.swerve.SwerveResetHeading;
 import com.stuypulse.robot.commands.swerve.SwerveWheelRadiusCharacterization;
 import com.stuypulse.robot.commands.swerve.SwerveXMode;
+import com.stuypulse.robot.commands.swerve.climbAlign.SwerveClimbAlign;
 import com.stuypulse.robot.commands.turret.TurretDefaultCommand;
 import com.stuypulse.robot.commands.turret.TurretAnalog;
 import com.stuypulse.robot.commands.turret.TurretFerry;
@@ -177,6 +178,9 @@ public class RobotContainer {
         driver.getTopButton()
             .whileTrue(new TurretShoot())
             .onFalse(new TurretIdle());
+
+        driver.getBottomButton()
+            .whileTrue(new SwerveDriveAlignTurretToHub());
 
         // driver.getBottomButton()
         //     .onTrue(new TurretAnalog(driver))
