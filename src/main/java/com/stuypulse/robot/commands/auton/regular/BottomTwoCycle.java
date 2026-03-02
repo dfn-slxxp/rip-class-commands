@@ -1,4 +1,4 @@
-package com.stuypulse.robot.commands.auton.RegularAutons;
+package com.stuypulse.robot.commands.auton.regular;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.stuypulse.robot.commands.climberhopper.ClimberDown;
@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-public class TopTwoCycle extends SequentialCommandGroup {
+public class BottomTwoCycle extends SequentialCommandGroup {
     
-    public TopTwoCycle(PathPlannerPath... paths) {
+    public BottomTwoCycle(PathPlannerPath... paths) {
 
         addCommands(
 
@@ -34,10 +34,7 @@ public class TopTwoCycle extends SequentialCommandGroup {
             CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]).alongWith(
                 new IntakeStow()
             ),
-            new ParallelCommandGroup(
-                new WaitUntilCommand(() -> HoodedShooter.getInstance().isShooterAtTolerance()),
-                new WaitUntilCommand(() -> HoodedShooter.getInstance().isHoodAtTolerance())
-            ),
+            new WaitUntilCommand(() -> HoodedShooter.getInstance().bothAtTolerance()),
             new SpindexerRun().alongWith(
                 new HandoffRun()
             ).withTimeout(5.0),
@@ -56,8 +53,7 @@ public class TopTwoCycle extends SequentialCommandGroup {
                 new IntakeStow()
             ),
             new ParallelCommandGroup(
-                new WaitUntilCommand(() -> HoodedShooter.getInstance().isShooterAtTolerance()),
-                new WaitUntilCommand(() -> HoodedShooter.getInstance().isHoodAtTolerance()),
+                new WaitUntilCommand(() -> HoodedShooter.getInstance().bothAtTolerance()),
                 new SwerveClimbAlign()
             ),
             new SpindexerRun().alongWith(

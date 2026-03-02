@@ -1,4 +1,4 @@
-package com.stuypulse.robot.commands.auton.PoachingAutons;
+package com.stuypulse.robot.commands.auton.regular;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.stuypulse.robot.commands.climberhopper.ClimberDown;
@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-public class TopOneCyclePoach extends SequentialCommandGroup {
+public class TopTwoCycle extends SequentialCommandGroup {
     
-    public TopOneCyclePoach(PathPlannerPath... paths) {
+    public TopTwoCycle(PathPlannerPath... paths) {
 
         addCommands(
 
@@ -35,7 +35,29 @@ public class TopOneCyclePoach extends SequentialCommandGroup {
                 new IntakeStow()
             ),
             new ParallelCommandGroup(
-                new WaitUntilCommand(() -> HoodedShooter.getInstance().bothAtTolerance()),
+                new WaitUntilCommand(() -> HoodedShooter.getInstance().isShooterAtTolerance()),
+                new WaitUntilCommand(() -> HoodedShooter.getInstance().isHoodAtTolerance())
+            ),
+            new SpindexerRun().alongWith(
+                new HandoffRun()
+            ).withTimeout(5.0),
+
+            // NZ Trip 2
+            new IntakeDeploy().alongWith(
+                new ParallelCommandGroup(
+                    CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]),
+                    new HandoffStop(),
+                    new SpindexerStop()
+                )
+            ),
+
+            // Trip 2 To Score
+            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[3]).alongWith(
+                new IntakeStow()
+            ),
+            new ParallelCommandGroup(
+                new WaitUntilCommand(() -> HoodedShooter.getInstance().isShooterAtTolerance()),
+                new WaitUntilCommand(() -> HoodedShooter.getInstance().isHoodAtTolerance()),
                 new SwerveClimbAlign()
             ),
             new SpindexerRun().alongWith(
@@ -47,6 +69,7 @@ public class TopOneCyclePoach extends SequentialCommandGroup {
                     new ClimberDown()
                 )
             )
+            
 
         );
 

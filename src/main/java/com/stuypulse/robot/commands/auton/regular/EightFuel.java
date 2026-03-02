@@ -1,4 +1,4 @@
-package com.stuypulse.robot.commands.auton.RegularAutons;
+package com.stuypulse.robot.commands.auton.regular;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.stuypulse.robot.commands.handoff.HandoffRun;

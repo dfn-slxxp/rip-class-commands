@@ -1,4 +1,4 @@
-package com.stuypulse.robot.commands.auton.Test;
+package com.stuypulse.robot.commands.auton.test;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.stuypulse.robot.commands.hoodedshooter.HoodedShooterKB;

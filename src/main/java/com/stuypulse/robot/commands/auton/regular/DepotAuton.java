@@ -1,4 +1,4 @@
-package com.stuypulse.robot.commands.auton.PoachingAutons;
+package com.stuypulse.robot.commands.auton.regular;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.stuypulse.robot.commands.climberhopper.ClimberDown;
@@ -19,43 +19,22 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-public class BottomTwoCyclePoach extends SequentialCommandGroup {
+public class DepotAuton extends SequentialCommandGroup {
     
-    public BottomTwoCyclePoach(PathPlannerPath... paths) {
+    public DepotAuton(PathPlannerPath... paths) {
 
         addCommands(
 
-            // NZ Trip 1
+            // To Depot
             new IntakeDeploy().alongWith(
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[0])
             ),
 
-            // Trip 1 To Score
-            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]).alongWith(
-                new IntakeStow()
+            new IntakeStow().alongWith(
+                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1])
             ),
+
             new WaitUntilCommand(() -> HoodedShooter.getInstance().bothAtTolerance()),
-            new SpindexerRun().alongWith(
-                new HandoffRun()
-            ).withTimeout(5.0),
-
-            // NZ Trip 2
-            new IntakeDeploy().alongWith(
-                new ParallelCommandGroup(
-                    CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]),
-                    new HandoffStop(),
-                    new SpindexerStop()
-                )
-            ),
-
-            // Trip 2 To Score
-            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[3]).alongWith(
-                new IntakeStow()
-            ),
-            new ParallelCommandGroup(
-                new WaitUntilCommand(() -> HoodedShooter.getInstance().bothAtTolerance()),
-                new SwerveClimbAlign()
-            ),
             new SpindexerRun().alongWith(
                 new HandoffRun()
             ).until(() -> DriverStation.getMatchTime() < 2).andThen(
@@ -65,7 +44,6 @@ public class BottomTwoCyclePoach extends SequentialCommandGroup {
                     new ClimberDown()
                 )
             )
-            
 
         );
 
