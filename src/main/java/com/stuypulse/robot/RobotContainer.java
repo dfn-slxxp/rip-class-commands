@@ -22,6 +22,7 @@ import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
 import com.stuypulse.robot.commands.hoodedshooter.HoodAnalog;
 import com.stuypulse.robot.commands.hoodedshooter.HoodedShooterInterpolation;
+import com.stuypulse.robot.commands.hoodedshooter.HoodedShooterKB;
 import com.stuypulse.robot.commands.hoodedshooter.HoodedShooterShoot;
 import com.stuypulse.robot.commands.hoodedshooter.HoodedShooterStow;
 import com.stuypulse.robot.commands.hoodedshooter.ZeroHoodAtLowerHardstop;
@@ -160,6 +161,11 @@ public class RobotContainer {
             .onTrue(new SwerveResetHeading())
             .onTrue(new ResetLimelightIMU())
             .onFalse(new SetIMUMode(0));    
+
+        driver.getLeftButton()
+            .whileTrue(new HoodedShooterKB()
+                .andThen(new WaitUntilCommand(() -> hoodedShooter.bothAtTolerance()))
+                .andThen(new HoodedShooterShoot()));
 
         // // Ferry Routine using Interpolation Settings
         // driver.getBottomButton()
@@ -331,7 +337,7 @@ public class RobotContainer {
         BOTTOM_TWO_CYCLE.register(autonChooser);
 
         AutonConfig TOP_TWO_CYCLE_POACH = new AutonConfig("Top Two Cycle (Poach)", TopTwoCyclePoach::new,  
-        "Top Trench To NZ (P)", "Top NZ To Score (P)", "Top Score To NZ", "Top NZ To Tower Left");
+        "Top Trench To NZ (P)", "Top NZ To Score (P)", "Top Score To NZ", "Top NZ To Tower Left");  
         TOP_TWO_CYCLE_POACH.register(autonChooser);
 
         AutonConfig BOTTOM_TWO_CYCLE_POACH = new AutonConfig("Bottom Two Cycle (Poach)", BottomTwoCyclePoach::new,  
@@ -347,7 +353,13 @@ public class RobotContainer {
         autonChooser.addOption("SysID Module Translation Dynamic Forwards", swerve.sysIdDynamic(Direction.kForward));
         autonChooser.addOption("SysID Module Translation Dynamic Backwards", swerve.sysIdDynamic(Direction.kReverse));
         autonChooser.addOption("SysID Module Translation Quasi Forwards", swerve.sysIdQuasistatic(Direction.kForward));
-        autonChooser.addOption("SysID Module Translation Quasi Backwards", swerve.sysIdQuasistatic(Direction.kReverse));
+        autonChooser.addOption("SysID Module Translation Quasi Backwards", swerve.sysIdQuasistatic(Direction.kReverse)); 
+
+        autonChooser.addOption("SysID Rotation Translation Dynamic Forwards", swerve.sysidRotationDynamic(Direction.kForward));
+        autonChooser.addOption("SysID Rotation Translation Dynamic Backwards", swerve.sysidRotationDynamic(Direction.kReverse));
+        autonChooser.addOption("SysID Rotation Translation Quasi Forwards", swerve.sysidRotationQuasiStatic(Direction.kForward));
+        autonChooser.addOption("SysID Rotation Translation Quasi Backwards", swerve.sysidRotationQuasiStatic(Direction.kReverse)); 
+        
 
         // autonChooser.addOption("SysID Turret Dynamic Forwards", turret.getSysIdRoutine().dynamic(Direction.kForward));
         // autonChooser.addOption("SysID Turret Dynamic Reverse", turret.getSysIdRoutine().dynamic(Direction.kReverse));
