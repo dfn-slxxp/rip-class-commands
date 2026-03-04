@@ -6,12 +6,12 @@
 package com.stuypulse.robot.subsystems.superstructure;
 
 import com.stuypulse.robot.Robot;
-import com.stuypulse.robot.subsystems.shooter.Shooter;
-import com.stuypulse.robot.subsystems.shooter.Shooter.ShooterState;
-import com.stuypulse.robot.subsystems.hood.Hood;
-import com.stuypulse.robot.subsystems.hood.Hood.HoodState;
-import com.stuypulse.robot.subsystems.turret.Turret;
-import com.stuypulse.robot.subsystems.turret.Turret.TurretState;
+import com.stuypulse.robot.subsystems.superstructure.hood.Hood;
+import com.stuypulse.robot.subsystems.superstructure.hood.Hood.HoodState;
+import com.stuypulse.robot.subsystems.superstructure.shooter.Shooter;
+import com.stuypulse.robot.subsystems.superstructure.shooter.Shooter.ShooterState;
+import com.stuypulse.robot.subsystems.superstructure.turret.Turret;
+import com.stuypulse.robot.subsystems.superstructure.turret.Turret.TurretState;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

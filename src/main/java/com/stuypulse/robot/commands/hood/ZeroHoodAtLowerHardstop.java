@@ -1,6 +1,6 @@
 package com.stuypulse.robot.commands.hood;
 
-import com.stuypulse.robot.subsystems.hood.Hood;
+import com.stuypulse.robot.subsystems.superstructure.hood.Hood;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
