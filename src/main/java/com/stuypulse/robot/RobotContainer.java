@@ -20,7 +20,7 @@ import com.stuypulse.robot.commands.climberhopper.ClimberOverrideStop;
 import com.stuypulse.robot.commands.climberhopper.ClimberOverrideUp;
 import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
-import com.stuypulse.robot.commands.hoodedshooter.HoodAnalog;
+import com.stuypulse.robot.commands.hoodedshooter.HoodedShooterFerry;
 import com.stuypulse.robot.commands.hoodedshooter.HoodedShooterInterpolation;
 import com.stuypulse.robot.commands.hoodedshooter.HoodedShooterKB;
 import com.stuypulse.robot.commands.hoodedshooter.HoodedShooterShoot;
@@ -137,7 +137,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Scoring Routine
         driver.getTopButton()
-                .whileTrue(new HoodedShooterShoot()
+                .whileTrue(new HoodedShooterShoot().onlyIf(() -> !hoodedShooter.isHoodUnderTrench())
                 .alongWith(new SwerveDriveAlignTurretToHub())
                         // .alongWith(new TurretShoot())
                         .andThen(new WaitUntilCommand(() -> hoodedShooter.bothAtTolerance() ))
@@ -157,19 +157,20 @@ public class RobotContainer {
             .onTrue(new IntakeStow());
 
         driver.getLeftButton()
-            .whileTrue(new SpindexerRun())
-            .onFalse(new SpindexerStop());
+            .whileTrue(new HoodedShooterShoot().onlyIf(() -> !hoodedShooter.isHoodUnderTrench()))
+            .onFalse(new HoodedShooterStow());
+
+
+        driver.getRightButton()
+            .whileTrue(new HoodedShooterFerry().onlyIf(
+                () -> CommandSwerveDrivetrain.getInstance().getPose().getX() > Field.getHubPose().getX()))
+            .onFalse(new HoodedShooterStow());
 
         // Reset Heading
         driver.getDPadUp()
             .onTrue(new SwerveResetHeading())
             .onTrue(new ResetLimelightIMU())
             .onFalse(new SetIMUMode(0));    
-
-        driver.getLeftButton()
-            .whileTrue(new HoodedShooterKB()
-                .andThen(new WaitUntilCommand(() -> hoodedShooter.bothAtTolerance()))
-                .andThen(new HoodedShooterShoot()));
 
         // // Ferry Routine using Interpolation Settings
         // driver.getBottomButton()
