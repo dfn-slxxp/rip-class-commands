@@ -5,8 +5,6 @@
 /***************************************************************/
 package com.stuypulse.robot.subsystems.vision;
 
-import com.stuypulse.stuylib.network.SmartBoolean;
-
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Cameras;
 import com.stuypulse.robot.constants.Settings;
@@ -14,6 +12,7 @@ import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.util.vision.LimelightHelpers;
 import com.stuypulse.robot.util.vision.LimelightHelpers.IMUData;
 import com.stuypulse.robot.util.vision.LimelightHelpers.PoseEstimate;
+import com.stuypulse.stuylib.network.SmartBoolean;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -63,7 +62,7 @@ public class LimelightVision extends SubsystemBase{
         
         for (int i = 0; i < camerasEnabled.length; i++) {
             camerasEnabled[i] = new SmartBoolean("Vision/" + names[i] + " Is Enabled", true);
-            LimelightHelpers.SetIMUMode(names[i], 0);
+            LimelightHelpers.SetIMUMode(names[i], Settings.Vision.INTERNAL_EXTERNAL_ASSIST_INDEX);
             SmartDashboard.putBoolean("Vision/" + names[i] + " Has Data", false);
         }
 
@@ -100,6 +99,19 @@ public class LimelightVision extends SubsystemBase{
     public void setIMUMode(int mode) {
         for (String name : names) {
             LimelightHelpers.SetIMUMode(name, mode);
+        }
+    }
+
+    /**
+     * Allows you to set the convergence speed of the internal LL IMU and robot gyro. 
+     *
+     * @param assistValue, an double that sets the correction speed of the complementary filter for the IMU. IMU Mode 4 
+     * uses the fusing of the internal IMU (1khz) with the external gyro reading as well. Higher values ranging towards 1 
+     * indicate a faster convergence of internal IMU to the robot IMU mode. Defaults to 0.001.
+     */
+    public void setIMUAssistValue(double assistValue) {
+        for (String name : names) {
+            LimelightHelpers.SetIMUAssistAlpha(name, assistValue);
         }
     }
 
@@ -163,9 +175,11 @@ public class LimelightVision extends SubsystemBase{
                     }
 
                     SmartDashboard.putString("Vision/MegaTag Mode", megaTagMode.toString());
-                    SmartDashboard.putNumber("Vision/Robot Yaw", LimelightHelpers.getIMUData(limelightName).robotYaw);
+                    // this yaw is seems to be the robot yaw passed into the LL
+                    SmartDashboard.putNumber("Vision/Limelight Robot Yaw", LimelightHelpers.getIMUData(limelightName).robotYaw);
+                    // this is just the yaw of the internal imu 
+                    SmartDashboard.putNumber("Vision/Limelight Yaw", LimelightHelpers.getIMUData(limelightName).Yaw);
 
-                    SmartDashboard.putString("Vision/IMU mode", getIMUData()[0].toString()); //only 1 camera on alpha, so will need to change on Big T
                 }
             }
         }
