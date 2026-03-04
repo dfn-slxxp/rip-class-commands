@@ -5,8 +5,10 @@
 /***************************************************************/
 package com.stuypulse.robot.commands.vision;
 
+import com.stuypulse.robot.constants.Settings;
+
 public class ResetLimelightIMU extends SetIMUMode {
     public ResetLimelightIMU() {
-        super(1);
+        super(Settings.Vision.RESET_IMU_INDEX);
     }
 }
