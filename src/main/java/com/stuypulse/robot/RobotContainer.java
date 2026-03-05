@@ -29,6 +29,7 @@ import com.stuypulse.robot.commands.intake.ZeroPivotDeployed;
 import com.stuypulse.robot.commands.intake.ZeroPivotStowed;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
+import com.stuypulse.robot.commands.superstructure.SuperstructureDefaultCommand;
 import com.stuypulse.robot.commands.superstructure.SuperstructureFerry;
 import com.stuypulse.robot.commands.superstructure.SuperstructureInterpolation;
 import com.stuypulse.robot.commands.superstructure.SuperstructureKB;
@@ -127,6 +128,7 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         swerve.setDefaultCommand(new SwerveDriveDrive(driver));
+        superstructure.setDefaultCommand(new SuperstructureDefaultCommand());
         // climberHopper.setDefaultCommand(new ClimberHopperDefaultCommand());
         // turret.setDefaultCommand(new TurretDefaultCommand());
     }
@@ -138,7 +140,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Scoring Routine
         driver.getTopButton()
-                .whileTrue(new SuperstructureShoot().onlyIf(() -> !superstructure.isHoodUnderTrench())
+                .whileTrue(new SuperstructureShoot().onlyIf(() -> !swerve.isUnderTrench())
                 .alongWith(new SwerveDriveAlignTurretToHub())
                         // .alongWith(new TurretShoot())
                         .andThen(new WaitUntilCommand(superstructure::atTolerance))
@@ -157,27 +159,27 @@ public class RobotContainer {
         driver.getLeftTriggerButton()
             .onTrue(new IntakeStow());
 
-        driver.getRightButton()
-            .whileTrue(new SuperstructureFerry().onlyIf(() -> !superstructure.isHoodUnderTrench())
-                    // .alongWith(new TurretShoot())
-                    .andThen(new WaitUntilCommand(superstructure::atTolerance))
-                    .andThen(new HandoffRun().onlyIf(superstructure::atTolerance)
-                            .alongWith(new WaitUntilCommand(handoff::atTolerance))
-                            .andThen(new SpindexerRun().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
-            .onFalse(new SpindexerStop()
-                    .alongWith(new SuperstructureStow())
-                    .alongWith(new HandoffStop()));
+        // driver.getRightButton()
+        //     .whileTrue(new SuperstructureFerry().onlyIf(() -> !swerve.isUnderTrench())
+        //             // .alongWith(new TurretShoot())
+        //             .andThen(new WaitUntilCommand(superstructure::atTolerance))
+        //             .andThen(new HandoffRun().onlyIf(superstructure::atTolerance)
+        //                     .alongWith(new WaitUntilCommand(handoff::atTolerance))
+        //                     .andThen(new SpindexerRun().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
+        //     .onFalse(new SpindexerStop()
+        //             .alongWith(new SuperstructureStow())
+        //             .alongWith(new HandoffStop()));
         
         // SOTM
-        // driver.getRightButton()
-        //         .whileTrue(new SuperstructureSOTM().onlyIf(() -> !superstructure.isHoodUnderTrench())
-        //                 .andThen(new WaitUntilCommand(superstructure::atTolerance))
-        //                 .andThen(new HandoffRun().onlyIf(superstructure::atTolerance)
-        //                         .alongWith(new WaitUntilCommand(handoff::atTolerance))
-        //                         .andThen(new SpindexerRun().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
-        //         .onFalse(new SpindexerStop()
-        //                 .alongWith(new SuperstructureStow())
-        //                 .alongWith(new HandoffStop()));
+        driver.getRightButton()
+                .whileTrue(new SuperstructureSOTM().onlyIf(() -> !swerve.isUnderTrench())
+                        .andThen(new WaitUntilCommand(superstructure::atTolerance))
+                        .andThen(new HandoffRun().onlyIf(superstructure::atTolerance)
+                                .alongWith(new WaitUntilCommand(handoff::atTolerance))
+                                .andThen(new SpindexerRun().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
+                .onFalse(new SpindexerStop()
+                        .alongWith(new SuperstructureStow())
+                        .alongWith(new HandoffStop()));
 
         // Reset Heading
         driver.getDPadUp()

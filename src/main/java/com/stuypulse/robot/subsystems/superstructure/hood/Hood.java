@@ -63,9 +63,10 @@ public abstract class Hood extends SubsystemBase{
     }
 
     public Rotation2d getTargetAngle() {
-        if (isUnderTrench()) {
-            return Settings.Superstructure.Hood.Angles.STOW;
-        }
+        // if (isUnderTrench()) {
+        //     return Settings.Superstructure.Hood.Angles.STOW;
+        // }
+        // don't think we need this when we have superstructure default command.
 
         return switch(state) {
             case STOW -> Settings.Superstructure.Hood.Angles.STOW;
@@ -103,7 +104,6 @@ public abstract class Hood extends SubsystemBase{
         return this.driverInput;
     }
     
-    public abstract boolean isUnderTrench();
     public abstract boolean isStalling();
 
     public abstract SysIdRoutine getHoodSysIdRoutine();

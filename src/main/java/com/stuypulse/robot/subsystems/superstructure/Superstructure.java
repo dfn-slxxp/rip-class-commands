@@ -94,10 +94,6 @@ public class Superstructure extends SubsystemBase {
         return isShooterAtTolerance() && isHoodAtTolerance() && isTurretAtTolerance();
     }
 
-    public boolean isHoodUnderTrench() {
-        return hood.isUnderTrench();
-    }
-
     public boolean isShooterAtTolerance() {
         return shooter.atTolerance();
     }
@@ -139,7 +135,6 @@ public class Superstructure extends SubsystemBase {
         SmartDashboard.putBoolean("Superstructure/Hood At Tolerance?", isHoodAtTolerance());
         SmartDashboard.putBoolean("Superstructure/Turret At Tolerance?", isTurretAtTolerance());
 
-        SmartDashboard.putBoolean("Superstructure/Hood/Under Trench", isHoodUnderTrench());
         SmartDashboard.putNumber("InterpolationTesting/Current Hood Angle", getHoodAngle().getDegrees());
         SmartDashboard.putNumber("InterpolationTesting/Current Shooter RPM", getShooterRPM());
     }
