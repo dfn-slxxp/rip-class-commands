@@ -10,9 +10,11 @@ import com.stuypulse.stuylib.math.Vector2D;
 
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
+import com.stuypulse.robot.commands.hood.HoodAnalog;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
+import com.stuypulse.robot.util.superstructure.SOTMSolutionCalculator;
 import com.stuypulse.robot.util.turret.TurretVisualizer;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -47,6 +49,7 @@ public abstract class Turret extends SubsystemBase {
         IDLE,
         ZERO,
         SHOOT,
+        SOTM,
         FERRY,
         LEFT_CORNER,
         RIGHT_CORNER,
@@ -58,6 +61,7 @@ public abstract class Turret extends SubsystemBase {
             case IDLE -> getAngle(); 
             case ZERO -> Rotation2d.kZero;
             case SHOOT -> getScoringAngle();
+            case SOTM -> SOTMSolutionCalculator.calculateTurretAngleSOTM().get();
             case FERRY -> getFerryAngle();
             case LEFT_CORNER -> Settings.Superstructure.Turret.LEFT_CORNER;
             case RIGHT_CORNER -> Settings.Superstructure.Turret.RIGHT_CORNER;

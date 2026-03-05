@@ -152,6 +152,19 @@ public interface Settings {
             };
         }
 
+        public interface TOFInterpolation{
+            public final double[][] distanceTOFInterpolationValues = { // COLLECT THESE
+                // {1.22, 0.0},
+                {1.30, 1.01}, // seconds
+                // {1.43, 0.0},
+                // {2.15, 0.0},
+                {2.864967, 1.1},
+                // {3.65, 0.0},
+                {4.43, 1.234},
+                {5.32, 1.267}
+            };
+        }
+
         public interface FerryRPMInterpolation {
             public final double[][] distanceRPMInterpolationValues = {
                 {3.79, 3450.0}
@@ -255,12 +268,14 @@ public interface Settings {
                 }
             }
         }
+
+        public interface SOTM {
+            public final int MAX_ITERATIONS = 5;
+            public final double TIME_TOLERANCE = 0.01;
+            public final SmartNumber UPDATE_DELAY = new SmartNumber("Superstructure/SOTM/Update Delay", 0.00);
+        }
     }
-    public interface ShootOnTheFly {
-        public final int MAX_ITERATIONS = 5;
-        public final double TIME_TOLERANCE = 0.01;
-        public final SmartNumber UPDATE_DELAY = new SmartNumber("Superstructure/SOTM/Update Delay", 0.00);
-    }
+    
 
     public interface Swerve {
         public final double MODULE_VELOCITY_DEADBAND_M_PER_S = 0.1;

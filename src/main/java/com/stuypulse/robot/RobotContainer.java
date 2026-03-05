@@ -32,6 +32,7 @@ import com.stuypulse.robot.commands.spindexer.SpindexerStop;
 import com.stuypulse.robot.commands.superstructure.SuperstructureFerry;
 import com.stuypulse.robot.commands.superstructure.SuperstructureInterpolation;
 import com.stuypulse.robot.commands.superstructure.SuperstructureKB;
+import com.stuypulse.robot.commands.superstructure.SuperstructureSOTM;
 import com.stuypulse.robot.commands.superstructure.SuperstructureShoot;
 import com.stuypulse.robot.commands.superstructure.SuperstructureStow;
 import com.stuypulse.robot.commands.swerve.SwerveDriveAlignTurretToHub;
@@ -161,10 +162,21 @@ public class RobotContainer {
             .onFalse(new SuperstructureStow());
 
 
+        // driver.getRightButton()
+        //     .whileTrue(new SuperstructureFerry().onlyIf(
+        //         () -> CommandSwerveDrivetrain.getInstance().getPose().getX() > Field.getHubPose().getX()))
+        //     .onFalse(new SuperstructureStow());
+        
+        // SOTM
         driver.getRightButton()
-            .whileTrue(new SuperstructureFerry().onlyIf(
-                () -> CommandSwerveDrivetrain.getInstance().getPose().getX() > Field.getHubPose().getX()))
-            .onFalse(new SuperstructureStow());
+                .whileTrue(new SuperstructureSOTM().onlyIf(() -> !superstructure.isHoodUnderTrench())
+                        .andThen(new WaitUntilCommand(superstructure::atTolerance))
+                        .andThen(new HandoffRun().onlyIf(superstructure::atTolerance)
+                                .alongWith(new WaitUntilCommand(handoff::atTolerance))
+                                .andThen(new SpindexerRun().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
+                .onFalse(new SpindexerStop()
+                        .alongWith(new SuperstructureStow())
+                        .alongWith(new HandoffStop()));
 
         // Reset Heading
         driver.getDPadUp()

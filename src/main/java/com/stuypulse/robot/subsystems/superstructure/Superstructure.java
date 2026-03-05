@@ -12,6 +12,7 @@ import com.stuypulse.robot.subsystems.superstructure.shooter.Shooter;
 import com.stuypulse.robot.subsystems.superstructure.shooter.Shooter.ShooterState;
 import com.stuypulse.robot.subsystems.superstructure.turret.Turret;
 import com.stuypulse.robot.subsystems.superstructure.turret.Turret.TurretState;
+import com.stuypulse.robot.util.superstructure.SOTMSolutionCalculator;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -50,11 +51,12 @@ public class Superstructure extends SubsystemBase {
         KB(HoodState.KB, ShooterState.KB, TurretState.SHOOT),
         LEFT_CORNER(HoodState.LEFT_CORNER, ShooterState.LEFT_CORNER, TurretState.SHOOT),
         RIGHT_CORNER(HoodState.RIGHT_CORNER, ShooterState.RIGHT_CORNER, TurretState.SHOOT),
-        INTERPOLATION(HoodState.INTERPOLATION, ShooterState.INTERPOLATION, TurretState.SHOOT);
+        INTERPOLATION(HoodState.INTERPOLATION, ShooterState.INTERPOLATION, TurretState.SHOOT),
+        SOTM(HoodState.SOTM, ShooterState.SOTM, TurretState.SOTM);
 
         private HoodState hoodState;
         private ShooterState shooterState;
-        private TurretState  turretState;
+        private TurretState turretState;
 
         private SuperstructureState(HoodState hoodState, ShooterState shooterState, TurretState TurretState) {
             this.hoodState = hoodState;
@@ -132,6 +134,10 @@ public class Superstructure extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (getState() == SuperstructureState.SOTM) {
+            SOTMSolutionCalculator.updateSOTMSolution();
+        }
+
         SmartDashboard.putString("SuperStructure/State", state.name());
         SmartDashboard.putString("States/SuperStructure", state.name());
 

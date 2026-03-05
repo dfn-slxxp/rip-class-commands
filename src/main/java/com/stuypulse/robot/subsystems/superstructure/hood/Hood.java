@@ -8,7 +8,8 @@ package com.stuypulse.robot.subsystems.superstructure.hood;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
-import com.stuypulse.robot.util.superstructure.HoodAngleCalculator;
+import com.stuypulse.robot.util.superstructure.SOTMSolutionCalculator;
+import com.stuypulse.robot.util.superstructure.InterpolationCalculator;
 import com.stuypulse.stuylib.input.Gamepad;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -40,6 +41,7 @@ public abstract class Hood extends SubsystemBase{
         LEFT_CORNER,
         RIGHT_CORNER,
         INTERPOLATION,
+        SOTM,
         ANALOG,
         IDLE;
     }
@@ -64,7 +66,8 @@ public abstract class Hood extends SubsystemBase{
             case KB -> Settings.Superstructure.Hood.Angles.KB_ANGLE;
             case LEFT_CORNER -> Settings.Superstructure.Hood.Angles.LEFT_CORNER_ANGLE;
             case RIGHT_CORNER -> Settings.Superstructure.Hood.Angles.RIGHT_CORNER_ANGLE;
-            case INTERPOLATION -> HoodAngleCalculator.interpolateHoodAngle().get();
+            case INTERPOLATION -> InterpolationCalculator.interpolateShotInfo().targetHoodAngle();
+            case SOTM -> SOTMSolutionCalculator.calculateHoodAngleSOTM().get();
             case ANALOG -> hoodAnalogToOutput();
             case IDLE -> getAngle();
         };
