@@ -11,9 +11,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class TurretAngleCalculator {
 
-    private static final double MAX_ANGLE_DEGREES = Settings.Turret.MAX_THEORETICAL_ROTATION.getDegrees();
-    private static final double MIN_ANGLE_DEGREES = Settings.Turret.MIN_THEORETICAL_ROTATION.getDegrees();
-    private static final double RESOLUTION = Settings.Turret.RESOLUTION_OF_ABSOLUTE_ENCODER;
+    private static final double MAX_ANGLE_DEGREES = Settings.Superstructure.Turret.MAX_THEORETICAL_ROTATION.getDegrees();
+    private static final double MIN_ANGLE_DEGREES = Settings.Superstructure.Turret.MIN_THEORETICAL_ROTATION.getDegrees();
+    private static final double RESOLUTION = Settings.Superstructure.Turret.RESOLUTION_OF_ABSOLUTE_ENCODER;
     private static final int NUM_POINTS = (int) ((MAX_ANGLE_DEGREES - MIN_ANGLE_DEGREES) / RESOLUTION);
     private static int leastDistanceIndex = 0;
 
@@ -23,7 +23,7 @@ public class TurretAngleCalculator {
 
     private static double[] generateEncoderValues(int teeth) {
         double[] values = new double[NUM_POINTS];
-        double gearRatio = 1.0 * Settings.Turret.Constants.BigGear.TEETH / teeth;
+        double gearRatio = 1.0 * Settings.Superstructure.Turret.Constants.BigGear.TEETH / teeth;
         int i = 0;
 
         for (double angle = MIN_ANGLE_DEGREES; angle < MAX_ANGLE_DEGREES; angle += RESOLUTION) {

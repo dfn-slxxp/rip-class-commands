@@ -10,7 +10,7 @@ import com.stuypulse.robot.constants.Gains;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.constants.Settings.Turret.Constants;
+import com.stuypulse.robot.constants.Settings.Superstructure.Turret;
 import com.stuypulse.robot.util.SysId;
 import com.stuypulse.robot.util.turret.TurretAngleCalculator;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,20 +49,20 @@ public class TurretImpl extends Turret {
             .withRampRate(0.25)
             .withVoltageLimits(6, -6) //TODO: VERIFY MAX VOLTAGE
             
-            .withPIDConstants(Gains.Turret.slot0.kP, Gains.Turret.slot0.kI, Gains.Turret.slot0.kD, 0)
-            .withFFConstants(Gains.Turret.slot0.kS, Gains.Turret.slot0.kV, Gains.Turret.slot0.kA, 0)
+            .withPIDConstants(Gains.Superstructure.Turret.slot0.kP, Gains.Superstructure.Turret.slot0.kI, Gains.Superstructure.Turret.slot0.kD, 0)
+            .withFFConstants(Gains.Superstructure.Turret.slot0.kS, Gains.Superstructure.Turret.slot0.kV, Gains.Superstructure.Turret.slot0.kA, 0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign, 0)
             
-            .withPIDConstants(Gains.Turret.slot1.kP, Gains.Turret.slot1.kI, Gains.Turret.slot1.kD, 1)
-            .withFFConstants(Gains.Turret.slot1.kS, Gains.Turret.slot1.kV, Gains.Turret.slot1.kA, 1)
+            .withPIDConstants(Gains.Superstructure.Turret.slot1.kP, Gains.Superstructure.Turret.slot1.kI, Gains.Superstructure.Turret.slot1.kD, 1)
+            .withFFConstants(Gains.Superstructure.Turret.slot1.kS, Gains.Superstructure.Turret.slot1.kV, Gains.Superstructure.Turret.slot1.kA, 1)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign, 1)
             
-            .withSensorToMechanismRatio(Settings.Turret.Constants.GEAR_RATIO_MOTOR_TO_MECH)
+            .withSensorToMechanismRatio(Settings.Superstructure.Turret.Constants.GEAR_RATIO_MOTOR_TO_MECH)
 
             .withSoftLimits(
                 false, false,
-                Settings.Turret.Constants.SoftwareLimit.FORWARD_MAX_ROTATIONS,
-                Settings.Turret.Constants.SoftwareLimit.BACKWARDS_MAX_ROTATIONS);
+                Settings.Superstructure.Turret.Constants.SoftwareLimit.FORWARD_MAX_ROTATIONS,
+                Settings.Superstructure.Turret.Constants.SoftwareLimit.BACKWARDS_MAX_ROTATIONS);
 
         encoder17tConfig = new Motors.CANCoderConfig()
             .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
@@ -72,9 +72,9 @@ public class TurretImpl extends Turret {
             .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
             .withAbsoluteSensorDiscontinuityPoint(1.0);
 
-        motor = new TalonFX(Ports.Turret.MOTOR, Ports.RIO);
-        encoder17t = new CANcoder(Ports.Turret.ENCODER17T, Ports.RIO);
-        encoder18t = new CANcoder(Ports.Turret.ENCODER18T, Ports.RIO);
+        motor = new TalonFX(Ports.Superstructure.Turret.MOTOR, Ports.RIO);
+        encoder17t = new CANcoder(Ports.Superstructure.Turret.ENCODER17T, Ports.RIO);
+        encoder18t = new CANcoder(Ports.Superstructure.Turret.ENCODER18T, Ports.RIO);
 
         turretConfig.configure(motor);
         encoder17tConfig.configure(encoder17t);
@@ -130,7 +130,7 @@ public class TurretImpl extends Turret {
     @Override
     public boolean atTargetAngle() {
         double error = getAngle().minus(getTargetAngle()).getRotations() + 0.5;
-        return Math.abs(error) < Settings.Turret.TOLERANCE.getRotations();
+        return Math.abs(error) < Settings.Superstructure.Turret.TOLERANCE.getRotations();
     }
     
     private double getDelta(double target, double current) {
@@ -168,16 +168,16 @@ public class TurretImpl extends Turret {
         }
 
         if (Settings.DEBUG_MODE) {
-            SmartDashboard.putNumber("Turret/Relative Encoder Position (Rot)", motor.getPosition().getValueAsDouble() * 360.0);
-            SmartDashboard.putNumber("Turret/Closed Loop Error (deg)", motor.getClosedLoopError().getValueAsDouble() * 360.0);
+            SmartDashboard.putNumber("Superstructure/Turret/Relative Encoder Position (Rot)", motor.getPosition().getValueAsDouble() * 360.0);
+            SmartDashboard.putNumber("Superstructure/Turret/Closed Loop Error (deg)", motor.getClosedLoopError().getValueAsDouble() * 360.0);
 
-            SmartDashboard.putNumber("Turret/Encoder18t Abs Position (Rot)", encoder18t.getAbsolutePosition().getValueAsDouble());
-            SmartDashboard.putNumber("Turret/Encoder17t Abs Position (Rot)", encoder17t.getAbsolutePosition().getValueAsDouble());
-            SmartDashboard.putNumber("Turret/Vector Space Position (Deg)", getVectorSpaceAngle().getDegrees());
+            SmartDashboard.putNumber("Superstructure/Turret/Encoder18t Abs Position (Rot)", encoder18t.getAbsolutePosition().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Turret/Encoder17t Abs Position (Rot)", encoder17t.getAbsolutePosition().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Turret/Vector Space Position (Deg)", getVectorSpaceAngle().getDegrees());
 
-            SmartDashboard.putNumber("Turret/Voltage", motor.getMotorVoltage().getValueAsDouble());
-            SmartDashboard.putNumber("Turret/Stator Current", motor.getStatorCurrent().getValueAsDouble());
-            SmartDashboard.putNumber("Turret/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Turret/Voltage", motor.getMotorVoltage().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Turret/Stator Current", motor.getStatorCurrent().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Turret/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
 
             SmartDashboard.putNumber("Current Draws/Turret (amps)", motor.getSupplyCurrent().getValueAsDouble());
         }

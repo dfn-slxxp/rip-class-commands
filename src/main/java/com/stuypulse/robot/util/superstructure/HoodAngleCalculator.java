@@ -3,15 +3,15 @@
 /* Use of this source code is governed by an MIT-style license */
 /* that can be found in the repository LICENSE file.           */
 /***************************************************************/
-package com.stuypulse.robot.util.hoodedshooter;
+package com.stuypulse.robot.util.superstructure;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.constants.Settings.HoodedShooter.AngleInterpolation;
-import com.stuypulse.robot.constants.Settings.HoodedShooter.FerryRPMInterpolation;
-import com.stuypulse.robot.constants.Settings.HoodedShooter.RPMInterpolation;
+import com.stuypulse.robot.constants.Settings.Superstructure.AngleInterpolation;
+import com.stuypulse.robot.constants.Settings.Superstructure.FerryRPMInterpolation;
+import com.stuypulse.robot.constants.Settings.Superstructure.RPMInterpolation;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
-import com.stuypulse.robot.util.hoodedshooter.ShotCalculator.SOTMSolution;
+import com.stuypulse.robot.util.superstructure.ShotCalculator.SOTMSolution;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;

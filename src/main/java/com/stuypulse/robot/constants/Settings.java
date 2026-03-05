@@ -122,7 +122,7 @@ public interface Settings {
         }
     }
     
-    public interface HoodedShooter {
+    public interface Superstructure {
         public final double SHOOTER_TOLERANCE_RPM = 100.0;
         public final Rotation2d HOOD_TOLERANCE = Rotation2d.fromDegrees(0.5);
 
@@ -208,7 +208,52 @@ public interface Settings {
                 public final Rotation2d KB_ANGLE = Rotation2d.fromDegrees(12.0);
                 public final Rotation2d LEFT_CORNER_ANGLE = Rotation2d.fromDegrees(10.0);
                 public final Rotation2d RIGHT_CORNER_ANGLE = Rotation2d.fromDegrees(10.0);
+            }
         }
+
+        public interface Turret {
+            public final Rotation2d MAX_VEL = new Rotation2d(Units.degreesToRadians(600.0));
+            public final Rotation2d MAX_ACCEL = new Rotation2d(Units.degreesToRadians(600.0));
+            public final Rotation2d TOLERANCE = Rotation2d.fromDegrees(2.0);
+            
+            public final Rotation2d HUB = Rotation2d.fromDegrees(0.0);
+            public final Rotation2d LEFT_CORNER = Rotation2d.fromDegrees(0.0);
+            public final Rotation2d RIGHT_CORNER = Rotation2d.fromDegrees(0.0);
+            
+            double RESOLUTION_OF_ABSOLUTE_ENCODER = 0.1;
+            double WRAP_DEBOUNCE = 0.5;
+            Rotation2d MAX_THEORETICAL_ROTATION = Rotation2d.fromDegrees(612);
+            Rotation2d MIN_THEORETICAL_ROTATION = Rotation2d.fromDegrees(-612);
+            
+            public interface Constants {
+                public final double RANGE = 210.0;
+            
+                public final double SLOT_SWITCHING_THRESHOLD_ROT = .5;
+            
+                public final Transform2d TURRET_OFFSET = new Transform2d(Units.inchesToMeters(-4.0), Units.inchesToMeters(8.0), Rotation2d.kZero);
+                public final double TURRET_HEIGHT = Units.inchesToMeters(0.0);
+            
+                public final double GEAR_RATIO_MOTOR_TO_MECH = (60.0 / 9.0) * (95.0 / 12.0); //1425.0 / 36.0;
+            
+                public interface BigGear {
+                    public final int TEETH = 95;
+                }
+            
+                public interface Encoder17t {
+                    public final int TEETH = 17;
+                    public final Rotation2d OFFSET = new Rotation2d();
+                }
+            
+                public interface Encoder18t {
+                    public final int TEETH = 18;
+                    public final Rotation2d OFFSET = new Rotation2d();
+                }
+            
+                public interface SoftwareLimit {
+                    public final double FORWARD_MAX_ROTATIONS = 210.0 / 360.0;
+                    public final double BACKWARDS_MAX_ROTATIONS = -210.0 / 360.0;
+                }
+            }
         }
     }
     public interface ShootOnTheFly {
@@ -259,51 +304,6 @@ public interface Settings {
                     MAX_ACCEL_M_PER_S_SQUARED,
                     MAX_ANGULAR_VEL_RAD_PER_S,
                     MAX_ANGULAR_ACCEL_RAD_PER_S);
-        }
-    }
-
-    public interface Turret {
-        public final Rotation2d MAX_VEL = new Rotation2d(Units.degreesToRadians(600.0));
-        public final Rotation2d MAX_ACCEL = new Rotation2d(Units.degreesToRadians(600.0));
-        public final Rotation2d TOLERANCE = Rotation2d.fromDegrees(2.0);
-
-        public final Rotation2d HUB = Rotation2d.fromDegrees(0.0);
-        public final Rotation2d LEFT_CORNER = Rotation2d.fromDegrees(0.0);
-        public final Rotation2d RIGHT_CORNER = Rotation2d.fromDegrees(0.0);
-
-        double RESOLUTION_OF_ABSOLUTE_ENCODER = 0.1;
-        double WRAP_DEBOUNCE = 0.5;
-        Rotation2d MAX_THEORETICAL_ROTATION = Rotation2d.fromDegrees(612);
-        Rotation2d MIN_THEORETICAL_ROTATION = Rotation2d.fromDegrees(-612);
-
-        public interface Constants {
-            public final double RANGE = 210.0;
-
-            public final double SLOT_SWITCHING_THRESHOLD_ROT = .5;
-
-            public final Transform2d TURRET_OFFSET = new Transform2d(Units.inchesToMeters(-4.0), Units.inchesToMeters(8.0), Rotation2d.kZero);
-            public final double TURRET_HEIGHT = Units.inchesToMeters(0.0);
-
-            public final double GEAR_RATIO_MOTOR_TO_MECH = (60.0 / 9.0) * (95.0 / 12.0); //1425.0 / 36.0;
-
-            public interface BigGear {
-                public final int TEETH = 95;
-            }
-
-            public interface Encoder17t {
-                public final int TEETH = 17;
-                public final Rotation2d OFFSET = new Rotation2d();
-            }
-
-            public interface Encoder18t {
-                public final int TEETH = 18;
-                public final Rotation2d OFFSET = new Rotation2d();
-            }
-
-            public interface SoftwareLimit {
-                public final double FORWARD_MAX_ROTATIONS = 210.0 / 360.0;
-                public final double BACKWARDS_MAX_ROTATIONS = -210.0 / 360.0;
-            }
         }
     }
 

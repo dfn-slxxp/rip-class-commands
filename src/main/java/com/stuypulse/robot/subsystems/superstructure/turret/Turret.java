@@ -59,8 +59,8 @@ public abstract class Turret extends SubsystemBase {
             case ZERO -> Rotation2d.kZero;
             case SHOOT -> getScoringAngle();
             case FERRY -> getFerryAngle();
-            case LEFT_CORNER -> Settings.Turret.LEFT_CORNER;
-            case RIGHT_CORNER -> Settings.Turret.RIGHT_CORNER;
+            case LEFT_CORNER -> Settings.Superstructure.Turret.LEFT_CORNER;
+            case RIGHT_CORNER -> Settings.Superstructure.Turret.RIGHT_CORNER;
             case TESTING -> driverInputToAngle();
         };
     }
@@ -72,7 +72,7 @@ public abstract class Turret extends SubsystemBase {
  
     public boolean atTargetAngle() {
         double error = getAngle().minus(getTargetAngle()).getRotations();
-        return Math.abs(error) < Settings.Turret.TOLERANCE.getRotations();
+        return Math.abs(error) < Settings.Superstructure.Turret.TOLERANCE.getRotations();
     }
 
     public Rotation2d getScoringAngle() {

@@ -7,7 +7,7 @@ package com.stuypulse.robot.subsystems.superstructure.shooter;
 
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.util.hoodedshooter.HoodAngleCalculator;
+import com.stuypulse.robot.util.superstructure.HoodAngleCalculator;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,21 +58,21 @@ public abstract class Shooter extends SubsystemBase {
             case STOP -> 0;
             case SHOOT -> getShootRPM();
             case FERRY -> HoodAngleCalculator.interpolateFerryingRPM().get();
-            case REVERSE -> Settings.HoodedShooter.Shooter.RPMs.REVERSE;
-            case KB -> Settings.HoodedShooter.Shooter.RPMs.KB_RPM;
-            case LEFT_CORNER -> Settings.HoodedShooter.Shooter.RPMs.LEFT_CORNER_RPM;
-            case RIGHT_CORNER -> Settings.HoodedShooter.Shooter.RPMs.RIGHT_CORNER_RPM;
+            case REVERSE -> Settings.Superstructure.Shooter.RPMs.REVERSE;
+            case KB -> Settings.Superstructure.Shooter.RPMs.KB_RPM;
+            case LEFT_CORNER -> Settings.Superstructure.Shooter.RPMs.LEFT_CORNER_RPM;
+            case RIGHT_CORNER -> Settings.Superstructure.Shooter.RPMs.RIGHT_CORNER_RPM;
             case INTERPOLATION -> HoodAngleCalculator.interpolateShooterRPM().get();
         };
     }
 
     public double getShootRPM() {
-        return Settings.HoodedShooter.Shooter.RPMs.SHOOT_RPM.get(); // Adjustable RPM on Glass
+        return Settings.Superstructure.Shooter.RPMs.SHOOT_RPM.get(); // Adjustable RPM on Glass
     }
 
     public boolean atTolerance() {
         double diff = Math.abs(getTargetRPM() - getRPM());
-        return diff < Settings.HoodedShooter.SHOOTER_TOLERANCE_RPM;
+        return diff < Settings.Superstructure.SHOOTER_TOLERANCE_RPM;
     }
 
     public abstract double getRPM();
@@ -81,11 +81,11 @@ public abstract class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("HoodedShooter/Shooter/State", state.name());
+        SmartDashboard.putString("Superstructure/Shooter/State", state.name());
         SmartDashboard.putString("States/Shooter", state.name());
 
-        SmartDashboard.putNumber("HoodedShooter/Shooter/Current RPM", getRPM());
-        SmartDashboard.putNumber("HoodedShooter/Shooter/Target RPM", getTargetRPM());
+        SmartDashboard.putNumber("Superstructure/Shooter/Current RPM", getRPM());
+        SmartDashboard.putNumber("Superstructure/Shooter/Target RPM", getTargetRPM());
 
         SmartDashboard.putNumber("InterpolationTesting/Shooter Interpolated Target Shoot RPM", HoodAngleCalculator.interpolateShooterRPM().get());
     }

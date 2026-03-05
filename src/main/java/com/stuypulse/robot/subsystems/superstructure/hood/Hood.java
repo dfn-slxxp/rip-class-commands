@@ -8,7 +8,7 @@ package com.stuypulse.robot.subsystems.superstructure.hood;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
-import com.stuypulse.robot.util.hoodedshooter.HoodAngleCalculator;
+import com.stuypulse.robot.util.superstructure.HoodAngleCalculator;
 import com.stuypulse.stuylib.input.Gamepad;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -58,12 +58,12 @@ public abstract class Hood extends SubsystemBase{
 
     public Rotation2d getTargetAngle() {
         return switch(state) {
-            case STOW -> Settings.HoodedShooter.Hood.Angles.MIN_ANGLE;
+            case STOW -> Settings.Superstructure.Hood.Angles.MIN_ANGLE;
             case FERRY -> Rotation2d.fromDegrees(30);
-            case SHOOT -> Rotation2d.fromDegrees(Settings.HoodedShooter.Hood.Angles.SHOOT_ANGLE.get());
-            case KB -> Settings.HoodedShooter.Hood.Angles.KB_ANGLE;
-            case LEFT_CORNER -> Settings.HoodedShooter.Hood.Angles.LEFT_CORNER_ANGLE;
-            case RIGHT_CORNER -> Settings.HoodedShooter.Hood.Angles.RIGHT_CORNER_ANGLE;
+            case SHOOT -> Rotation2d.fromDegrees(Settings.Superstructure.Hood.Angles.SHOOT_ANGLE.get());
+            case KB -> Settings.Superstructure.Hood.Angles.KB_ANGLE;
+            case LEFT_CORNER -> Settings.Superstructure.Hood.Angles.LEFT_CORNER_ANGLE;
+            case RIGHT_CORNER -> Settings.Superstructure.Hood.Angles.RIGHT_CORNER_ANGLE;
             case INTERPOLATION -> HoodAngleCalculator.interpolateHoodAngle().get();
             case ANALOG -> hoodAnalogToOutput();
             case IDLE -> getAngle();
@@ -72,14 +72,14 @@ public abstract class Hood extends SubsystemBase{
 
     public boolean atTolerance() {
         double error = getAngle().minus(getTargetAngle()).getRotations();
-        return Math.abs(error) < Settings.HoodedShooter.HOOD_TOLERANCE.getRotations();
+        return Math.abs(error) < Settings.Superstructure.HOOD_TOLERANCE.getRotations();
     }
 
     public abstract Rotation2d getAngle();
 
     public void hoodAnalogToInput(Gamepad gamepad) {
-        double hoodMin = Settings.HoodedShooter.Hood.Angles.MIN_ANGLE.getDegrees();
-        double hoodMax = Settings.HoodedShooter.Hood.Angles.MAX_ANGLE.getDegrees();
+        double hoodMin = Settings.Superstructure.Hood.Angles.MIN_ANGLE.getDegrees();
+        double hoodMax = Settings.Superstructure.Hood.Angles.MAX_ANGLE.getDegrees();
 
         this.driverInput = Rotation2d.fromDegrees(hoodMin + (gamepad.getLeftX() + 1.0) * ((hoodMax - hoodMin) / 2)); 
     }
@@ -111,14 +111,14 @@ public abstract class Hood extends SubsystemBase{
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("HoodedShooter/Hood/State", state.name());
+        SmartDashboard.putString("Superstructure/Hood/State", state.name());
         SmartDashboard.putString("States/Hood", state.name());
 
-        SmartDashboard.putNumber("HoodedShooter/Hood/Target Angle", getTargetAngle().getDegrees());
-        SmartDashboard.putNumber("HoodedShooter/Hood/Current Angle", getAngle().getDegrees());
+        SmartDashboard.putNumber("Superstructure/Hood/Target Angle", getTargetAngle().getDegrees());
+        SmartDashboard.putNumber("Superstructure/Hood/Current Angle", getAngle().getDegrees());
 
-        //SmartDashboard.putNumber("HoodedShooter/Hood/Analog Target Angle", hoodAnalogToOutput().getDegrees());
+        //SmartDashboard.putNumber("Superstructure/Hood/Analog Target Angle", hoodAnalogToOutput().getDegrees());
 
-        SmartDashboard.putBoolean("HoodedShooter/Hood/Under Trench", isHoodUnderTrench());
+        SmartDashboard.putBoolean("Superstructure/Hood/Under Trench", isHoodUnderTrench());
     }
 }

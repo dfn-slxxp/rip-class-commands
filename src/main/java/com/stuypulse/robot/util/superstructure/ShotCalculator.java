@@ -3,12 +3,12 @@
 /* Use of this source code is governed by an MIT-style license */
 /* that can be found in the repository LICENSE file.           */
 /***************************************************************/
-package com.stuypulse.robot.util.hoodedshooter;
+package com.stuypulse.robot.util.superstructure;
 
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.constants.Settings.HoodedShooter.AngleInterpolation;
-import com.stuypulse.robot.constants.Settings.HoodedShooter.RPMInterpolation;
+import com.stuypulse.robot.constants.Settings.Superstructure.AngleInterpolation;
+import com.stuypulse.robot.constants.Settings.Superstructure.RPMInterpolation;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -53,7 +53,7 @@ public final class ShotCalculator {
         double targetRPM = distanceRPMInterpolator.get(distanceMeters);
 
         // Physics-based TOF
-        double launchSpeed = 0.5 * targetRPM * (2 * Math.PI / 60.0) * Settings.HoodedShooter.Shooter.FLYWHEEL_RADIUS; 
+        double launchSpeed = 0.5 * targetRPM * (2 * Math.PI / 60.0) * Settings.Superstructure.Shooter.FLYWHEEL_RADIUS; 
         Rotation2d launchAngle = Rotation2d.kCCW_Pi_2.minus(targetHoodAngle);
 
         double v_x = launchSpeed * Math.cos(launchAngle.getRadians());

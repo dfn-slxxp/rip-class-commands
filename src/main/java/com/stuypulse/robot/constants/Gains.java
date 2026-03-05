@@ -29,7 +29,7 @@ public class Gains {
         // double kA = 0.0;
     }
 
-    public interface HoodedShooter {
+    public interface Superstructure {
         public interface Shooter {
             SmartNumber kP = new SmartNumber("HoodedShooter/Shooter/Gains/kP", 0.45);
             SmartNumber kI = new SmartNumber("HoodedShooter/Shooter/Gains/kI", 0.0);
@@ -58,6 +58,27 @@ public class Gains {
             double kA = 0.0;
         }
 
+        public interface Turret {
+            public interface slot0 {
+                double kP = 1300.0;
+                double kI = 0.0;
+                double kD = 140.0;
+
+                double kS = 0.23;   // FOUND ON 2/25 PD 8
+                double kV = 0.0;
+                double kA = 0.0;
+            }
+            
+            public interface slot1 {
+                double kP = 0.0;
+                double kI = 0.0;
+                double kD = 0.0;
+            
+                double kS = 0.0;
+                double kV = 0.0;
+                double kA = 0.0;
+            }
+        }
     }
 
     public interface Spindexer {
@@ -92,28 +113,6 @@ public class Gains {
         double kS = 0.1728;
         double kV = 0.12;
         double kA = 0.00284;
-    }
-
-    public interface Turret {
-        public interface slot0 {
-            double kP = 1300.0;
-            double kI = 0.0;
-            double kD = 140.0;
-
-            double kS = 0.23;   // FOUND ON 2/25 PD 8
-            double kV = 0.0;
-            double kA = 0.0;
-        }
-
-        public interface slot1 {
-            double kP = 0.0;
-            double kI = 0.0;
-            double kD = 0.0;
-
-            double kS = 0.0;
-            double kV = 0.0;
-            double kA = 0.0;
-        }
     }
 
     public interface Swerve {

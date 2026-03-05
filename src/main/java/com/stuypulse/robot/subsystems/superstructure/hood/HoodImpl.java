@@ -50,24 +50,24 @@ public class HoodImpl extends Hood {
             .withStatorCurrentLimitEnabled(false)
             .withRampRate(0.25)
             
-            .withPIDConstants(Gains.HoodedShooter.Hood.kP, Gains.HoodedShooter.Hood.kI, Gains.HoodedShooter.Hood.kD, 0)
-            .withFFConstants(Gains.HoodedShooter.Hood.kS, Gains.HoodedShooter.Hood.kV, Gains.HoodedShooter.Hood.kA, 0)
+            .withPIDConstants(Gains.Superstructure.Hood.kP, Gains.Superstructure.Hood.kI, Gains.Superstructure.Hood.kD, 0)
+            .withFFConstants(Gains.Superstructure.Hood.kS, Gains.Superstructure.Hood.kV, Gains.Superstructure.Hood.kA, 0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign, 0)
             
-            .withSensorToMechanismRatio(Settings.HoodedShooter.Hood.GEAR_RATIO)
+            .withSensorToMechanismRatio(Settings.Superstructure.Hood.GEAR_RATIO)
 
             .withSoftLimits(
                 true, true, 
-                Settings.HoodedShooter.Hood.FORWARD_SOFT_LIMIT.getRotations(),
-                Settings.HoodedShooter.Hood.REVERSE_SOFT_LIMIT.getRotations());
+                Settings.Superstructure.Hood.FORWARD_SOFT_LIMIT.getRotations(),
+                Settings.Superstructure.Hood.REVERSE_SOFT_LIMIT.getRotations());
 
         hoodEncoderConfig = new Motors.CANCoderConfig()
             .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
             .withAbsoluteSensorDiscontinuityPoint(1.0)
-            .withMagnetOffset(Settings.HoodedShooter.Hood.ENCODER_OFFSET.getRotations());
+            .withMagnetOffset(Settings.Superstructure.Hood.ENCODER_OFFSET.getRotations());
 
-        hoodMotor = new TalonFX(Ports.HoodedShooter.Hood.MOTOR, Ports.RIO);
-        hoodEncoder = new CANcoder(Ports.HoodedShooter.Hood.THROUGHBORE_ENCODER, Ports.RIO);
+        hoodMotor = new TalonFX(Ports.Superstructure.Hood.MOTOR, Ports.RIO);
+        hoodEncoder = new CANcoder(Ports.Superstructure.Hood.THROUGHBORE_ENCODER, Ports.RIO);
 
         hoodConfig.configure(hoodMotor);
         hoodEncoderConfig.configure(hoodEncoder);
@@ -77,8 +77,8 @@ public class HoodImpl extends Hood {
 
         voltageOverride = Optional.empty();
 
-        isStalling = BStream.create(() -> hoodMotor.getSupplyCurrent().getValueAsDouble() > Settings.HoodedShooter.Hood.STALL_CURRENT_LIMIT) //TODO: update value in Settings after testing
-            .filtered(new BDebounce.Both(Settings.HoodedShooter.Hood.STALL_DEBOUNCE));
+        isStalling = BStream.create(() -> hoodMotor.getSupplyCurrent().getValueAsDouble() > Settings.Superstructure.Hood.STALL_CURRENT_LIMIT) //TODO: update value in Settings after testing
+            .filtered(new BDebounce.Both(Settings.Superstructure.Hood.STALL_DEBOUNCE));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class HoodImpl extends Hood {
         double currentOffset = hoodEncoderConfig.getConfiguration().MagnetSensor.MagnetOffset;
 
         double positionWithCurrentOffset = hoodEncoder.getPosition().getValueAsDouble();
-        double newOffset = -((positionWithCurrentOffset - currentOffset) - Settings.HoodedShooter.Hood.Angles.MIN_ANGLE.getRotations());
+        double newOffset = -((positionWithCurrentOffset - currentOffset) - Settings.Superstructure.Hood.Angles.MIN_ANGLE.getRotations());
 
         hoodEncoderConfig.withMagnetOffset(newOffset);
         
@@ -118,7 +118,7 @@ public class HoodImpl extends Hood {
     }
 
     private double getAbsoluteHoodAngleDeg() {
-        return Settings.HoodedShooter.Hood.Angles.MIN_ANGLE.getDegrees() + hoodEncoder.getPosition().getValueAsDouble() * 360.0 / Settings.HoodedShooter.Hood.ENCODER_TO_MECH;
+        return Settings.Superstructure.Hood.Angles.MIN_ANGLE.getDegrees() + hoodEncoder.getPosition().getValueAsDouble() * 360.0 / Settings.Superstructure.Hood.ENCODER_TO_MECH;
     }
 
     @Override 
@@ -144,16 +144,16 @@ public class HoodImpl extends Hood {
         }
 
         if (Settings.DEBUG_MODE) {
-            SmartDashboard.putNumber("HoodedShooter/Hood/Correct Hood Angle (deg)", getAbsoluteHoodAngleDeg());
+            SmartDashboard.putNumber("Superstructure/Hood/Correct Hood Angle (deg)", getAbsoluteHoodAngleDeg());
 
-            SmartDashboard.putNumber("HoodedShooter/Hood/Applied Voltage", hoodMotor.getMotorVoltage().getValueAsDouble());
-            SmartDashboard.putNumber("HoodedShooter/Hood/Supply Current", hoodMotor.getSupplyCurrent().getValueAsDouble());
-            SmartDashboard.putNumber("HoodedShooter/Hood/Stator Current", hoodMotor.getStatorCurrent().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Hood/Applied Voltage", hoodMotor.getMotorVoltage().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Hood/Supply Current", hoodMotor.getSupplyCurrent().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Hood/Stator Current", hoodMotor.getStatorCurrent().getValueAsDouble());
 
-            SmartDashboard.putNumber("HoodedShooter/Hood/Closed Loop Error (deg)", hoodMotor.getClosedLoopError().getValueAsDouble() * 360.0);
-            SmartDashboard.putBoolean("HoodedShooter/Hood/Has Used Absolute Encoder", hasUsedAbsoluteEncoder);
+            SmartDashboard.putNumber("Superstructure/Hood/Closed Loop Error (deg)", hoodMotor.getClosedLoopError().getValueAsDouble() * 360.0);
+            SmartDashboard.putBoolean("Superstructure/Hood/Has Used Absolute Encoder", hasUsedAbsoluteEncoder);
 
-            SmartDashboard.putNumber("HoodedShooter/Hood/Raw Motor Encoder Value", hoodMotor.getPosition().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Hood/Raw Motor Encoder Value", hoodMotor.getPosition().getValueAsDouble());
             
             SmartDashboard.putNumber("InterpolationTesting/Hood Applied Voltage", hoodMotor.getMotorVoltage().getValueAsDouble());
 

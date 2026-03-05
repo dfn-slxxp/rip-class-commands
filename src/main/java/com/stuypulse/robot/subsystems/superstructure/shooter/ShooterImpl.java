@@ -42,19 +42,19 @@ public class ShooterImpl extends Shooter {
             .withSupplyCurrentLimitEnabled(false)
             .withStatorCurrentLimitEnabled(false)
 
-            .withPIDConstants(Gains.HoodedShooter.Shooter.kP.get(), Gains.HoodedShooter.Shooter.kI.get(), Gains.HoodedShooter.Shooter.kD.get(), 0)
-            .withFFConstants(Gains.HoodedShooter.Shooter.kS.get(), Gains.HoodedShooter.Shooter.kV.get(), Gains.HoodedShooter.Shooter.kA.get(), 0)
+            .withPIDConstants(Gains.Superstructure.Shooter.kP.get(), Gains.Superstructure.Shooter.kI.get(), Gains.Superstructure.Shooter.kD.get(), 0)
+            .withFFConstants(Gains.Superstructure.Shooter.kS.get(), Gains.Superstructure.Shooter.kV.get(), Gains.Superstructure.Shooter.kA.get(), 0)
                              
-            .withSensorToMechanismRatio(Settings.HoodedShooter.Shooter.GEAR_RATIO);
+            .withSensorToMechanismRatio(Settings.Superstructure.Shooter.GEAR_RATIO);
 
-        shooterLeader = new TalonFX(Ports.HoodedShooter.Shooter.MOTOR_LEAD, Ports.RIO);
-        shooterFollower = new TalonFX(Ports.HoodedShooter.Shooter.MOTOR_FOLLOW, Ports.RIO);
+        shooterLeader = new TalonFX(Ports.Superstructure.Shooter.MOTOR_LEAD, Ports.RIO);
+        shooterFollower = new TalonFX(Ports.Superstructure.Shooter.MOTOR_FOLLOW, Ports.RIO);
 
         shooterConfig.configure(shooterLeader);
         shooterConfig.configure(shooterFollower);
 
         shooterController = new VelocityVoltage(getTargetRPM() / Settings.SECONDS_IN_A_MINUTE).withEnableFOC(true);
-        follower = new Follower(Ports.HoodedShooter.Shooter.MOTOR_LEAD, MotorAlignmentValue.Opposed);
+        follower = new Follower(Ports.Superstructure.Shooter.MOTOR_LEAD, MotorAlignmentValue.Opposed);
 
         shooterFollower.setControl(follower);
 
@@ -81,23 +81,23 @@ public class ShooterImpl extends Shooter {
         shooterConfig.updateGainsConfig(
             shooterLeader,
             0,
-            Gains.HoodedShooter.Shooter.kP,
-            Gains.HoodedShooter.Shooter.kI,
-            Gains.HoodedShooter.Shooter.kD,
-            Gains.HoodedShooter.Shooter.kS,
-            Gains.HoodedShooter.Shooter.kV,
-            Gains.HoodedShooter.Shooter.kA
+            Gains.Superstructure.Shooter.kP,
+            Gains.Superstructure.Shooter.kI,
+            Gains.Superstructure.Shooter.kD,
+            Gains.Superstructure.Shooter.kS,
+            Gains.Superstructure.Shooter.kV,
+            Gains.Superstructure.Shooter.kA
         );
 
         shooterConfig.updateGainsConfig(
             shooterFollower,
             0,
-            Gains.HoodedShooter.Shooter.kP,
-            Gains.HoodedShooter.Shooter.kI,
-            Gains.HoodedShooter.Shooter.kD,
-            Gains.HoodedShooter.Shooter.kS,
-            Gains.HoodedShooter.Shooter.kV,
-            Gains.HoodedShooter.Shooter.kA
+            Gains.Superstructure.Shooter.kP,
+            Gains.Superstructure.Shooter.kI,
+            Gains.Superstructure.Shooter.kD,
+            Gains.Superstructure.Shooter.kS,
+            Gains.Superstructure.Shooter.kV,
+            Gains.Superstructure.Shooter.kA
         );
 
         if (EnabledSubsystems.SHOOTER.get()) {
@@ -117,14 +117,14 @@ public class ShooterImpl extends Shooter {
         }
 
         if (Settings.DEBUG_MODE) {
-            SmartDashboard.putNumber("HoodedShooter/Shooter/Leader Current (amps)", shooterLeader.getSupplyCurrent().getValueAsDouble());
-            SmartDashboard.putNumber("HoodedShooter/Shooter/Follower Supply Current (amps)", shooterFollower.getSupplyCurrent().getValueAsDouble());
-            SmartDashboard.putNumber("HoodedShooter/Shooter/Follower Stator Current", shooterFollower.getStatorCurrent().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Shooter/Leader Current (amps)", shooterLeader.getSupplyCurrent().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Shooter/Follower Supply Current (amps)", shooterFollower.getSupplyCurrent().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Shooter/Follower Stator Current", shooterFollower.getStatorCurrent().getValueAsDouble());
 
-            SmartDashboard.putNumber("HoodedShooter/Shooter/Leader Voltage", shooterLeader.getMotorVoltage().getValueAsDouble());
-            SmartDashboard.putNumber("HoodedShooter/Shooter/Follower Voltage", shooterFollower.getMotorVoltage().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Shooter/Leader Voltage", shooterLeader.getMotorVoltage().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Shooter/Follower Voltage", shooterFollower.getMotorVoltage().getValueAsDouble());
 
-            SmartDashboard.putNumber("HoodedShooter/Shooter/Follower RPM", getFollowerRPM());
+            SmartDashboard.putNumber("Superstructure/Shooter/Follower RPM", getFollowerRPM());
 
             SmartDashboard.putNumber("InterpolationTesting/Shooter Closed Loop Error", shooterLeader.getClosedLoopError().getValueAsDouble() * 60.0);
             SmartDashboard.putNumber("InterpolationTesting/Shooter Applied Voltage", shooterLeader.getMotorVoltage().getValueAsDouble());
