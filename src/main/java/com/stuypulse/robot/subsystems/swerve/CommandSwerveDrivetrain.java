@@ -29,11 +29,14 @@ import com.stuypulse.stuylib.math.Vector2D;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
+
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj.Notifier;
@@ -52,6 +55,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private FieldObject2d turret2d = Field.FIELD2D.getObject("Turret 2D");
     private Pose2d turretPose = new Pose2d();
+
+
+    
 
     static {
         instance = TunerConstants.createDrivetrain();
@@ -445,6 +451,43 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return positions;
     }
 
+    public boolean isUnderTrench() {
+        Pose2d pose = getTurretPose();
+
+        boolean isBetweenRightTrenchesY = Field.NearRightTrench.rightEdge.getY() < pose.getY() && Field.NearRightTrench.leftEdge.getY() > pose.getY();
+
+        boolean isBetweenLeftTrenchesY = Field.NearLeftTrench.rightEdge.getY() < pose.getY() && Field.NearLeftTrench.leftEdge.getY() > pose.getY();
+
+        boolean isCloseToAllianceSideTrenchX = Math.abs(pose.getX() - Field.NearRightTrench.rightEdge.getX()) < Field.trenchHoodTolerance;
+
+        boolean isCloseToNeutralSideTrenchX = Math.abs(pose.getX() - Field.FarRightTrench.rightEdge.getX()) < Field.trenchHoodTolerance;
+
+        boolean isUnderTrench = (isBetweenRightTrenchesY || isBetweenLeftTrenchesY) && (isCloseToAllianceSideTrenchX || isCloseToNeutralSideTrenchX);
+        
+        return isUnderTrench;
+    }
+    
+
+    public boolean isInOpponentZone(){
+        Translation2d turretPose = getTurretPose().getTranslation();
+        return turretPose.getX() > Field.OPPONENT_ZONE_X;
+    }
+    
+    public boolean isBehindTower() {
+        boolean withinTowerX = Field.towerFarRight.getX() < getTurretPose().getTranslation().getX() && getTurretPose().getTranslation().getX() < Field.towerFarLeft.getX();
+        boolean withinTowerY = getPose().getTranslation().getY() < Field.towerCenter.getY();
+        return withinTowerX && withinTowerY;
+    }
+
+    // Stop ferrying when in rectangle behind hub (on neutral zone
+    public boolean isBehindHub() {
+        Translation2d turretPose = getTurretPose().getTranslation();
+        boolean behindHubX = Field.hubFarLeftCorner.getX() < turretPose.getX() && turretPose.getX() < Field.hubFarLeftCorner.getX() + Units.inchesToMeters(283);
+        boolean withinHubY = Field.hubFarRightCorner.getY() < getTurretPose().getY() && getTurretPose().getY() < Field.hubFarLeftCorner.getY();
+
+        return behindHubX && withinHubY;
+    }
+    
     @Override
     public void periodic() {
         Pose2d pose = getPose();
@@ -454,6 +497,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         );
 
         turret2d.setPose(Robot.isBlue() ? turretPose : Field.transformToOppositeAlliance(turretPose));
+
+        SmartDashboard.putBoolean("FieldPositions/isBehindTower", isBehindTower());
+        SmartDashboard.putBoolean("FieldPositions/isUnderTrench", isUnderTrench());
+        SmartDashboard.putBoolean("FieldPositions/isBehindHub", isBehindHub());
+        SmartDashboard.putBoolean("FieldPositions/isInOpponentZone", isInOpponentZone());
+
 
         SmartDashboard.putNumber("Superstructure/Turret/Dist From Hub", turretPose.getTranslation().getDistance(Field.hubCenter.getTranslation()));
         SmartDashboard.putNumber("InterpolationTesting/Turret Dist From Hub", turretPose.getTranslation().getDistance(Field.hubCenter.getTranslation()));

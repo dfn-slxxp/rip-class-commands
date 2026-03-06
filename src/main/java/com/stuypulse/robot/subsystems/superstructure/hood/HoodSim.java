@@ -61,11 +61,6 @@ public class HoodSim extends Hood {
     }
 
     @Override
-    public boolean isUnderTrench() {
-        return false; // No drivetrain in sim context; always false
-    }
-
-    @Override
     public boolean isStalling() {
         return false;
     }

@@ -110,23 +110,6 @@ public class HoodImpl extends Hood {
     public boolean isStalling() {
         return isStalling.getAsBoolean();
     }
-
-    @Override
-    public boolean isUnderTrench() {
-        Pose2d pose = CommandSwerveDrivetrain.getInstance().getTurretPose();
-
-        boolean isBetweenRightTrenchesY = Field.NearRightTrench.rightEdge.getY() < pose.getY() && Field.NearRightTrench.leftEdge.getY() > pose.getY();
-
-        boolean isBetweenLeftTrenchesY = Field.NearLeftTrench.rightEdge.getY() < pose.getY() && Field.NearLeftTrench.leftEdge.getY() > pose.getY();
-
-        boolean isCloseToAllianceSideTrenchX = Math.abs(pose.getX() - Field.NearRightTrench.rightEdge.getX()) < Field.trenchHoodTolerance;
-
-        boolean isCloseToNeutralSideTrenchX = Math.abs(pose.getX() - Field.FarRightTrench.rightEdge.getX()) < Field.trenchHoodTolerance;
-
-        boolean isUnderTrench = (isBetweenRightTrenchesY || isBetweenLeftTrenchesY) && (isCloseToAllianceSideTrenchX || isCloseToNeutralSideTrenchX);
-        
-        return isUnderTrench;
-    }
     
     /*
     * Example:
