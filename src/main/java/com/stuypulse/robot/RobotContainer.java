@@ -41,6 +41,7 @@ import com.stuypulse.robot.commands.superstructure.SuperstructureKB;
 import com.stuypulse.robot.commands.superstructure.SuperstructureLeftCorner;
 import com.stuypulse.robot.commands.superstructure.SuperstructureRightCorner;
 import com.stuypulse.robot.commands.superstructure.SuperstructureSOTM;
+import com.stuypulse.robot.commands.superstructure.SuperstructureSOTMConditional;
 import com.stuypulse.robot.commands.superstructure.SuperstructureShoot;
 import com.stuypulse.robot.commands.superstructure.SuperstructureStow;
 import com.stuypulse.robot.commands.swerve.SwerveDriveAlignTurretToHub;
@@ -161,7 +162,7 @@ public class RobotContainer {
                         .alongWith(new SuperstructureStow())
                         .alongWith(new HandoffStop()));
 
-                                // Scoring Routine
+        // Scoring Routine
         driver.getBottomButton()
                 .whileTrue(new SuperstructureShoot())//.onlyIf(() -> !superstructure.isHoodUnderTrench()))
                     // .alongWith(new SwerveDriveAlignTurretToHub())
@@ -209,6 +210,14 @@ public class RobotContainer {
                 .onFalse(new SpindexerStop()
                         .alongWith(new SuperstructureStow())
                         .alongWith(new HandoffStop()));
+
+        // SOTM Toggle
+        driver.getRightButton()
+                .onTrue(new SuperstructureSOTMConditional().onlyIf(() -> !swerve.isUnderTrench())
+                        .andThen(new WaitUntilCommand(superstructure::atTolerance))
+                        .andThen(new HandoffConditionalCommand().onlyIf(superstructure::atTolerance)
+                                .alongWith(new WaitUntilCommand(handoff::atTolerance))
+                                .andThen(new SpindexerConditionalCommand().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))));
 
         // Reset Heading
         driver.getDPadUp()
