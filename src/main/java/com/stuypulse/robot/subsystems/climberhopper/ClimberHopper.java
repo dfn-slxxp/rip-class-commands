@@ -29,10 +29,15 @@ public abstract class ClimberHopper extends SubsystemBase {
     }
 
     public enum ClimberHopperState {
+        // CLIMBER_UP(Settings.ClimberHopper.CLIMBER_UP_ROTATIONS),
+        // CLIMBER_DOWN(Settings.ClimberHopper.CLIMBER_DOWN_ROTATIONS),
+        // // HOPPER_UP(Settings.ClimberHopper.HOPPER_UP_ROTATIONS),
+        // HOPPER_DOWN(Settings.ClimberHopper.HOPPER_DOWN_ROTATIONS),
         CLIMBER_UP(Settings.ClimberHopper.CLIMBER_UP_HEIGHT_METERS),
         CLIMBER_DOWN(Settings.ClimberHopper.CLIMBER_DOWN_HEIGHT_METERS),
-        // HOPPER_UP(Settings.ClimberHopper.HOPPER_UP_HEIGHT_METERS),
-        HOPPER_DOWN(Settings.ClimberHopper.HOPPER_DOWN_HEIGHT_METERS);
+        // HOPPER_UP(Settings.ClimberHopper.HOPPER_UP_ROTATIONS),
+        HOPPER_DOWN(Settings.ClimberHopper.HOPPER_UP_HEIGHT_METERS),
+        STOP(0.0);
     
         private double targetHeight;
         
@@ -62,6 +67,7 @@ public abstract class ClimberHopper extends SubsystemBase {
 
     public abstract boolean getStalling();
     public abstract double getCurrentHeight();
+    public abstract double getCurrentRotations();
     public abstract boolean atTargetHeight();
     
     /**
