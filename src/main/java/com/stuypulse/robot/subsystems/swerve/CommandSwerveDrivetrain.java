@@ -531,8 +531,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Field.FIELD2D.getRobotObject().setPose(Robot.isBlue() ? pose : Field.transformToOppositeAlliance(pose));
 
         
-        if (Settings.DEBUG_MODE) {
-        }
+        if (Settings.DEBUG_MODE) {}
         
         SmartDashboard.putNumber("Swerve/Velocity Robot Relative X (m per s)", getChassisSpeeds().vxMetersPerSecond);
         SmartDashboard.putNumber("Swerve/Velocity Robot Relative Y (m per s)", getChassisSpeeds().vyMetersPerSecond);
@@ -544,5 +543,5 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Swerve/Angular Velocity (rad per s)", getChassisSpeeds().omegaRadiansPerSecond);
         
         SmartDashboard.putNumber("Swerve/Distance From Hub (meters)", Field.hubCenter.getTranslation().getDistance(getPose().getTranslation()));
-        }
+    }
 }

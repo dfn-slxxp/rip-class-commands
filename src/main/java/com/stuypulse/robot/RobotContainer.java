@@ -18,6 +18,7 @@ import com.stuypulse.robot.commands.auton.regular.TopTwoCycle;
 import com.stuypulse.robot.commands.climberhopper.ClimberOverrideDown;
 import com.stuypulse.robot.commands.climberhopper.ClimberOverrideStop;
 import com.stuypulse.robot.commands.climberhopper.ClimberOverrideUp;
+import com.stuypulse.robot.commands.handoff.HandoffConditionalCommand;
 import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
 import com.stuypulse.robot.commands.hood.ZeroHoodAtLowerHardstop;
@@ -27,6 +28,7 @@ import com.stuypulse.robot.commands.intake.IntakeStopRollers;
 import com.stuypulse.robot.commands.intake.IntakeStow;
 import com.stuypulse.robot.commands.intake.ZeroPivotDeployed;
 import com.stuypulse.robot.commands.intake.ZeroPivotStowed;
+import com.stuypulse.robot.commands.spindexer.SpindexerConditionalCommand;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
 import com.stuypulse.robot.commands.superstructure.SuperstructureDefaultCommand;
@@ -144,9 +146,9 @@ public class RobotContainer {
                 .alongWith(new SwerveDriveAlignTurretToHub())
                         // .alongWith(new TurretShoot())
                         .andThen(new WaitUntilCommand(superstructure::atTolerance))
-                        .andThen(new HandoffRun().onlyIf(superstructure::atTolerance)
+                        .andThen(new HandoffConditionalCommand().onlyIf(superstructure::atTolerance)
                                 .alongWith(new WaitUntilCommand(handoff::atTolerance))
-                                .andThen(new SpindexerRun().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
+                                .andThen(new SpindexerConditionalCommand().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
                 .onFalse(new SpindexerStop()
                         .alongWith(new SuperstructureStow())
                         .alongWith(new HandoffStop()));
@@ -174,9 +176,9 @@ public class RobotContainer {
         driver.getRightButton()
                 .whileTrue(new SuperstructureSOTM().onlyIf(() -> !swerve.isUnderTrench())
                         .andThen(new WaitUntilCommand(superstructure::atTolerance))
-                        .andThen(new HandoffRun().onlyIf(superstructure::atTolerance)
+                        .andThen(new HandoffConditionalCommand().onlyIf(superstructure::atTolerance)
                                 .alongWith(new WaitUntilCommand(handoff::atTolerance))
-                                .andThen(new SpindexerRun().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
+                                .andThen(new SpindexerConditionalCommand().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
                 .onFalse(new SpindexerStop()
                         .alongWith(new SuperstructureStow())
                         .alongWith(new HandoffStop()));
