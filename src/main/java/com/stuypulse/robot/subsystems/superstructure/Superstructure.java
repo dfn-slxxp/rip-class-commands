@@ -50,7 +50,7 @@ public class Superstructure extends SubsystemBase {
         SHOOT(HoodState.SHOOT, ShooterState.SHOOT, TurretState.SHOOT),
         FERRY(HoodState.FERRY, ShooterState.FERRY, TurretState.FERRY),
         REVERSE(HoodState.SHOOT, ShooterState.REVERSE, TurretState.SHOOT),
-        KB(HoodState.KB, ShooterState.KB, TurretState.SHOOT),
+        KB(HoodState.KB, ShooterState.KB, TurretState.KB),
         LEFT_CORNER(HoodState.LEFT_CORNER, ShooterState.LEFT_CORNER, TurretState.SHOOT),
         RIGHT_CORNER(HoodState.RIGHT_CORNER, ShooterState.RIGHT_CORNER, TurretState.SHOOT),
         INTERPOLATION(HoodState.INTERPOLATION, ShooterState.INTERPOLATION, TurretState.SHOOT),
@@ -91,7 +91,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public boolean atTolerance() {
-        return isShooterAtTolerance() && isHoodAtTolerance() && isTurretAtTolerance();
+        return isShooterAtTolerance() && isHoodAtTolerance();// && isTurretAtTolerance();
     }
 
     public boolean isHoodUnderTrench() {

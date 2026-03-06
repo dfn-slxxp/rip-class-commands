@@ -171,13 +171,11 @@ public class IntakeImpl extends Intake {
                     rollerFollower.setControl(follower);
                 } else {
                     rollerLeader.stopMotor();
-                    rollerFollower.stopMotor();
                 }
             }
         } else {
             pivot.stopMotor();
             rollerLeader.stopMotor();
-            rollerFollower.stopMotor();
         }
 
         if (Settings.DEBUG_MODE) {

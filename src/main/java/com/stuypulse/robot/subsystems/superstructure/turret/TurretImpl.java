@@ -173,7 +173,7 @@ public class TurretImpl extends Turret {
 
             SmartDashboard.putNumber("Superstructure/Turret/Encoder18t Abs Position (Rot)", encoder18t.getAbsolutePosition().getValueAsDouble());
             SmartDashboard.putNumber("Superstructure/Turret/Encoder17t Abs Position (Rot)", encoder17t.getAbsolutePosition().getValueAsDouble());
-            SmartDashboard.putNumber("Superstructure/Turret/Vector Space Position (Deg)", getVectorSpaceAngle().getDegrees());
+            // SmartDashboard.putNumber("Superstructure/Turret/Vector Space Position (Deg)", getVectorSpaceAngle().getDegrees());
 
             SmartDashboard.putNumber("Superstructure/Turret/Voltage", motor.getMotorVoltage().getValueAsDouble());
             SmartDashboard.putNumber("Superstructure/Turret/Stator Current", motor.getStatorCurrent().getValueAsDouble());
