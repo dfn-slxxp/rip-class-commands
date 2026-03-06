@@ -42,7 +42,7 @@ public class ClimberHopperImpl extends ClimberHopper {
             .withSupplyCurrentLimitAmps(50.0)
             .withStatorCurrentLimitEnabled(false)
             .withRampRate(Settings.ClimberHopper.RAMP_RATE)
-            
+            .withSensorToMechanismRatio(Settings.ClimberHopper.GEAR_RATIO)
             .withSoftLimits(
                 false, false,
                 Settings.ClimberHopper.ROTATIONS_AT_BOTTOM + Settings.ClimberHopper.NUM_ROTATIONS_TO_REACH_TOP,
@@ -71,6 +71,11 @@ public class ClimberHopperImpl extends ClimberHopper {
         return this.motor.getPosition().getValueAsDouble() * Settings.ClimberHopper.POSITION_CONVERSION_FACTOR;
     }
 
+    @Override
+    public double getCurrentRotations() {
+        return motor.getPosition().getValueAsDouble();
+    }
+
     private boolean isWithinTolerance(double toleranceMeters) {
         return Math.abs(getState().getTargetHeight() - getCurrentHeight()) < toleranceMeters;
     }
@@ -90,10 +95,14 @@ public class ClimberHopperImpl extends ClimberHopper {
         
         if (voltageOverride.isPresent()) {
             voltage = voltageOverride.get();
-        } else {
-            if (getState() == ClimberHopperState.CLIMBER_DOWN && !atTargetHeight()) voltage = -Settings.ClimberHopper.MOTOR_VOLTAGE;
-            else if (getState() == ClimberHopperState.CLIMBER_UP && !atTargetHeight()) voltage = Settings.ClimberHopper.MOTOR_VOLTAGE;
-            else voltage = 0;
+        } else { 
+            if (!atTargetHeight()) {
+                if (getState() == ClimberHopperState.CLIMBER_DOWN) voltage = -Settings.ClimberHopper.MOTOR_VOLTAGE;
+                else if (getState() == ClimberHopperState.CLIMBER_UP) voltage = Settings.ClimberHopper.MOTOR_VOLTAGE;
+                else if (getState() == ClimberHopperState.HOPPER_DOWN) voltage = -Settings.ClimberHopper.MOTOR_VOLTAGE;
+            } else {
+                voltage = 0;
+            }
         }
         
         if (EnabledSubsystems.CLIMBER_HOPPER.get()) {

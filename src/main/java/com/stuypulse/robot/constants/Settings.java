@@ -41,21 +41,30 @@ public interface Settings {
         public final double GEAR_RATIO = 45.0;
 
         public final double MIN_HEIGHT_METERS = 0.0;
+        // public final double MIN_ROTATIONS = -0.1;
         public final double MAX_HEIGHT_METERS = 2.884;
+        // public final double MAX_ROTATIONS = 20;
+
 
         public final double MASS_KG = 1.0;
 
-        public final double NUM_ROTATIONS_TO_REACH_TOP = (MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / (0.480 / 13.0);
+        // public final double NUM_ROTATIONS_TO_REACH_TOP = MAX_ROTATIONS - MIN_ROTATIONS;
+        public final double NUM_ROTATIONS_TO_REACH_TOP = (MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / (0.480 / 13.0); // TODO: verify this 
         public final double POSITION_CONVERSION_FACTOR = (MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / NUM_ROTATIONS_TO_REACH_TOP;
         public final double VELOCITY_CONVERSION_FACTOR = (MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / NUM_ROTATIONS_TO_REACH_TOP / 60.0;
+
 
         public final double DRUM_RADIUS_METERS = ((MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / (NUM_ROTATIONS_TO_REACH_TOP / GEAR_RATIO)) / 2.0 / Math.PI;
         /* CONSTANTS */
 
         public final double CLIMBER_UP_HEIGHT_METERS = MAX_HEIGHT_METERS;
-        public final double CLIMBER_DOWN_HEIGHT_METERS = 0.2;
+        // public final double CLIMBER_UP_ROTATIONS = MAX_ROTATIONS; // TODO: FIND
+        public final double CLIMBER_DOWN_HEIGHT_METERS = MIN_HEIGHT_METERS;
+        // public final double CLIMBER_DOWN_ROTATIONS = MIN_ROTATIONS;
         public final double HOPPER_DOWN_HEIGHT_METERS = MIN_HEIGHT_METERS;
-        public final double HOPPER_UP_HEIGHT_METERS = 0.5;
+        // public final double HOPPER_DOWN_ROTATIONS = MIN_ROTATIONS;
+        public final double HOPPER_UP_HEIGHT_METERS = MAX_HEIGHT_METERS;
+        // public final double HOPPER_UP_ROTATIONS = MAX_ROTATIONS;
 
         public final double STALL = 10.0;
 
@@ -65,11 +74,12 @@ public interface Settings {
 
         public final double GYRO_TOLERANCE = 0.0;
 
-        public final double HEIGHT_TOLERANCE_METERS = 0.02;
+        public final double HEIGHT_TOLERANCE_METERS = 0.1;
+        // public final double TOLERANCE_ROTATIONS = 0.1;
 
         public final double RAMP_RATE = 50.0;
 
-        public final double MOTOR_VOLTAGE = 1;
+        public final double MOTOR_VOLTAGE = 1.0;
     }
 
     public interface Handoff {
@@ -302,12 +312,12 @@ public interface AngleInterpolation {
         
             public interface Encoder17t {
                 public final int TEETH = 17;
-                public final Rotation2d OFFSET = new Rotation2d(); //-0.86962890625
+                public final Rotation2d OFFSET = Rotation2d.fromRotations(-0.279541015625);//(-0.86962890625); //0.6787109375
             }
         
             public interface Encoder18t {
                 public final int TEETH = 18;
-                public final Rotation2d OFFSET = new Rotation2d(); //-0.700927734375
+                public final Rotation2d OFFSET = Rotation2d.fromRotations(-0.42822265625);//(-0.700927734375); //0.53564453125
             }
         
             public interface SoftwareLimit {

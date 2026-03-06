@@ -49,6 +49,11 @@ public class ClimberHopperSim extends ClimberHopper {
         return sim.getPositionMeters();
     }
 
+    @Override
+    public double getCurrentRotations() {
+        return sim.getPositionMeters() / Settings.ClimberHopper.POSITION_CONVERSION_FACTOR;
+    }
+
     private boolean isWithinTolerance(double toleranceMeters) {
         return Math.abs(getState().getTargetHeight() - getCurrentHeight()) < toleranceMeters;
     }
