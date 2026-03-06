@@ -41,7 +41,7 @@ public interface Settings {
         public final double GEAR_RATIO = 45.0;
 
         public final double MIN_HEIGHT_METERS = 0.0;
-        public final double MAX_HEIGHT_METERS = 2.884;
+        public final double MAX_HEIGHT_METERS = 0.5;
 
         public final double MASS_KG = 1.0;
 

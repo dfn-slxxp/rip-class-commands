@@ -21,6 +21,7 @@ import com.stuypulse.robot.commands.climberhopper.ClimberOverrideStop;
 import com.stuypulse.robot.commands.climberhopper.ClimberOverrideUp;
 import com.stuypulse.robot.commands.handoff.HandoffConditionalCommand;
 import com.stuypulse.robot.commands.climberhopper.ClimberUp;
+import com.stuypulse.robot.commands.climberhopper.HopperDown;
 import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
 import com.stuypulse.robot.commands.hood.ZeroHoodEncoderAtUpperHardstop;
@@ -55,6 +56,7 @@ import com.stuypulse.robot.commands.vision.ResetLimelightIMU;
 import com.stuypulse.robot.commands.vision.SetIMUMode;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.handoff.Handoff;
 import com.stuypulse.robot.subsystems.superstructure.Superstructure;
 import com.stuypulse.robot.subsystems.superstructure.hood.Hood;
@@ -218,13 +220,24 @@ public class RobotContainer {
         driver.getTopButton()
             .whileTrue(new SwerveClimbAlign().alongWith(new ClimberUp()).andThen(new SwerveXMode()));
 
-        // Climber Up
-        driver.getRightBumper()
-            .whileTrue(new ClimberUp());
+        if (Settings.DEBUG_MODE) {
+            // Climber Up
+            driver.getRightBumper()
+                .whileTrue(new ClimberUp());
 
-        // Climber Down
-        driver.getLeftBumper()
-            .onTrue(new ClimberDown());
+            // Climber Down
+            driver.getLeftBumper()
+                .onTrue(new ClimberDown());
+        } else {
+            // Climber Up
+            driver.getRightBumper()
+                .whileTrue(new ClimberUp())
+                .onFalse(new HopperDown());
+
+            // Climber Down
+            driver.getLeftBumper()
+                .onTrue(new ClimberDown());
+        }
 
         // Left Corner Shoot
         driver.getLeftButton()
