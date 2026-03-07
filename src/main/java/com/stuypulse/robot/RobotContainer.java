@@ -22,6 +22,7 @@ import com.stuypulse.robot.commands.climberhopper.ClimberOverrideDown;
 import com.stuypulse.robot.commands.climberhopper.ClimberOverrideStop;
 import com.stuypulse.robot.commands.climberhopper.ClimberOverrideUp;
 import com.stuypulse.robot.commands.handoff.HandoffConditionalCommand;
+import com.stuypulse.robot.commands.handoff.HandoffReverse;
 import com.stuypulse.robot.commands.climberhopper.ClimberUp;
 import com.stuypulse.robot.commands.climberhopper.HopperDown;
 import com.stuypulse.robot.commands.handoff.HandoffRun;
@@ -30,11 +31,13 @@ import com.stuypulse.robot.commands.hood.ZeroHoodEncoderAtUpperHardstop;
 import com.stuypulse.robot.commands.intake.IntakeDeploy;
 // import com.stuypulse.robot.commands.intake.IntakeDigestion;
 import com.stuypulse.robot.commands.intake.IntakeRunRollers;
+import com.stuypulse.robot.commands.intake.IntakeSetState;
 import com.stuypulse.robot.commands.intake.IntakeStopRollers;
 import com.stuypulse.robot.commands.intake.IntakeStow;
 import com.stuypulse.robot.commands.intake.ZeroPivotDeployed;
 import com.stuypulse.robot.commands.intake.ZeroPivotStowed;
 import com.stuypulse.robot.commands.spindexer.SpindexerConditionalCommand;
+import com.stuypulse.robot.commands.spindexer.SpindexerReverse;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
 import com.stuypulse.robot.commands.superstructure.SuperstructureDefaultCommand;
@@ -71,6 +74,7 @@ import com.stuypulse.robot.subsystems.superstructure.hood.Hood;
 import com.stuypulse.robot.subsystems.superstructure.shooter.Shooter;
 import com.stuypulse.robot.subsystems.superstructure.turret.Turret;
 import com.stuypulse.robot.subsystems.intake.Intake;
+import com.stuypulse.robot.subsystems.intake.Intake.RollerState;
 import com.stuypulse.robot.subsystems.spindexer.Spindexer;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.subsystems.vision.LimelightVision;
@@ -142,6 +146,9 @@ public class RobotContainer {
         SmartDashboard.putData("Robot/Override Up", new ClimberOverrideUp());
         SmartDashboard.putData("Robot/Override Down", new ClimberOverrideDown());
         SmartDashboard.putData("Robot/Override Stop", new  ClimberOverrideStop());
+        SmartDashboard.putData("Handoff Reverse", new HandoffReverse());
+        SmartDashboard.putData("Intake Reverse", new IntakeSetState(RollerState.OUTTAKE));
+        SmartDashboard.putData("Spindexer Reverse", new SpindexerReverse());
        
     }
 

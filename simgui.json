@@ -11,6 +11,8 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Autonomous": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Handoff Reverse": "Command",
+      "/SmartDashboard/Intake Reverse": "Command",
       "/SmartDashboard/PathPlanner": "Alerts",
       "/SmartDashboard/Robot/Override Down": "Command",
       "/SmartDashboard/Robot/Override Stop": "Command",
@@ -22,6 +24,7 @@
       "/SmartDashboard/Robot/Zero Pivot Encoder at Upper Limit (Stowed)": "Command",
       "/SmartDashboard/Robot/Zero Turret Encoders": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/Spindexer Reverse": "Command",
       "/SmartDashboard/Visualizers/ClimberHopper": "Mechanism2d",
       "/SmartDashboard/Visualizers/Hood": "Mechanism2d",
       "/SmartDashboard/Visualizers/Turret": "Mechanism2d"
@@ -65,6 +68,9 @@
     "transitory": {
       "SmartDashboard": {
         "Enabled Subsystems": {
+          "open": true
+        },
+        "FMSUtil": {
           "open": true
         },
         "FieldPositions": {
