@@ -6,14 +6,16 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
-import com.stuypulse.robot.commands.auton.poaching.BottomOneCyclePoach;
-import com.stuypulse.robot.commands.auton.poaching.BottomTwoCyclePoach;
-import com.stuypulse.robot.commands.auton.poaching.TopOneCyclePoach;
-import com.stuypulse.robot.commands.auton.poaching.TopTwoCyclePoach;
-import com.stuypulse.robot.commands.auton.regular.BottomTwoCycle;
+import com.stuypulse.robot.commands.auton.poaching.RightTwoCyclePoach;
+import com.stuypulse.robot.commands.auton.poaching.LeftOneCyclePoach;
+import com.stuypulse.robot.commands.auton.poaching.LeftTwoCyclePoach;
+import com.stuypulse.robot.commands.auton.poaching.RightOneCyclePoach;
+import com.stuypulse.robot.commands.auton.regular.RightTwoCycle;
 import com.stuypulse.robot.commands.auton.regular.DepotAuton;
 import com.stuypulse.robot.commands.auton.regular.EightFuel;
-import com.stuypulse.robot.commands.auton.regular.TopTwoCycle;
+import com.stuypulse.robot.commands.auton.regular.LeftOneCycle;
+import com.stuypulse.robot.commands.auton.regular.LeftTwoCycle;
+import com.stuypulse.robot.commands.auton.regular.RightOneCycle;
 import com.stuypulse.robot.commands.climberhopper.ClimberDown;
 // import com.stuypulse.robot.commands.auton.test.BoxTest;
 import com.stuypulse.robot.commands.climberhopper.ClimberOverrideDown;
@@ -26,7 +28,7 @@ import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
 import com.stuypulse.robot.commands.hood.ZeroHoodEncoderAtUpperHardstop;
 import com.stuypulse.robot.commands.intake.IntakeDeploy;
-import com.stuypulse.robot.commands.intake.IntakeDigestion;
+// import com.stuypulse.robot.commands.intake.IntakeDigestion;
 import com.stuypulse.robot.commands.intake.IntakeRunRollers;
 import com.stuypulse.robot.commands.intake.IntakeStopRollers;
 import com.stuypulse.robot.commands.intake.IntakeStow;
@@ -226,13 +228,11 @@ public class RobotContainer {
         //         .whileTrue(new SuperstructureShoot())//.onlyIf(() -> !superstructure.isHoodUnderTrench()))
         //             // .alongWith(new SwerveDriveAlignTurretToHub())
         //             // .alongWith(new TurretShoot())
-        //         .whileTrue(new SuperstructureShoot().onlyIf(() -> !swerve.isUnderTrench())
-        //         .alongWith(new SwerveDriveAlignTurretToHub())
-        //                 // .alongWith(new TurretShoot())
         //                 .andThen(new WaitUntilCommand(superstructure::atTolerance))
-        //                 .andThen(new HandoffConditionalCommand().onlyIf(superstructure::atTolerance)
-        //                         .alongWith(new WaitUntilCommand(handoff::atTolerance))
-        //                         .andThen(new SpindexerConditionalCommand().onlyIf(() -> handoff.atTolerance() && superstructure.atTolerance()))))
+        //                 .andThen(new HandoffRun())
+        //                         // .alongWith(new WaitUntilCommand(handoff::atTolerance))
+        //                 .andThen(new WaitUntilCommand(handoff::atTolerance))
+        //                 .andThen(new SpindexerRun()))
         //         .onFalse(new SpindexerStop()
         //                 .alongWith(new SuperstructureStow())
         //                 .alongWith(new HandoffStop()));
@@ -297,16 +297,30 @@ public class RobotContainer {
         // /** 
         // // Ferrying SOTM
         // driver.getLeftMenuButton()
-        //     .onTrue(new SuperstructureSOTM().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
-        //         .andThen(new SpindexerRun()).alongWith(new HandoffRun()))
-        //     .onFalse(new SuperstructureSOTM().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
+        //     .onTrue(new ConditionalCommand(
+        //         new ParallelCommandGroup(
+        //             new SuperstructureFerry(),
+        //             new SpindexerStop(),
+        //             new HandoffStop()
+        //         ),
+        //         new SuperstructureSOTM().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
+        //             .andThen(new SpindexerRun()).alongWith(new HandoffRun()),
+        //         () -> superstructure.getState() == SuperstructureState.SOTM
+        //     ));
         // **/
 
         // // Scoring SOTM
         // driver.getRightMenuButton()
-        //     .onTrue(new SuperstructureSOTM().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
-        //         .andThen(new SpindexerRun()).alongWith(new HandoffRun()))
-        //     .onFalse(new SuperstructureSOTM().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
+        //     .onTrue(new ConditionalCommand(
+        //         new ParallelCommandGroup(
+        //             new SuperstructureInterpolation(),
+        //             new SpindexerStop(),
+        //             new HandoffStop()
+        //         ),
+        //         new SuperstructureSOTM().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
+        //             .andThen(new SpindexerRun()).alongWith(new HandoffRun()),
+        //         () -> superstructure.getState() == SuperstructureState.SOTM
+        //     ));
 
         // // Swerve X Wheels
         // driver.getLeftBumper()
@@ -339,46 +353,54 @@ public class RobotContainer {
         autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
 
         autonChooser.addOption("Wheel Radius", new SwerveWheelRadiusCharacterization());
-        // TESTS
+        // // TESTS
         // AutonConfig BOX_TEST = new AutonConfig("Box Test", BoxTest::new, 
         // "Box 1", "Box 2", "Box 3", "Box 4");
         // BOX_TEST.register(autonChooser);
 
-        // BASE
-        AutonConfig EIGHT_FUEL = new AutonConfig("Eight Fuel", EightFuel::new, 
-        "");
-        EIGHT_FUEL.register(autonChooser);
+        // // BASE
+        // AutonConfig EIGHT_FUEL = new AutonConfig("Eight Fuel", EightFuel::new, 
+        // "");
+        // EIGHT_FUEL.register(autonChooser);
 
-        // DEPOT
-        AutonConfig DEPOT_AUTON = new AutonConfig("Depot Auton", DepotAuton::new, 
-        "Top Bump To Depot", "Depot To Tower Left");
-        DEPOT_AUTON.register(autonChooser);
+        // // DEPOT
+        // AutonConfig DEPOT_AUTON = new AutonConfig("Depot Auton", DepotAuton::new, 
+        // "Left Bump To Depot", "Depot To Tower Left");
+        // DEPOT_AUTON.register(autonChooser);
 
         // ONE CYCLES
-        AutonConfig TOP_ONE_CYCLE_POACH = new AutonConfig("Top One Cycle (Poach)", TopOneCyclePoach::new,  
-        "Top Trench To NZ (P)", "Top NZ To Tower Left (P)");
-        TOP_ONE_CYCLE_POACH.register(autonChooser);
+        AutonConfig LEFT_ONE_CYCLE = new AutonConfig("Left One Cycle", LeftOneCycle::new,  
+        "Left Trench To NZ", "Left NZ To Tower Left");
+        LEFT_ONE_CYCLE.register(autonChooser);
 
-        AutonConfig BOTTOM_ONE_CYCLE_POACH = new AutonConfig("Bottom One Cycle (Poach)", BottomOneCyclePoach::new,  
-        "Bottom Trench To NZ (P)", "Bottom NZ To Tower Right (P)");
-        BOTTOM_ONE_CYCLE_POACH.register(autonChooser);
+        AutonConfig RIGHT_ONE_CYCLE = new AutonConfig("Right One Cycle", RightOneCycle::new,  
+        "Right Trench To NZ", "Right NZ To Tower Right");
+        RIGHT_ONE_CYCLE.register(autonChooser);
+
+        AutonConfig LEFT_ONE_CYCLE_POACH = new AutonConfig("Left One Cycle (P)", LeftOneCyclePoach::new,  
+        "Left Trench To NZ (P)", "Left NZ To Tower Left (P)");
+        LEFT_ONE_CYCLE_POACH.register(autonChooser);
+
+        AutonConfig RIGHT_ONE_CYCLE_POACH = new AutonConfig("Right One Cycle (Poach)", RightOneCyclePoach::new,  
+        "Right Trench To NZ (P)", "Right NZ To Tower Right (P)");
+        RIGHT_ONE_CYCLE_POACH.register(autonChooser);
 
         // TWO CYCLES
-        AutonConfig TOP_TWO_CYCLE = new AutonConfig("Top Two Cycle", TopTwoCycle::new,  
-        "Top Trench To NZ", "Top NZ To Score", "Top Score To NZ", "Top NZ To Tower Left");
-        TOP_TWO_CYCLE.register(autonChooser);
+        // AutonConfig LEFT_TWO_CYCLE = new AutonConfig("Left Two Cycle", LeftTwoCycle::new,  
+        // "Left Trench To NZ", "Left NZ To Score", "Left Score To NZ", "Left NZ To Tower Left");
+        // LEFT_TWO_CYCLE.register(autonChooser);
 
-        AutonConfig BOTTOM_TWO_CYCLE = new AutonConfig("Bottom Two Cycle", BottomTwoCycle::new,  
-        "Bottom Trench To NZ", "Bottom NZ To Score", "Bottom Score To NZ", "Bottom NZ To Tower Right");
-        BOTTOM_TWO_CYCLE.register(autonChooser);
+        // AutonConfig RIGHT_TWO_CYCLE = new AutonConfig("Right Two Cycle", RightTwoCycle::new,  
+        // "Right Trench To NZ", "Right NZ To Score", "Right Score To NZ", "Right NZ To Tower Right");
+        // RIGHT_TWO_CYCLE.register(autonChooser);
 
-        AutonConfig TOP_TWO_CYCLE_POACH = new AutonConfig("Top Two Cycle (Poach)", TopTwoCyclePoach::new,  
-        "Top Trench To NZ (P)", "Top NZ To Score (P)", "Top Score To NZ", "Top NZ To Tower Left");  
-        TOP_TWO_CYCLE_POACH.register(autonChooser);
+        // AutonConfig LEFT_TWO_CYCLE_POACH = new AutonConfig("Left Two Cycle (Poach)", LeftTwoCyclePoach::new,  
+        // "Left Trench To NZ (P)", "Left NZ To Score (P)", "Left Score To NZ", "Left NZ To Tower Left");  
+        // LEFT_TWO_CYCLE_POACH.register(autonChooser);
 
-        AutonConfig BOTTOM_TWO_CYCLE_POACH = new AutonConfig("Bottom Two Cycle (Poach)", BottomTwoCyclePoach::new,  
-        "Bottom Trench To NZ (P)", "Bottom NZ To Score (P)", "Bottom Score To NZ", "Bottom NZ To Tower Right");
-        BOTTOM_TWO_CYCLE_POACH.register(autonChooser);
+        // AutonConfig RIGHT_TWO_CYCLE_POACH = new AutonConfig("Right Two Cycle (Poach)", RightTwoCyclePoach::new,  
+        // "Right Trench To NZ (P)", "Right NZ To Score (P)", "Right Score To NZ", "Right NZ To Tower Right");
+        // RIGHT_TWO_CYCLE_POACH.register(autonChooser);
 
         SmartDashboard.putData("Autonomous", autonChooser);
 
