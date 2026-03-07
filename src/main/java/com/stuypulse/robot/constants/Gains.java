@@ -60,23 +60,23 @@ public class Gains {
 
         public interface Turret {
             public interface slot0 {
-                double kP = 1300.0;
+                double kP = 200.0;
                 double kI = 0.0;
-                double kD = 140.0;
-
-                double kS = 0.23;   // FOUND ON 2/25 PD 8
+                double kD = 0.0;
+            
+                double kS = 0.4775;
                 double kV = 0.0;
                 double kA = 0.0;
             }
             
             public interface slot1 {
-                double kP = 0.0;
-                double kI = 0.0;
-                double kD = 0.0;
-            
-                double kS = 0.0;
-                double kV = 0.0;
-                double kA = 0.0;
+                SmartNumber kP = new SmartNumber("Superstructure/Turret/Gains/kP", 20.0);
+                SmartNumber kI = new SmartNumber("Superstructure/Turret/Gains/kI", 0.0);
+                SmartNumber kD = new SmartNumber("Superstructure/Turret/Gains/kD", 0.0);
+
+                SmartNumber kS = new SmartNumber("Superstructure/Turret/Gains/kS", 0.4775);
+                SmartNumber kV = new SmartNumber("Superstructure/Turret/Gains/kV", 0.0);
+                SmartNumber kA = new SmartNumber("Superstructure/Turret/Gains/kA", 0.0);
             }
         }
     }

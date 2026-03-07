@@ -9,9 +9,9 @@ import com.stuypulse.robot.subsystems.superstructure.turret.Turret;
 import com.stuypulse.robot.subsystems.superstructure.turret.Turret.TurretState;
 
 import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class TurretSetState extends Command {
+public class TurretSetState extends InstantCommand {
      
     private final Turret turret;
     private final TurretState state;

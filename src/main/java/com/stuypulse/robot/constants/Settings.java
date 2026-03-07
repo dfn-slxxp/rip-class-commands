@@ -49,7 +49,8 @@ public interface Settings {
         public final double MASS_KG = 1.0;
 
         // public final double NUM_ROTATIONS_TO_REACH_TOP = MAX_ROTATIONS - MIN_ROTATIONS;
-        public final double NUM_ROTATIONS_TO_REACH_TOP = (MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / (0.480 / 13.0); // TODO: verify this 
+        // public final double NUM_ROTATIONS_TO_REACH_TOP = (MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / (0.480 / 13.0); // TODO: verify this 
+        public final double NUM_ROTATIONS_TO_REACH_TOP = (MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / Units.inchesToMeters(2 * Math.PI * 0.75); // TODO: verify this 
         public final double POSITION_CONVERSION_FACTOR = (MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / NUM_ROTATIONS_TO_REACH_TOP;
         public final double VELOCITY_CONVERSION_FACTOR = (MAX_HEIGHT_METERS - MIN_HEIGHT_METERS) / NUM_ROTATIONS_TO_REACH_TOP / 60.0;
 
@@ -96,7 +97,7 @@ public interface Settings {
         Rotation2d PIVOT_STOW_ANGLE = Rotation2d.fromDegrees(90.0); 
         Rotation2d PIVOT_DEPLOY_ANGLE = Rotation2d.fromDegrees(0.0);
 
-        Rotation2d PIVOT_ANGLE_TOLERANCE = Rotation2d.fromDegrees(15.0); 
+        Rotation2d PIVOT_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5.0); 
 
         Rotation2d PIVOT_MAX_ANGLE = Rotation2d.fromDegrees(90.0);
         Rotation2d PIVOT_MIN_ANGLE = Rotation2d.fromDegrees(0.0);
@@ -107,7 +108,7 @@ public interface Settings {
         Rotation2d PIVOT_MAX_VEL_STOW = Rotation2d.fromDegrees(360.0);
         Rotation2d PIVOT_MAX_ACCEL_STOW = Rotation2d.fromDegrees(600.0);
 
-        Rotation2d THRESHHOLD_TO_START_ROLLERS = Rotation2d.fromDegrees(10.0);
+        Rotation2d THRESHHOLD_TO_START_ROLLERS = Rotation2d.fromDegrees(5.0);
 
         Rotation2d ARBITRARY_VOLTAGE_THRESHOLD = Rotation2d.fromDegrees(15.0);
         
@@ -116,6 +117,7 @@ public interface Settings {
         double GEAR_RATIO = 37.93;
         
         double debugVoltage = 0; //TODO: set value
+        SmartNumber debugDutyCycle = new SmartNumber("Intake/Debug Duty Cycle", 0.1);
         double STALL_CURRENT_LIMIT = 0; //TODO: set value
         double STALL_DEBOUNCE = 1.0; //TODO: VERIFY
     }
@@ -284,7 +286,7 @@ public interface AngleInterpolation {
         public interface Turret {
             public final Rotation2d MAX_VEL = new Rotation2d(Units.degreesToRadians(600.0));
             public final Rotation2d MAX_ACCEL = new Rotation2d(Units.degreesToRadians(600.0));
-            public final Rotation2d TOLERANCE = Rotation2d.fromDegrees(2.0);
+            public final Rotation2d TOLERANCE = Rotation2d.fromDegrees(5.0); // TODO: reduce to 2 degrees
             
             public final Rotation2d KB = Rotation2d.fromDegrees(0.0);
             public final Rotation2d LEFT_CORNER = Rotation2d.fromDegrees(0.0);
@@ -296,10 +298,12 @@ public interface AngleInterpolation {
             Rotation2d MIN_THEORETICAL_ROTATION = Rotation2d.fromDegrees(-612);
             
             /* CONSTANTS */
-            public final double RANGE_LEFT = -45;
-            public final double RANGE_RIGHT = 390;
+            public final double RANGE_LEFT = -360.0; // -120
+            public final double RANGE_RIGHT = 85.0; //390; // 410
+
+            // 85, -360
         
-            public final double SLOT_SWITCHING_THRESHOLD_ROT = .5;
+            public final Rotation2d GAIN_SWITCHING_THRESHOLD = Rotation2d.fromDegrees(30);
         
             public final Transform2d TURRET_OFFSET = new Transform2d(Units.inchesToMeters(-4.0), Units.inchesToMeters(8.0), Rotation2d.kZero);
             public final double TURRET_HEIGHT = Units.inchesToMeters(0.0);
@@ -312,12 +316,12 @@ public interface AngleInterpolation {
         
             public interface Encoder17t {
                 public final int TEETH = 17;
-                public final Rotation2d OFFSET = Rotation2d.fromRotations(-0.279541015625);//(-0.86962890625); //0.6787109375
+                public final Rotation2d OFFSET = Rotation2d.fromRotations(-0.716);//(-0.28125);//.fromRotations(-0.279541015625);//(-0.86962890625); //0.6787109375
             }
         
             public interface Encoder18t {
                 public final int TEETH = 18;
-                public final Rotation2d OFFSET = Rotation2d.fromRotations(-0.42822265625);//(-0.700927734375); //0.53564453125
+                public final Rotation2d OFFSET = Rotation2d.fromRotations(-0.559);//(-0.442);//(0.58203125);//.fromRotations(-0.42822265625);//(-0.700927734375); //0.53564453125
             }
         
             public interface SoftwareLimit {
@@ -341,7 +345,7 @@ public interface AngleInterpolation {
         public interface Constraints {
             public final double MAX_VELOCITY_M_PER_S = 4.93; // 4.3p
             public final double MAX_ACCEL_M_PER_S_SQUARED = 15.0;
-            public final double MAX_ANGULAR_VEL_RAD_PER_S = Units.degreesToRadians(600.0);
+            public final double MAX_ANGULAR_VEL_RAD_PER_S = Units.degreesToRadians(400.0);
             public final double MAX_ANGULAR_ACCEL_RAD_PER_S_SQUARED = Units.degreesToRadians(900.0);
 
             public final PathConstraints DEFAULT_CONSTRAINTS =

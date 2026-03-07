@@ -21,6 +21,7 @@
       "/SmartDashboard/Robot/Zero Pivot Encoder at Lower Limit (Deployed)": "Command",
       "/SmartDashboard/Robot/Zero Pivot Encoder at Upper Limit (Stowed)": "Command",
       "/SmartDashboard/Robot/Zero Turret Encoders": "Command",
+      "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/Visualizers/ClimberHopper": "Mechanism2d",
       "/SmartDashboard/Visualizers/Hood": "Mechanism2d",
       "/SmartDashboard/Visualizers/Turret": "Mechanism2d"
@@ -63,6 +64,9 @@
     },
     "transitory": {
       "SmartDashboard": {
+        "Enabled Subsystems": {
+          "open": true
+        },
         "FieldPositions": {
           "open": true
         },
@@ -72,12 +76,21 @@
           },
           "open": true
         },
-        "States": {
+        "Superstructure": {
+          "Hood": {
+            "open": true
+          },
+          "Turret": {
+            "open": true
+          },
           "open": true
         },
         "Turret": {
           "open": true
         },
+        "open": true
+      },
+      "limelight-right": {
         "open": true
       }
     }

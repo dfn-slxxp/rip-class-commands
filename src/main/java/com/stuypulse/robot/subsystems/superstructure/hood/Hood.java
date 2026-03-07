@@ -8,6 +8,7 @@ package com.stuypulse.robot.subsystems.superstructure.hood;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.util.superstructure.SOTMCalculator;
 import com.stuypulse.robot.util.superstructure.VisualizerHood;
 import com.stuypulse.robot.util.superstructure.InterpolationCalculator;
@@ -63,10 +64,9 @@ public abstract class Hood extends SubsystemBase{
     }
 
     public Rotation2d getTargetAngle() {
-        // if (isUnderTrench()) {
-        //     return Settings.Superstructure.Hood.Angles.STOW;
-        // }
-        // don't think we need this when we have superstructure default command.
+        if (CommandSwerveDrivetrain.getInstance().isUnderTrench()) {
+            return Settings.Superstructure.Hood.Angles.STOW;
+        }
 
         return switch(state) {
             case STOW -> Settings.Superstructure.Hood.Angles.STOW;

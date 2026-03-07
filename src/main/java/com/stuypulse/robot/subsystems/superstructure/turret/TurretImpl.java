@@ -47,14 +47,14 @@ public class TurretImpl extends Turret {
             .withSupplyCurrentLimitAmps(80)
             .withStatorCurrentLimitEnabled(false)
             .withRampRate(0.25)
-            .withVoltageLimits(6, -6) //TODO: VERIFY MAX VOLTAGE
+            // .withVoltageLimits(6, -6) //TODO: VERIFY MAX VOLTAGE
             
             .withPIDConstants(Gains.Superstructure.Turret.slot0.kP, Gains.Superstructure.Turret.slot0.kI, Gains.Superstructure.Turret.slot0.kD, 0)
             .withFFConstants(Gains.Superstructure.Turret.slot0.kS, Gains.Superstructure.Turret.slot0.kV, Gains.Superstructure.Turret.slot0.kA, 0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign, 0)
             
-            .withPIDConstants(Gains.Superstructure.Turret.slot1.kP, Gains.Superstructure.Turret.slot1.kI, Gains.Superstructure.Turret.slot1.kD, 1)
-            .withFFConstants(Gains.Superstructure.Turret.slot1.kS, Gains.Superstructure.Turret.slot1.kV, Gains.Superstructure.Turret.slot1.kA, 1)
+            .withPIDConstants(Gains.Superstructure.Turret.slot1.kP.get(), Gains.Superstructure.Turret.slot1.kI.get(), Gains.Superstructure.Turret.slot1.kD.get(), 1)
+            .withFFConstants(Gains.Superstructure.Turret.slot1.kS.get(), Gains.Superstructure.Turret.slot1.kV.get(), Gains.Superstructure.Turret.slot1.kA.get(), 1)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign, 1)
             
             .withSensorToMechanismRatio(Settings.Superstructure.Turret.GEAR_RATIO_MOTOR_TO_MECH)
@@ -65,11 +65,13 @@ public class TurretImpl extends Turret {
                 Settings.Superstructure.Turret.SoftwareLimit.BACKWARDS_MAX_ROTATIONS);
 
         encoder17tConfig = new Motors.CANCoderConfig()
-            .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+            .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+            .withMagnetOffset(Settings.Superstructure.Turret.Encoder17t.OFFSET.getRotations())
             .withAbsoluteSensorDiscontinuityPoint(1.0);
 
         encoder18tConfig = new Motors.CANCoderConfig()
-            .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+            .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+            .withMagnetOffset(Settings.Superstructure.Turret.Encoder18t.OFFSET.getRotations())
             .withAbsoluteSensorDiscontinuityPoint(1.0);
 
         motor = new TalonFX(Ports.Superstructure.Turret.MOTOR, Ports.RIO);
@@ -118,8 +120,8 @@ public class TurretImpl extends Turret {
     }
 
     public void seedTurret() {
-        motor.setPosition(0); //TODO: SEED USING CRT INSTEAD OF TS, TS IS TEMP
-        // motor.setPosition(getVectorSpaceAngle().getRotations());
+        // motor.setPosition(0); //TODO: SEED USING CRT INSTEAD OF TS, TS IS TEMP
+        motor.setPosition(getVectorSpaceAngle().getRotations());
     }
     
     @Override
@@ -129,7 +131,7 @@ public class TurretImpl extends Turret {
     
     @Override
     public boolean atTolerance() {
-        double error = getAngle().minus(getTargetAngle()).getRotations() + 0.5;
+        double error = getAngle().minus(getTargetAngle()).getRotations();
         return Math.abs(error) < Settings.Superstructure.Turret.TOLERANCE.getRotations();
     }
     
@@ -143,12 +145,21 @@ public class TurretImpl extends Turret {
         if (current + delta < Settings.Superstructure.Turret.RANGE_LEFT) return delta + 360;
         if (current + delta > Settings.Superstructure.Turret.RANGE_RIGHT) return delta - 360;
 
-        return delta < 0 ? delta + 360 : delta - 360;
+        // return delta < 0 ? delta + 360 : delta - 360;
+        return delta;
     }
 
     @Override
     public void periodic() {
         super.periodic();
+
+        turretConfig.updateGainsConfig(motor, 1, 
+        Gains.Superstructure.Turret.slot1.kP, 
+        Gains.Superstructure.Turret.slot1.kI,
+        Gains.Superstructure.Turret.slot1.kD,
+        Gains.Superstructure.Turret.slot1.kS, 
+        Gains.Superstructure.Turret.slot1.kV, 
+        Gains.Superstructure.Turret.slot1.kA);
 
         if (!hasUsedAbsoluteEncoder) {
             seedTurret();
@@ -159,17 +170,26 @@ public class TurretImpl extends Turret {
         double currentAngle = getAngle().getDegrees();
         double actualTargetDeg = currentAngle + getDelta(getTargetAngle().getDegrees(), currentAngle);
 
+        boolean isWrapping =    Math.abs(actualTargetDeg - currentAngle) > 
+                                Settings.Superstructure.Turret.GAIN_SWITCHING_THRESHOLD.getDegrees();
+        int slot = 0;
+
+        if(isWrapping) {
+            slot = 1;
+        }
+
         if (EnabledSubsystems.TURRET.get()) {
             if (voltageOverride.isPresent()) {
                 motor.setVoltage(voltageOverride.get());
             } else {
-                motor.setControl(controller.withPosition(actualTargetDeg / 360.0).withSlot(0));
+                motor.setControl(controller.withPosition(actualTargetDeg / 360.0).withSlot(slot));
             }
         } else {
             motor.stopMotor();
         }
 
         if (Settings.DEBUG_MODE) {
+
             SmartDashboard.putNumber("Superstructure/Turret/Relative Encoder Position (Rot)", motor.getPosition().getValueAsDouble() * 360.0);
             SmartDashboard.putNumber("Superstructure/Turret/Closed Loop Error (deg)", motor.getClosedLoopError().getValueAsDouble() * 360.0);
 
@@ -180,6 +200,8 @@ public class TurretImpl extends Turret {
             SmartDashboard.putNumber("Superstructure/Turret/Voltage", motor.getMotorVoltage().getValueAsDouble());
             SmartDashboard.putNumber("Superstructure/Turret/Stator Current", motor.getStatorCurrent().getValueAsDouble());
             SmartDashboard.putNumber("Superstructure/Turret/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+
+            SmartDashboard.putNumber("Superstructure/Turret/Wrapped Target Angle (deg)", actualTargetDeg);
 
             SmartDashboard.putNumber("Current Draws/Turret (amps)", motor.getSupplyCurrent().getValueAsDouble());
         }

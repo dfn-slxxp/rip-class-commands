@@ -34,7 +34,7 @@ public class LimelightVision extends SubsystemBase{
 
     private String[] names;
     private SmartBoolean enabled;
-    private SmartBoolean[] camerasEnabled;
+    // private SmartBoolean[] camerasEnabled;
     private MegaTagMode megaTagMode;
 
     public enum MegaTagMode {
@@ -58,13 +58,13 @@ public class LimelightVision extends SubsystemBase{
             );
         }
 
-        camerasEnabled = new SmartBoolean[Cameras.LimelightCameras.length];
+        // camerasEnabled = new SmartBoolean[Cameras.LimelightCameras.length];
         
-        for (int i = 0; i < camerasEnabled.length; i++) {
-            camerasEnabled[i] = new SmartBoolean("Vision/" + names[i] + " Is Enabled", true);
-            LimelightHelpers.SetIMUMode(names[i], Settings.Vision.INTERNAL_EXTERNAL_ASSIST_INDEX);
-            SmartDashboard.putBoolean("Vision/" + names[i] + " Has Data", false);
-        }
+        // for (int i = 0; i < camerasEnabled.length; i++) {
+        //     camerasEnabled[i] = new SmartBoolean("Vision/" + names[i] + " Is Enabled", true);
+        //     LimelightHelpers.SetIMUMode(names[i], Settings.Vision.INTERNAL_EXTERNAL_ASSIST_INDEX);
+        //     SmartDashboard.putBoolean("Vision/" + names[i] + " Has Data", false);
+        // }
 
         enabled = new SmartBoolean("Vision/Is Enabled", true);
         megaTagMode = MegaTagMode.MEGATAG1;
@@ -84,13 +84,13 @@ public class LimelightVision extends SubsystemBase{
         enabled.set(false);
     }
 
-    public void setCameraEnabled(String name, boolean enabled) {
-        for (int i = 0; i < names.length; i++) {
-            if (names[i].equals(name)) {
-                camerasEnabled[i].set(enabled);
-            }
-        }
-    }
+    // public void setCameraEnabled(String name, boolean enabled) {
+    //     for (int i = 0; i < names.length; i++) {
+    //         if (names[i].equals(name)) {
+    //             camerasEnabled[i].set(enabled);
+    //         }
+    //     } 
+    // }
 
     public void setMegaTagMode(MegaTagMode mode) {
         this.megaTagMode = mode;
@@ -130,7 +130,7 @@ public class LimelightVision extends SubsystemBase{
     public void periodic() {
         if (enabled.get()) {
             for (int i = 0; i < names.length; i++) {
-                if (camerasEnabled[i].get()) {
+                if (Cameras.LimelightCameras[i].isEnabled()) {
                     String limelightName = names[i];
 
                     // Seed robot heading (used by MT2)
