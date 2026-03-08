@@ -59,6 +59,10 @@ public class SOTMCalculator {
 
         hubPose2d = Field.FIELD2D.getObject("hubPose");
         virtualHubPose2d = Field.FIELD2D.getObject("virtualHubPose");
+
+        ferryPose2d = Field.FIELD2D.getObject("ferryPose");
+        virtualFerryPose2d = Field.FIELD2D.getObject("virtualFerryPose");
+
         futureTurretPose2d = Field.FIELD2D.getObject("futureTurretPose");
     }
 
@@ -211,7 +215,7 @@ public class SOTMCalculator {
         hubSol = hubSolution;
         ferrySol = ferrySolution;
 
-        ferryPose2d.setPose(Robot.isBlue() ? ferryPose : Field.transformToOppositeAlliance(hubPose));
+        ferryPose2d.setPose(Robot.isBlue() ? ferryPose : Field.transformToOppositeAlliance(ferryPose));
         virtualFerryPose2d.setPose((Robot.isBlue() ? ferrySol.virtualPose() : Field.transformToOppositeAlliance(ferrySol.virtualPose())));
 
         // hubPose2d.setPose(Robot.isBlue() ? hubPose : Field.transformToOppositeAlliance(hubPose));
