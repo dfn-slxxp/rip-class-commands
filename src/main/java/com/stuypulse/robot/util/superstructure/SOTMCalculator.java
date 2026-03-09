@@ -12,6 +12,7 @@ import com.stuypulse.stuylib.math.Vector2D;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -160,6 +161,7 @@ public class SOTMCalculator {
 
         CommandSwerveDrivetrain swerve = CommandSwerveDrivetrain.getInstance();
         
+        Pose2d turretPose = swerve.getTurretPose();
         Pose2d robotPose = swerve.getPose();
         Pose2d hubPose = Field.getHubPose();
         Pose2d ferryPose = Field.getFerryZonePose(robotPose.getTranslation());
@@ -170,21 +172,27 @@ public class SOTMCalculator {
             robotPose.getRotation()
         );
 
-        Pose2d futureTurretPose = swerve.getTurretPose().exp(
+        Transform2d robotToTurret = turretPose.minus(robotPose);
+
+        Pose2d futureTurretPose = robotPose.exp(
             new Twist2d(
                 robotRelativeSpeeds.vxMetersPerSecond * Settings.Superstructure.SOTM.UPDATE_DELAY.doubleValue(),
                 robotRelativeSpeeds.vyMetersPerSecond * Settings.Superstructure.SOTM.UPDATE_DELAY.doubleValue(),
                 0
             )
-        );
+        ).transformBy(robotToTurret);
 
-        Vector2D oppositeDirection = Vector2D.kOrigin;
+        
+        Vector2D oppositeDirection = new Vector2D(new Translation2d(
+            -fieldRelativeSpeeds.vxMetersPerSecond,
+            -fieldRelativeSpeeds.vyMetersPerSecond
+        ));
 
-        if (Math.abs(robotRelativeSpeeds.vxMetersPerSecond) > Settings.Swerve.MODULE_VELOCITY_DEADBAND_M_PER_S && Math.abs(robotRelativeSpeeds.vyMetersPerSecond) > Settings.Swerve.MODULE_VELOCITY_DEADBAND_M_PER_S) {
-            oppositeDirection = new Vector2D(new Translation2d(
-                -robotRelativeSpeeds.vxMetersPerSecond,
-                -robotRelativeSpeeds.vyMetersPerSecond
-            ));
+        if (oppositeDirection.magnitude() < Settings.Swerve.MODULE_VELOCITY_DEADBAND_M_PER_S) {
+            oppositeDirection = Vector2D.kOrigin;
+        }
+        else {
+            oppositeDirection = oppositeDirection.normalize();
         }
 
         hubPose = hubPose.exp(
@@ -217,8 +225,8 @@ public class SOTMCalculator {
         ferryPose2d.setPose(Robot.isBlue() ? ferryPose : Field.transformToOppositeAlliance(ferryPose));
         virtualFerryPose2d.setPose((Robot.isBlue() ? ferrySol.virtualPose() : Field.transformToOppositeAlliance(ferrySol.virtualPose())));
 
-        // hubPose2d.setPose(Robot.isBlue() ? hubPose : Field.transformToOppositeAlliance(hubPose));
-        // virtualHubPose2d.setPose((Robot.isBlue() ? hubSol.virtualPose() : Field.transformToOppositeAlliance(hubSol.virtualPose())));
+        hubPose2d.setPose(Robot.isBlue() ? hubPose : Field.transformToOppositeAlliance(hubPose));
+        virtualHubPose2d.setPose((Robot.isBlue() ? hubSol.virtualPose() : Field.transformToOppositeAlliance(hubSol.virtualPose())));
         futureTurretPose2d.setPose((Robot.isBlue() ? futureTurretPose : Field.transformToOppositeAlliance(futureTurretPose)));
   
   

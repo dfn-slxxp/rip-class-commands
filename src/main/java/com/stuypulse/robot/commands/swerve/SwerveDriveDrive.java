@@ -91,12 +91,12 @@ public class SwerveDriveDrive extends Command {
         double maxAngularVel = Swerve.Constraints.MAX_ANGULAR_VEL_RAD_PER_S;
 
         if (speedVector.magnitude() > 0.05 && superstructure.getState() == SuperstructureState.SOTM) {
-            speedVector = speedVector.normalize().mul(Settings.Swerve.Constraints.MAX_VELOCITY_SOTM_M_PER_S);
+            speedVector = speedVector.mul(Settings.Swerve.Constraints.MAX_VELOCITY_SOTM_M_PER_S / Swerve.Constraints.MAX_VELOCITY_M_PER_S);
             maxAngularVel = Settings.Swerve.Constraints.MAX_ANGULAR_VEL_SOTM_RAD_PER_S;
             
         } else if (speedVector.magnitude() > 0.05 && superstructure.getState() == SuperstructureState.FOTM) {
-            speedVector = speedVector.normalize().mul(Settings.Swerve.Constraints.MAX_VELOCITY_SOTM_M_PER_S);
-            maxAngularVel = Settings.Swerve.Constraints.MAX_ANGULAR_VEL_SOTM_RAD_PER_S;
+            speedVector = speedVector.mul(Settings.Swerve.Constraints.MAX_VELOCITY_FOTM_M_PER_S / Swerve.Constraints.MAX_VELOCITY_M_PER_S);
+            maxAngularVel = Settings.Swerve.Constraints.MAX_ANGULAR_VEL_FOTM_RAD_PER_S;
 
         }
 
