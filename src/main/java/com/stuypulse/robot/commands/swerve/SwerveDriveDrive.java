@@ -37,9 +37,16 @@ public class SwerveDriveDrive extends Command {
     private final VStream speed;
     private final IStream turn;
 
+    private final VRateLimit normalAcellLimit;
+    private final VRateLimit stomAcellLimit;
+    private final VRateLimit fotmAcellLimit;
+
     public SwerveDriveDrive(Gamepad driver) {
         swerve = CommandSwerveDrivetrain.getInstance();
         superstructure = Superstructure.getInstance();
+        normalAcellLimit = new VRateLimit(Settings.Swerve.Constraints.MAX_ACCEL_M_PER_S_SQUARED);
+        stomAcellLimit = new VRateLimit(Settings.Swerve.Constraints.MAX_ACCEL_M_PER_S_SQUARED_STOM);
+        fotmAcellLimit = new VRateLimit(Settings.Swerve.Constraints.MAX_ACCEL_M_PER_S_SQUARED_FOTM);
 
         speed = VStream.create(this::getDriverInputAsVelocity)
         .filtered(
@@ -47,7 +54,7 @@ public class SwerveDriveDrive extends Command {
             x -> x.clamp(1),
             x -> x.pow(Drive.POWER),
             x -> x.mul(Swerve.Constraints.MAX_VELOCITY_M_PER_S),
-            new VRateLimit(Swerve.Constraints.MAX_ACCEL_M_PER_S_SQUARED),
+            normalAcellLimit,
             new VLowPassFilter(Drive.RC)
         );
 
@@ -70,24 +77,37 @@ public class SwerveDriveDrive extends Command {
 
     @Override
     public void execute() {
+        SuperstructureState state = superstructure.getState();
+        if (state == SuperstructureState.SOTM) {
+            speed.filtered(stomAcellLimit);
+        } else if (state == SuperstructureState.FOTM) {
+            speed.filtered(fotmAcellLimit);
+        } else {
+            speed.filtered(normalAcellLimit);
+        }
         Vector2D speedVector = speed.get();
         double angularVel = turn.get();
-
+        //TODO: test this 
         double maxAngularVel = Swerve.Constraints.MAX_ANGULAR_VEL_RAD_PER_S;
 
         if (speedVector.magnitude() > 0.05 && superstructure.getState() == SuperstructureState.SOTM) {
             speedVector = speedVector.normalize().mul(Settings.Swerve.Constraints.MAX_VELOCITY_SOTM_M_PER_S);
             maxAngularVel = Settings.Swerve.Constraints.MAX_ANGULAR_VEL_SOTM_RAD_PER_S;
+            
         } else if (speedVector.magnitude() > 0.05 && superstructure.getState() == SuperstructureState.FOTM) {
-            speedVector = speedVector.normalize().mul(Settings.Swerve.Constraints.MAX_VELOCITY_FOTM_M_PER_S);
-            maxAngularVel = Settings.Swerve.Constraints.MAX_ANGULAR_VEL_FOTM_RAD_PER_S;
+            speedVector = speedVector.normalize().mul(Settings.Swerve.Constraints.MAX_VELOCITY_SOTM_M_PER_S);
+            maxAngularVel = Settings.Swerve.Constraints.MAX_ANGULAR_VEL_SOTM_RAD_PER_S;
+
         }
 
         angularVel = MathUtil.clamp(angularVel, -maxAngularVel, maxAngularVel);
 
         swerve.setControl(swerve.getFieldCentricSwerveRequest()
-            .withVelocityX(speedVector.x)
-            .withVelocityY(speedVector.y)
+            .withVelocityX(speed.get().x)
+            .withVelocityY(speed.get().y)
             .withRotationalRate(-angularVel));
+
+        SmartDashboard.putNumber("Swerve/Speed x", speed.get().x);
+        SmartDashboard.putNumber("Swerve/Speed y", speed.get().y);
     }
 }
