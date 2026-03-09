@@ -418,6 +418,19 @@
               "true_icon": "None",
               "false_icon": "None"
             }
+          },
+          {
+            "title": "Autonomous",
+            "x": 560.0,
+            "y": 420.0,
+            "width": 210.0,
+            "height": 140.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Autonomous",
+              "period": 0.06,
+              "sort_options": false
+            }
           }
         ]
       }
@@ -840,48 +853,6 @@
             }
           },
           {
-            "title": "Handoff Reverse",
-            "x": 840.0,
-            "y": 420.0,
-            "width": 280.0,
-            "height": 280.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/Reverse Handoff",
-              "period": 0.06,
-              "show_type": false,
-              "maximize_button_space": true
-            }
-          },
-          {
-            "title": "Intake Reverse",
-            "x": 560.0,
-            "y": 420.0,
-            "width": 280.0,
-            "height": 280.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/Intake Reverse",
-              "period": 0.06,
-              "show_type": false,
-              "maximize_button_space": true
-            }
-          },
-          {
-            "title": "Spindexer Reverse",
-            "x": 1120.0,
-            "y": 420.0,
-            "width": 280.0,
-            "height": 280.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/Spindexer Reverse",
-              "period": 0.06,
-              "show_type": false,
-              "maximize_button_space": true
-            }
-          },
-          {
             "title": "Superstructure At Tol?",
             "x": 840.0,
             "y": 350.0,
@@ -896,6 +867,48 @@
               "false_color": 4294198070,
               "true_icon": "None",
               "false_icon": "None"
+            }
+          },
+          {
+            "title": "Handoff Reverse",
+            "x": 1120.0,
+            "y": 420.0,
+            "width": 280.0,
+            "height": 280.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Robot/Handoff Reverse",
+              "period": 0.06,
+              "show_type": false,
+              "maximize_button_space": true
+            }
+          },
+          {
+            "title": "Intake Reverse",
+            "x": 560.0,
+            "y": 420.0,
+            "width": 280.0,
+            "height": 280.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Robot/Intake Reverse",
+              "period": 0.06,
+              "show_type": false,
+              "maximize_button_space": true
+            }
+          },
+          {
+            "title": "Spindexer Reverse",
+            "x": 840.0,
+            "y": 420.0,
+            "width": 280.0,
+            "height": 280.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Robot/Spindexer Reverse",
+              "period": 0.06,
+              "show_type": false,
+              "maximize_button_space": true
             }
           }
         ]
