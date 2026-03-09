@@ -853,23 +853,6 @@
             }
           },
           {
-            "title": "Superstructure At Tol?",
-            "x": 840.0,
-            "y": 350.0,
-            "width": 280.0,
-            "height": 70.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/SmartDashboard/Superstructure/Everything At Tolerance?",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
             "title": "Handoff Reverse",
             "x": 1120.0,
             "y": 420.0,
@@ -909,6 +892,37 @@
               "period": 0.06,
               "show_type": false,
               "maximize_button_space": true
+            }
+          },
+          {
+            "title": "Spin At Tol?",
+            "x": 980.0,
+            "y": 350.0,
+            "width": 140.0,
+            "height": 70.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Spindexer/At Tolerance",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Spin State",
+            "x": 840.0,
+            "y": 350.0,
+            "width": 140.0,
+            "height": 70.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Spindexer/State",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
             }
           }
         ]
