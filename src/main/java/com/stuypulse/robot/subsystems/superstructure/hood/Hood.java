@@ -9,9 +9,9 @@ import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
+import com.stuypulse.robot.util.superstructure.InterpolationCalculator;
 import com.stuypulse.robot.util.superstructure.SOTMCalculator;
 import com.stuypulse.robot.util.superstructure.VisualizerHood;
-import com.stuypulse.robot.util.superstructure.InterpolationCalculator;
 import com.stuypulse.stuylib.input.Gamepad;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,6 +49,7 @@ public abstract class Hood extends SubsystemBase{
         SOTM,
         FOTM,
         ANALOG,
+        HOMING,
         IDLE;
     }
 
@@ -77,6 +78,7 @@ public abstract class Hood extends SubsystemBase{
             case LEFT_CORNER -> Settings.Superstructure.Hood.Angles.LEFT_CORNER;
             case RIGHT_CORNER -> Settings.Superstructure.Hood.Angles.RIGHT_CORNER;
             case INTERPOLATION -> InterpolationCalculator.interpolateShotInfo().targetHoodAngle();
+            case HOMING -> new Rotation2d(); //should just apply a voltage, not an angle!
             case SOTM -> SOTMCalculator.calculateHoodAngleSOTM();
             case FOTM -> SOTMCalculator.calculateHoodAngleFOTM();
             case ANALOG -> hoodAnalogToOutput();

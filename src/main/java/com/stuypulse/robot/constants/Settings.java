@@ -261,6 +261,7 @@ public interface Settings {
              */
             public final double GEAR_RATIO = 1064.0 / 9.0;
             public final double ENCODER_TO_MECH = 32.0 / 3.0;
+            public final double HOOD_HOMING_VOLTAGE = 2.0;
 
             public final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(-0.043);
 
