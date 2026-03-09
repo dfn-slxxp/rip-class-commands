@@ -8,6 +8,8 @@ import com.stuypulse.robot.commands.intake.IntakeStow;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
 import com.stuypulse.robot.commands.superstructure.SuperstructureInterpolation;
+import com.stuypulse.robot.subsystems.handoff.Handoff;
+import com.stuypulse.robot.subsystems.spindexer.Spindexer;
 import com.stuypulse.robot.subsystems.superstructure.Superstructure;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 
@@ -28,13 +30,12 @@ public class RightTwoCycle extends SequentialCommandGroup {
             new SuperstructureInterpolation(),
 
             // Trip 1 To Score
-            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]).alongWith(
-                new IntakeStow()
-            ),
-            new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
-            new SpindexerRun().alongWith(
-                new HandoffRun()
-            ).withTimeout(5.0),
+            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]),
+                new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
+            new HandoffRun().alongWith(new WaitUntilCommand(() -> Handoff.getInstance().atTolerance())).andThen(
+                new SpindexerRun()
+            ).withTimeout(10.0),
+
 
             // NZ Trip 2
             new ParallelCommandGroup(
@@ -47,8 +48,8 @@ public class RightTwoCycle extends SequentialCommandGroup {
                 new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance())
                 // new SwerveClimbAlign()
             ),
-            new SpindexerRun().alongWith(
-                new HandoffRun()
+            new HandoffRun().alongWith(new WaitUntilCommand(() -> Handoff.getInstance().atTolerance())).andThen(
+                new SpindexerRun()
             )
             // .until(() -> DriverStation.getMatchTime() < 2).andThen(
             //     new ParallelCommandGroup(
@@ -57,7 +58,7 @@ public class RightTwoCycle extends SequentialCommandGroup {
             //         new ClimberDown()
             //     )
             // )
-
+        
         );
 
     }
