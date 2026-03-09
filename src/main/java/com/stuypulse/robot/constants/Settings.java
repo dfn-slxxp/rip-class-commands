@@ -7,6 +7,7 @@ package com.stuypulse.robot.constants;
 
 import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.path.PathConstraints;
+import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.VecBuilder;
@@ -138,12 +139,17 @@ public interface Settings {
         }
 
         public interface Shooter {
+            
             public final double GEAR_RATIO = 1.0;
             public final double FLYWHEEL_RADIUS = Units.inchesToMeters(3.965 / 2);
-
+            
             public interface RPM {
+                public final SmartBoolean OVERRIDEN = new SmartBoolean("Superstructure/Shooter/RPM Override enabled?", false);
+                public final SmartNumber OVERRIDE_VALUE = new SmartNumber("Superstructure/Shooter/RPM Override value", 0.0);
+
                 public final SmartNumber SHOOT = new SmartNumber("InterpolationTesting/Shoot State Target RPM", 3500.0);
                 public final SmartNumber FERRY = new SmartNumber("InterpolationTesting/Ferry State Target RPM", 2000.0);
+
                 public final double REVERSE = 0.0;
                 public final double KB = 0.0;
                 public final double LEFT_CORNER = 0.0;
@@ -179,6 +185,9 @@ public interface Settings {
             public final double STALL_DEBOUNCE = 0.5;
 
             public interface Angles {
+                public final SmartBoolean OVERRIDEN = new SmartBoolean("Superstructure/Hood/Angle Override enabled?", false);
+                public final SmartNumber OVERRIDE_VALUE_DEG = new SmartNumber("Superstructure/Hood/Angle Override value", 0.0);
+
                 public final SmartNumber SHOOT = new SmartNumber("InterpolationTesting/Shoot State Target Angle (deg)", 20.0);
                 public final SmartNumber FERRY = new SmartNumber("InterpolationTesting/Ferry State Target Angle (deg)", 20.0);
 

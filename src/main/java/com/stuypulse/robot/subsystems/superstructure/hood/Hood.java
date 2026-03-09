@@ -69,6 +69,10 @@ public abstract class Hood extends SubsystemBase{
         if (CommandSwerveDrivetrain.getInstance().isUnderTrench()) {
             return Settings.Superstructure.Hood.Angles.STOW;
         }
+        
+        if(Settings.Superstructure.Hood.Angles.OVERRIDEN.get()) {
+            return Rotation2d.fromDegrees(Settings.Superstructure.Hood.Angles.OVERRIDE_VALUE_DEG.get());
+        }
 
         return switch(state) {
             case STOW -> Settings.Superstructure.Hood.Angles.STOW;

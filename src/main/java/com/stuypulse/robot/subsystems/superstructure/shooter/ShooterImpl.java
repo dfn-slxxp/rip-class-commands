@@ -104,15 +104,11 @@ public class ShooterImpl extends Shooter {
             Gains.Superstructure.Shooter.kA
         );
 
-        if (EnabledSubsystems.SHOOTER.get()) {
-            if (getState() == ShooterState.STOP) {
-                shooterLeader.stopMotor();
-            } else if (voltageOverride.isPresent()) {
+        if (EnabledSubsystems.SHOOTER.get() || getState() == ShooterState.STOP) {
+            if (voltageOverride.isPresent()) {
                 shooterLeader.setVoltage(voltageOverride.get());
-                shooterFollower.setControl(follower);
             } else {
                 shooterLeader.setControl(shooterController.withVelocity(getTargetRPM() / Settings.SECONDS_IN_A_MINUTE));
-                shooterFollower.setControl(follower);
             }
         } else {
             shooterLeader.stopMotor();
