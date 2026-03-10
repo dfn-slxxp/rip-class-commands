@@ -22,6 +22,7 @@ import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
 import com.stuypulse.robot.commands.hood.ZeroHoodEncoderAtUpperHardstop;
 import com.stuypulse.robot.commands.intake.IntakeDeploy;
+import com.stuypulse.robot.commands.intake.IntakeOuttake;
 import com.stuypulse.robot.commands.intake.IntakeRunRollers;
 import com.stuypulse.robot.commands.intake.IntakeSetState;
 import com.stuypulse.robot.commands.intake.IntakeStopRollers;
@@ -215,12 +216,12 @@ public class RobotContainer {
             .onFalse(new SetIMUMode(0));   
 
         // Stop Rollers
-        driver.getLeftBumper()
-            .onTrue(new IntakeStopRollers());
+        // driver.getLeftBumper()
+        //     .onTrue(new IntakeStopRollers());
 
-        // driver.getRightBumper()
-        //     .whileTrue(new IntakeOuttake())
-        //     .onFalse(new IntakeRunRollers());
+        driver.getRightBumper()
+            .whileTrue(new IntakeOuttake())
+            .onFalse(new IntakeRunRollers());
 
         // Ferrying In Place
         driver.getDPadRight()
