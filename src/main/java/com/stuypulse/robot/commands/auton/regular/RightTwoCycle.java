@@ -4,6 +4,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
 import com.stuypulse.robot.commands.intake.IntakeDeploy;
+import com.stuypulse.robot.commands.intake.IntakeRunRollers;
+import com.stuypulse.robot.commands.intake.IntakeStopRollers;
 import com.stuypulse.robot.commands.intake.IntakeStow;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
@@ -28,15 +30,15 @@ public class RightTwoCycle extends SequentialCommandGroup {
             new IntakeDeploy().alongWith(
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[0])
             ),
-            new SuperstructureInterpolation(),
+            new SuperstructureInterpolation().alongWith(new IntakeStopRollers()),
 
             // Trip 1 To Score
             CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]),
-                new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
+            new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
             new HandoffRun().alongWith(new WaitUntilCommand(() -> Handoff.getInstance().atTolerance())).andThen(
                 new SpindexerRun()
             ).andThen(new WaitCommand(5.0)),
-
+            new IntakeRunRollers(),
 
             // NZ Trip 2
             new ParallelCommandGroup(
