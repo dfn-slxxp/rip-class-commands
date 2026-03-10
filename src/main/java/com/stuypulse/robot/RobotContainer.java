@@ -5,6 +5,8 @@
 /***************************************************************/
 package com.stuypulse.robot;
 
+import java.util.concurrent.locks.Condition;
+
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.auton.regular.RightTwoCycle;
 import com.stuypulse.robot.commands.auton.regular.DepotAuton;
@@ -152,8 +154,31 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         swerve.setDefaultCommand(new SwerveDriveDrive(driver));
-        // spindexer.setDefaultCommand(new SpindexerDefaultCommand());
-        // handoff.setDefaultCommand(new HandoffDefaultCommand());
+        spindexer.setDefaultCommand(
+             new ConditionalCommand(
+                new SpindexerStop(), 
+                new ConditionalCommand(
+                    new ConditionalCommand(
+                        new SpindexerRun(), 
+                        new SpindexerReverse(), 
+                        () -> spindexer.getState() == SpindexerState.FORWARD),
+                    new SpindexerStop(),
+                    () -> spindexer.getState() != SpindexerState.STOP
+                ), 
+                () -> swerve.isBehindHub() || swerve.isBehindTower() || turret.isWrapping() || swerve.isUnderTrench())
+        );
+        handoff.setDefaultCommand(
+            new ConditionalCommand(
+                new HandoffStop(), 
+                new ConditionalCommand(
+                    new ConditionalCommand(
+                        new HandoffRun(), 
+                        new HandoffReverse(), 
+                        () -> handoff.getState() == HandoffState.FORWARD),
+                    new HandoffStop(),
+                    () -> handoff.getState() != HandoffState.STOP
+                ), 
+                () -> swerve.isBehindHub() || swerve.isBehindTower() || turret.isWrapping() || swerve.isUnderTrench()));
     }
 
     /***************/
@@ -168,7 +193,7 @@ public class RobotContainer {
             .whileTrue(new SuperstructureInterpolation()
                     .alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
                         .andThen(new HandoffRun())
-                        .alongWith(new WaitUntilCommand(() -> handoff.getState() == HandoffState.FORWARD))
+                        .alongWith(new WaitUntilCommand(() -> handoff.atTolerance()))
                             .andThen(new SpindexerRun()))
             .onFalse(new SpindexerStop()
                     .alongWith(new SuperstructureStow())
@@ -202,9 +227,9 @@ public class RobotContainer {
             .whileTrue(new SwerveXMode())
             .onTrue(new IntakeRunRollers())
             .whileTrue(new SuperstructureFerry()
-                    .alongWith(new WaitUntilCommand(() -> superstructure.atTolerance() && superstructure.getState() == SuperstructureState.FERRY))
+                    .alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
                         .andThen(new HandoffRun())
-                    .alongWith(new WaitUntilCommand(() -> handoff.atTolerance() && handoff.getState() == HandoffState.FORWARD))
+                    .alongWith(new WaitUntilCommand(() -> handoff.atTolerance()))
                         .andThen(new SpindexerRun()))
             .onFalse(new SuperstructureFerry().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
         
@@ -213,11 +238,17 @@ public class RobotContainer {
             .onTrue(new IntakeRunRollers())
             .onTrue(new ConditionalCommand(
                 new ParallelCommandGroup(
-                    new SuperstructureInterpolation(), 
+                    new SuperstructureStow(), 
                     new SpindexerStop(),
                     new HandoffStop()
                 ),
-                new SuperstructureSOTM().alongWith(new SwerveDriveSOTM(driver)),
+                new ParallelCommandGroup(
+                    new SuperstructureSOTM().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
+                        .andThen(new HandoffRun())
+                    .alongWith(new WaitUntilCommand(() -> handoff.atTolerance()))
+                        .andThen(new SpindexerRun()),
+                    new SwerveDriveSOTM(driver)
+                ),
                 () -> superstructure.getState() == SuperstructureState.SOTM
             ));
 
@@ -226,11 +257,17 @@ public class RobotContainer {
             .onTrue(new IntakeRunRollers())
             .onTrue(new ConditionalCommand(
                 new ParallelCommandGroup(
-                    new SuperstructureInterpolation(),
+                    new SuperstructureStow(),
                     new SpindexerStop(),
                     new HandoffStop()
                 ),
-                new SuperstructureFOTM().alongWith(new SwerveDriveFOTM(driver)),
+                new ParallelCommandGroup(
+                    new SuperstructureFOTM().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
+                        .andThen(new HandoffRun())
+                    .alongWith(new WaitUntilCommand(() -> handoff.atTolerance()))
+                        .andThen(new SpindexerRun()),
+                    new SwerveDriveFOTM(driver)
+                ),
                 () -> superstructure.getState() == SuperstructureState.FOTM
             ));
 
@@ -242,29 +279,29 @@ public class RobotContainer {
         // Manual Left Corner Scoring
         driver.getLeftButton()
             .whileTrue(new SwerveXMode())
-            .onTrue(new IntakeDeploy())
+            .onTrue(new IntakeRunRollers())
             .whileTrue(new SuperstructureLeftCorner().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
                 .andThen(new HandoffRun()).alongWith(new WaitUntilCommand(() -> handoff.atTolerance())
                 .andThen(new SpindexerRun())))
-            .onFalse(new SuperstructureInterpolation().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
+            .onFalse(new SuperstructureStow().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
 
         // Manual Right Corner Scoring
         driver.getRightButton()
             .whileTrue(new SwerveXMode())
-            .onTrue(new IntakeDeploy())
+            .onTrue(new IntakeRunRollers())
             .whileTrue(new SuperstructureRightCorner().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
                 .andThen(new HandoffRun()).alongWith(new WaitUntilCommand(() -> handoff.atTolerance())
                 .andThen(new SpindexerRun())))
-            .onFalse(new SuperstructureInterpolation().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
+            .onFalse(new SuperstructureStow().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
 
         // Manual KB Distance Scoring
         driver.getBottomButton()
             .whileTrue(new SwerveXMode())
-            .onTrue(new IntakeDeploy())
+            .onTrue(new IntakeRunRollers())
             .whileTrue(new SuperstructureKB().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
                 .andThen(new HandoffRun()).alongWith(new WaitUntilCommand(() -> handoff.atTolerance())
                 .andThen(new SpindexerRun())))
-            .onFalse(new SuperstructureInterpolation().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
+            .onFalse(new SuperstructureStow().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
 
     }
 

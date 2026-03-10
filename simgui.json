@@ -45,7 +45,16 @@
         "FieldPositions": {
           "open": true
         },
+        "Handoff": {
+          "open": true
+        },
+        "Spindexer": {
+          "open": true
+        },
         "States": {
+          "open": true
+        },
+        "Superstructure": {
           "open": true
         },
         "open": true
