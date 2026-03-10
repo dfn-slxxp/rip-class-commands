@@ -112,7 +112,7 @@ public class SpindexerImpl extends Spindexer {
                 leadMotor.setVoltage(voltageOverride.get());
             } else {
                 // DO NOT REMOVE BELOW LINE - needed to brake the motor in STOP state
-                if (atTolerance() && getState() == SpindexerState.STOP) {
+                if (getState() == SpindexerState.STOP) {
                     leadMotor.stopMotor();
                 } else {
                     leadMotor.setControl(controller.withVelocity(getTargetRPM() / Settings.SECONDS_IN_A_MINUTE));

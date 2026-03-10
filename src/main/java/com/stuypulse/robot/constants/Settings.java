@@ -178,7 +178,7 @@ public interface Settings {
             public final double ENCODER_TO_MECH = 32.0 / 3.0;
             public final double HOOD_HOMING_VOLTAGE = 2.0;
 
-            public final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(-0.052);
+            public final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(-0.14);
 
             public final Rotation2d FORWARD_SOFT_LIMIT = Rotation2d.fromDegrees(39.0);
             public final Rotation2d REVERSE_SOFT_LIMIT = Rotation2d.fromDegrees(20.0);
