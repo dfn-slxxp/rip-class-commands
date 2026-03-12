@@ -100,10 +100,10 @@ public interface Settings {
 
         public interface RPMInterpolation{
             double[][] distanceRPMInterpolationValues = {
-                {1.22, 2700.0},                                         //BLAY-APPROVED, LOCKED IN
-                {2.15, 2930.0},                                         //BLAY-APPROVED
+                {1.22, 2670.0},                                         //BLAY-APPROVED, LOCKED IN
+                {2.15, 2880.0},                                         //BLAY-APPROVED
                 {3.38, 3200},                                           //BLAY-APPROVED
-                {4.43, 3550.0},                                         //BLAY-APPROVED
+                {4.43, 3500.0},                                         //BLAY-APPROVED
                 {5.66, 3900.0}                                          //KEVIN-APPROVED
             };
         }
