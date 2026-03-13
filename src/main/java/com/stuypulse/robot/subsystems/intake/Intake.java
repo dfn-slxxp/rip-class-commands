@@ -96,6 +96,8 @@ public abstract class Intake extends SubsystemBase {
     public abstract void zeroPivotDeployed();
     public abstract void zeroPivotStowed();
 
+    public abstract void teleopInit();
+
     @Override
     public void periodic() {
         SmartDashboard.putString("States/Intake Pivot", getPivotState().toString());

@@ -33,8 +33,8 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import java.util.Optional;
 
 public class IntakeImpl extends Intake {
-    private final Motors.TalonFXConfig pivotConfig;
-    private final Motors.TalonFXConfig rollerConfig;
+    private Motors.TalonFXConfig pivotConfig;
+    private Motors.TalonFXConfig rollerConfig;
 
     private final TalonFX pivot;
     private final TalonFX rollerLeader;
@@ -95,6 +95,16 @@ public class IntakeImpl extends Intake {
         pivotStalling = BStream.create(
                 () -> Math.abs(pivot.getSupplyCurrent().getValueAsDouble()) > Settings.Intake.STALL_CURRENT_LIMIT)
                 .filtered(new BDebounce.Both(Settings.Intake.STALL_DEBOUNCE));
+    }
+
+    @Override
+    public void teleopInit() {
+        pivotConfig = pivotConfig.withSupplyCurrentLimitAmps(10);
+        pivotConfig.configure(pivot);
+
+        rollerConfig = rollerConfig.withSupplyCurrentLimitAmps(30);
+        rollerConfig.configure(rollerLeader);
+        rollerConfig.configure(rollerFollower);
     }
 
     @Override
