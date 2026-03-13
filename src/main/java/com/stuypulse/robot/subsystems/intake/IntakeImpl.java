@@ -55,7 +55,7 @@ public class IntakeImpl extends Intake {
                 .withInvertedValue(InvertedValue.Clockwise_Positive)
                 .withNeutralMode(NeutralModeValue.Brake)
 
-                .withSupplyCurrentLimitAmps(60)
+                .withSupplyCurrentLimitAmps(10.0) // was 60 on practice day
                 .withStatorCurrentLimitEnabled(false)
                 .withRampRate(0.25)
 
@@ -99,12 +99,12 @@ public class IntakeImpl extends Intake {
 
     @Override
     public void teleopInit() {
-        pivotConfig = pivotConfig.withSupplyCurrentLimitAmps(10);
-        pivotConfig.configure(pivot);
+        // pivotConfig = pivotConfig.withSupplyCurrentLimitAmps(10);
+        // pivotConfig.configure(pivot);
 
-        rollerConfig = rollerConfig.withSupplyCurrentLimitAmps(30);
-        rollerConfig.configure(rollerLeader);
-        rollerConfig.configure(rollerFollower);
+        // rollerConfig = rollerConfig.withSupplyCurrentLimitAmps(30);
+        // rollerConfig.configure(rollerLeader);
+        // rollerConfig.configure(rollerFollower);
     }
 
     @Override
@@ -150,13 +150,16 @@ public class IntakeImpl extends Intake {
             Gains.Intake.Pivot.kA
         );
 
+        boolean applyingVoltage = false;
         if (EnabledSubsystems.INTAKE.get()) {
             if (pivotVoltageOverride.isPresent()) {
                 pivot.setVoltage(pivotVoltageOverride.get());
             } else {
                 // PIVOT
+                
                 if (pivotState == PivotState.DEPLOY && getPivotAngle().getDegrees() <= Settings.Intake.ANGLE_THRESHOLD_FOR_HOLDING_VOLTAGE.getDegrees()) {
                     pivot.setControl(new VoltageOut(-Settings.Intake.PUSHDOWN_VOLTAGE)); // applying 3 volts
+                    applyingVoltage = true;
                 } else if (pivotState == PivotState.HOMING) {
                     pivot.setControl(new VoltageOut(-Settings.Intake.HOMING_VOLTAGE));
                 }
@@ -189,6 +192,7 @@ public class IntakeImpl extends Intake {
         if (Settings.DEBUG_MODE) {
             // PIVOT
             SmartDashboard.putBoolean("Intake/Voltage Override", pivotVoltageOverride.isPresent());
+            SmartDashboard.putBoolean("Intake/Pivot Voltage Applied Override", applyingVoltage);
 
             SmartDashboard.putNumber("Intake/Pivot Target Angle", getPivotState().getTargetAngle().getRotations());
 

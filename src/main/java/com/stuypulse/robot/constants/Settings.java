@@ -257,7 +257,7 @@ public interface Settings {
         public interface SOTM {
             public final int MAX_ITERATIONS = 10;
             double TIME_TOLERANCE = 1e-5;
-            SmartNumber UPDATE_DELAY = new SmartNumber("Superstructure/SOTM/update delay", 0.23);
+            SmartNumber UPDATE_DELAY = new SmartNumber("Superstructure/SOTM/update delay", 0.15);
         }
     }
     
@@ -268,7 +268,7 @@ public interface Settings {
 
         public interface Constraints {
             public final double MAX_VELOCITY_M_PER_S = 4.93; 
-            public final double MAX_VELOCITY_SOTM_M_PER_S = 2.00;
+            public final double MAX_VELOCITY_SOTM_M_PER_S = 1.5;
             public final double MAX_VELOCITY_FOTM_M_PER_S = 3.00;
 
             public final double MAX_ANGULAR_VEL_RAD_PER_S = Units.degreesToRadians(300.0);
@@ -276,7 +276,7 @@ public interface Settings {
             public final double MAX_ANGULAR_VEL_FOTM_RAD_PER_S = Units.degreesToRadians(150.0);
 
             public final double MAX_ACCEL_M_PER_S_SQUARED = 15.0;
-            public final double MAX_ACCEL_M_PER_S_SQUARED_SOTM = 5.0;
+            public final double MAX_ACCEL_M_PER_S_SQUARED_SOTM = 4.0;
             public final double MAX_ACCEL_M_PER_S_SQUARED_FOTM = 10.0;
             public final double MAX_ANGULAR_ACCEL_RAD_PER_S_SQUARED = Units.degreesToRadians(900.0);
 
