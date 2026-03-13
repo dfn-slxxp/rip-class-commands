@@ -186,9 +186,11 @@ public class LimelightVision extends SubsystemBase {
                         Pose2d robotPose = poseEstimate.pose;
                         double timestamp = poseEstimate.timestampSeconds;
 
-                        if (megaTagMode == MegaTagMode.MEGATAG1 && notNull && withinAngularVelocityTolerance && !withinInvalidPositionTolerance) {
+                        boolean isAcceptablePose = notNull && withinAngularVelocityTolerance && !withinInvalidPositionTolerance;
+
+                        if (megaTagMode == MegaTagMode.MEGATAG1 && isAcceptablePose) {
                             CommandSwerveDrivetrain.getInstance().addVisionMeasurement(robotPose, timestamp, Settings.Vision.MT1_STDEVS);
-                        } else {
+                        } else if (megaTagMode == MegaTagMode.MEGATAG2 && isAcceptablePose) {
                             CommandSwerveDrivetrain.getInstance().addVisionMeasurement(robotPose, timestamp, Settings.Vision.MT2_STDEVS);
                         }
 

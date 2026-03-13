@@ -103,15 +103,16 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().schedule(new SetMegaTagMode(LimelightVision.MegaTagMode.MEGATAG2));
-        CommandScheduler.getInstance().schedule(new IntakeTeleopInit());
+        // CommandScheduler.getInstance().schedule(new IntakeTeleopInit());
         CommandScheduler.getInstance().schedule(new SwerveTeleopInit());
 
+        
         if (auto != null) {
             auto.cancel();
         }
 
     }
-
+// 
     @Override
     public void teleopPeriodic() {}
 
