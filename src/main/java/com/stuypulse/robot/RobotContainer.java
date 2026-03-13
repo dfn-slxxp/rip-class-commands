@@ -83,7 +83,7 @@ public class RobotContainer {
         SmartBoolean SHOOTER = new SmartBoolean("Enabled Subsystems/Shooter Is Enabled", true);
 
         SmartBoolean BACK_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Back Limelight Is Enabled", true);
-        SmartBoolean LEFT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Left Limelight Is Enabled", false);
+        SmartBoolean LEFT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Left Limelight Is Enabled", true);
         SmartBoolean RIGHT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Right Limelight Is Enabled", true);
     }
 
@@ -170,10 +170,10 @@ public class RobotContainer {
 
         // Intake Deploy
         driver.getRightTriggerButton()
-            .onTrue(new IntakeDeploy())
-            .onTrue(new SuperstructureStow()                    
-                    .alongWith(new SpindexerStop()) //TODO: test this logic
-                    .alongWith(new HandoffStop())); // TURNS OFF SOTM
+            .onTrue(new IntakeDeploy());
+            // .onTrue(new SuperstructureStow()                    
+            //         .alongWith(new SpindexerStop()) //TODO: test this logic
+            //         .alongWith(new HandoffStop())); // TURNS OFF SOTM
         
         // Reset Heading
         driver.getDPadUp()
@@ -190,7 +190,10 @@ public class RobotContainer {
             .onFalse(new IntakeRunRollers());
 
         // Ferrying In Place
-        // driver.getDPadRight()
+        driver.getDPadRight()
+            .onTrue(new SuperstructureStow()
+                .alongWith(new HandoffStop())
+                .alongWith(new SpindexerStop()));
         //     .whileTrue(new SwerveXMode())
         //     .onTrue(new IntakeRunRollers())
         //     .whileTrue(new SuperstructureInterpolation() // CURRENTLY, THIS PROVES THE FERRYING STATE IS BLOCKING SPINDEXER AND HANDOFF SOMEWHERE IN THE CODE

@@ -8,6 +8,7 @@ package com.stuypulse.robot.subsystems.vision;
 import com.stuypulse.stuylib.network.SmartBoolean;
 
 import com.stuypulse.robot.Robot;
+import com.stuypulse.robot.commands.vision.SetIMUMode;
 import com.stuypulse.robot.constants.Cameras;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -37,10 +39,17 @@ public class LimelightVision extends SubsystemBase{
 
     private String[] names;
     private SmartBoolean enabled;
+    private boolean dataBad;
     // private SmartBoolean[] camerasEnabled;
     private MegaTagMode megaTagMode;
     private Pose2d[] arrayOfLimelightPoses;
+    // private Pose2d leftLimelightPose;
+    // private Pose2d backLimelightPose;
+    // private Pose2d rightLimelightPose;
     private final StructArrayPublisher<Pose2d> arrayPublisher;
+    // private StructPublisher<Pose2d> leftLimelightPosePub;
+    // private StructPublisher<Pose2d> backLimelightPosePub;
+    // private StructPublisher<Pose2d> rightLimelightPosePub;
 
     public enum MegaTagMode {
         MEGATAG1,
@@ -51,8 +60,14 @@ public class LimelightVision extends SubsystemBase{
         arrayPublisher = NetworkTableInstance.getDefault()
         .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
 
+        // leftLimelightPosePub = NetworkTableInstance.getDefault().getStructTopic("Left Limelight", Pose2d.struct);
+
+        // leftLimelightPose = NetworkTableInstance.getDefault().getStructTopic("Left Limelight", Pose2d.struct);
+        // leftLimelightPose = NetworkTableInstance.getDefault().getStructTopic("Left Limelight", Pose2d.struct);
+
         arrayOfLimelightPoses = new Pose2d[Cameras.LimelightCameras.length];
         names = new String[Cameras.LimelightCameras.length];
+        dataBad = false;
 
         for (int i = 0; i < Cameras.LimelightCameras.length; i++) {
             names[i] = Cameras.LimelightCameras[i].getName();
@@ -70,6 +85,7 @@ public class LimelightVision extends SubsystemBase{
             arrayOfLimelightPoses[i] = new Pose2d();
         }
 
+
         // camerasEnabled = new SmartBoolean[Cameras.LimelightCameras.length];
         
         // for (int i = 0; i < camerasEnabled.length; i++) {
@@ -80,6 +96,7 @@ public class LimelightVision extends SubsystemBase{
 
         enabled = new SmartBoolean("Vision/Is Enabled", true);
         megaTagMode = MegaTagMode.MEGATAG1;
+        setIMUMode(1);
     }
 
     public void setTagWhitelist(int... ids) {
@@ -163,7 +180,15 @@ public class LimelightVision extends SubsystemBase{
                     }
                     
                     // Adding to pose estimator
-                    if (poseEstimate != null && poseEstimate.tagCount > 0) {
+                    if (poseEstimate.pose.getX() == 0.0 && poseEstimate.pose.getY() == 0.0) {
+                        dataBad = true;
+                    }
+                    else {
+                        dataBad = false;
+                    }
+
+
+                    if (poseEstimate != null && poseEstimate.tagCount > 0 && (poseEstimate.pose.getX() != 0.0 && poseEstimate.pose.getY() != 0.0)) {
                         Pose2d robotPose = poseEstimate.pose;
                         double timestamp = poseEstimate.timestampSeconds;
                         
@@ -173,11 +198,15 @@ public class LimelightVision extends SubsystemBase{
                             CommandSwerveDrivetrain.getInstance().addVisionMeasurement(robotPose, timestamp, Settings.Vision.MT2_STDEVS);
                         }
 
+
                         arrayOfLimelightPoses[i] = robotPose;
                         
                         SmartDashboard.putNumber("Vision/Pose X Component", robotPose.getX());
                         SmartDashboard.putNumber("Vision/Pose Y Component", robotPose.getY());
                         SmartDashboard.putNumber("Vision/Pose Theta (Degrees)", robotPose.getRotation().getDegrees());
+                        SmartDashboard.putNumber("Vision/Pose Estimate X " + limelightName, poseEstimate.pose.getX());
+                        SmartDashboard.putNumber("Vision/Pose Estimate Y " + limelightName, poseEstimate.pose.getY());
+                        SmartDashboard.putNumber("Vision/Pose Estimate Theta " + limelightName, poseEstimate.pose.getRotation().getDegrees());
 
                         SmartDashboard.putBoolean("Vision/" + names[i] + " Has Data", true);
                     } else {
@@ -199,6 +228,8 @@ public class LimelightVision extends SubsystemBase{
                         // this is just the yaw of the internal imu 
                     SmartDashboard.putNumber("Vision/Limelight Yaw " + limelightName, LimelightHelpers.getIMUData(limelightName).Yaw);
                     SmartDashboard.putNumber("Vision/Limelight Robot Yaw Passed in", (CommandSwerveDrivetrain.getInstance().getPose().getRotation().getDegrees() + (Robot.isBlue() ? 0 : 180)) % 360);
+                    SmartDashboard.putNumber("Vision/Limelight Robot Yaw Passed in", (CommandSwerveDrivetrain.getInstance().getPose().getRotation().getDegrees() + (Robot.isBlue() ? 0 : 180)) % 360);
+                    SmartDashboard.putBoolean("Vision/Limelight Data is bad", dataBad);
                 }
             }
             if (Settings.DEBUG_MODE) {

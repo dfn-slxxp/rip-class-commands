@@ -70,7 +70,7 @@ public class IntakeImpl extends Intake {
         rollerConfig = new Motors.TalonFXConfig()
                 .withInvertedValue(InvertedValue.CounterClockwise_Positive)
                 .withNeutralMode(NeutralModeValue.Brake)
-                .withSupplyCurrentLimitAmps(45.0)
+                .withSupplyCurrentLimitAmps(30.0)
                 .withStatorCurrentLimitEnabled(false)
                 .withRampRate(0.50);
 

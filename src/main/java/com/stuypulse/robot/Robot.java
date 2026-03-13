@@ -41,7 +41,6 @@ public class Robot extends TimedRobot {
 
         DataLogManager.start();
         SignalLogger.start();
-        CommandScheduler.getInstance().schedule(new SetIMUMode(Settings.Vision.RESET_IMU_INDEX));
     }
 
     @Override
@@ -76,8 +75,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        CommandScheduler.getInstance().schedule(new SetIMUMode(0));
-
     }
 
     /***********************/
@@ -88,7 +85,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
 
         CommandScheduler.getInstance().schedule(new SetMegaTagMode(LimelightVision.MegaTagMode.MEGATAG2));
-        CommandScheduler.getInstance().schedule(new SetIMUMode(Settings.Vision.INTERNAL_EXTERNAL_ASSIST_INDEX));
+        // CommandScheduler.getInstance().schedule(new SetIMUMode(3));
 
         auto = robot.getAutonomousCommand();
 
@@ -113,7 +110,6 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
 
         CommandScheduler.getInstance().schedule(new SetMegaTagMode(LimelightVision.MegaTagMode.MEGATAG2));
-        CommandScheduler.getInstance().schedule(new SetIMUMode(0));
 
         if (auto != null) {
             auto.cancel();
