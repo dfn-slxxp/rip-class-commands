@@ -44,6 +44,8 @@ import com.stuypulse.robot.commands.vision.EnableRightLimelight;
 import com.stuypulse.robot.commands.vision.ResetLimelightIMU;
 import com.stuypulse.robot.commands.vision.SetIMUMode;
 import com.stuypulse.robot.commands.vision.SetMegaTagMode;
+import com.stuypulse.robot.commands.vision.WhitelistAllTags;
+import com.stuypulse.robot.commands.vision.WhitelistOutpostTags;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.handoff.Handoff;
@@ -145,6 +147,10 @@ public class RobotContainer {
         SmartDashboard.putData("Robot/Set Left LL PF", new EnableLeftLimelight());
         SmartDashboard.putData("Robot/Set Right LL PF", new EnableRightLimelight());
         SmartDashboard.putData("Robot/Set Back LL PF", new EnableBackLimelight());
+
+        SmartDashboard.putData("Robot/Whitelist Outpost Tags", new WhitelistOutpostTags("limelight-left"));
+        SmartDashboard.putData("Robot/Whitelist All Tags", new WhitelistAllTags("limelight-left"));
+        // SmartDashboard.putData("Robot/Whitelist Trench Tags", new WhitelistOutpostTags("limelight-left"));
 
         SmartDashboard.putData("Robot/Handoff Reverse", 
             new ConditionalCommand(
