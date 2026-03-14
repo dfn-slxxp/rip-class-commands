@@ -168,6 +168,7 @@ public class SOTMCalculator {
     public static MoveSolution solveFOTM(
         Pose2d turretPose,
         Pose2d targetPose,
+        Rotation2d robotHeading,
         ChassisSpeeds fieldRelativeSpeeds,
         int maxIterations,
         double timeTolerance) {
@@ -210,7 +211,7 @@ public class SOTMCalculator {
 
         return new MoveSolution(
             sol.targetHoodAngle(),
-            TurretAngleCalculator.getPointAtTargetAngle(virtualTranslation, turretTranslation),
+            TurretAngleCalculator.getPointAtTargetAngle(virtualTranslation, turretTranslation, robotHeading),
             sol.targetRPM(),
             virtualPose,
             sol.flightTimeSeconds()
@@ -330,6 +331,7 @@ public class SOTMCalculator {
         ferrySol = solveFOTM(
             futureTurretPose,
             ferryPose,
+            robotPose.getRotation(),
             fieldRelativeSpeeds,
             Settings.Superstructure.SOTM.MAX_ITERATIONS,
             Settings.Superstructure.SOTM.TIME_TOLERANCE
