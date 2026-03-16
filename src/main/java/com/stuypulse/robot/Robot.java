@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        if (periodicCounter % 50 == 0) {
+        if (periodicCounter % Settings.LOGGING_FREQUENCY == 0) {
             selectedAuto = robot.getAutonomousCommand();
 
             switch (selectedAuto.getName()) {
@@ -102,8 +102,6 @@ public class Robot extends TimedRobot {
                     CommandScheduler.getInstance().schedule(new WhitelistAllTagsForAllCameras());
                     break;
             }
-
-            System.out.println(selectedAuto.getName());
         }
     }
 
@@ -115,9 +113,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         CommandScheduler.getInstance().schedule(new SetMegaTagMode(LimelightVision.MegaTagMode.MEGATAG2));
         CommandScheduler.getInstance().schedule(new SwerveAutonInit());
-        CommandScheduler.getInstance().schedule(new WhitelistAllTags("limelight-left"));
-        CommandScheduler.getInstance().schedule(new WhitelistAllTags("limelight-right"));
-        CommandScheduler.getInstance().schedule(new WhitelistAllTags("limelight-back"));
+        CommandScheduler.getInstance().schedule(new WhitelistAllTagsForAllCameras());
 
         auto = robot.getAutonomousCommand();
 
@@ -139,14 +135,13 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().schedule(new SetMegaTagMode(LimelightVision.MegaTagMode.MEGATAG2));
+        CommandScheduler.getInstance().schedule(new WhitelistAllTagsForAllCameras());
 
-        
         if (auto != null) {
             auto.cancel();
         }
-
     }
-// 
+
     @Override
     public void teleopPeriodic() {}
 

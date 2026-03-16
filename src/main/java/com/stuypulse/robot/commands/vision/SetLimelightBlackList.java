@@ -24,7 +24,7 @@ public class SetLimelightBlackList extends InstantCommand {
 
     @Override
     public void initialize() {
-        vision.setTagWhitelist(new int[]{}, limelightName);
+        vision.setTagWhitelist(new int[]{516}, limelightName);
     }
 
     @Override

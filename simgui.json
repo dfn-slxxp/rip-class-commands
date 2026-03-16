@@ -23,6 +23,7 @@
       "/SmartDashboard/Robot/Spindexer Reverse": "Command",
       "/SmartDashboard/Robot/WL Outpost Tags Left-Camera": "Command",
       "/SmartDashboard/Robot/WL Tower Tags Right-Camera": "Command",
+      "/SmartDashboard/Robot/Whitelist All Cameras": "Command",
       "/SmartDashboard/Robot/Zero Hood Encoder": "Command",
       "/SmartDashboard/Robot/Zero Pivot Encoder at Lower Limit (Deployed)": "Command",
       "/SmartDashboard/Robot/Zero Pivot Encoder at Upper Limit (Stowed)": "Command",
@@ -63,6 +64,9 @@
           "open": true
         },
         "Handoff": {
+          "open": true
+        },
+        "Intake": {
           "open": true
         },
         "States": {
