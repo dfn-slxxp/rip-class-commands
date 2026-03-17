@@ -574,25 +574,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                         Settings.Superstructure.Turret.TURRET_OFFSET.getTranslation().rotateBy(pose.getRotation())),
                 pose.getRotation().plus(Turret.getInstance().getAngle()));
 
-        robotPose.set(getPose());
+        robotPose.set(pose);
 
         turret2d.setPose(Robot.isBlue() ? turretPose : Field.transformToOppositeAlliance(turretPose));
 
         ChassisSpeeds chassisSpeeds = getChassisSpeeds();
+        Vector2D fieldRelativeSpeeds = getFieldRelativeSpeeds();
         SmartDashboard.putNumber("Swerve/Velocity Robot Relative X (m per s)", chassisSpeeds.vxMetersPerSecond);
         SmartDashboard.putNumber("Swerve/Velocity Robot Relative Y (m per s)", chassisSpeeds.vyMetersPerSecond);
 
-        SmartDashboard.putNumber("Swerve/Velocity Field Relative X (m per s)", getFieldRelativeSpeeds().x);
+        SmartDashboard.putNumber("Swerve/Velocity Field Relative X (m per s)", fieldRelativeSpeeds.x);
         SmartDashboard.putNumber("Swerve/Field Relative Rotation", pose.getRotation().getDegrees());
         SmartDashboard.putNumber("Swerve/Velocity Field Relative Y (m per s)", getFieldRelativeSpeeds().y);
 
         SmartDashboard.putNumber("Swerve/Angular Velocity (rad per s)", chassisSpeeds.omegaRadiansPerSecond);
         SmartDashboard.putNumber("Swerve/Distance From Hub (meters)",
-                Field.hubCenter.getTranslation().getDistance(getPose().getTranslation()));
+                Field.hubCenter.getTranslation().getDistance(pose.getTranslation()));
 
         Field.FIELD2D.getRobotObject().setPose(Robot.isBlue() ? pose : Field.transformToOppositeAlliance(pose));
 
-        if (Robot.getPeriodicCounter() % Settings.LOGGING_FREQUENCY == 0) {
+        if (Robot.getPeriodicCounter() % Settings.LOGGING_FREQUENCY == 0 ) {
             SmartDashboard.putBoolean("FieldPositions/isBehindTower", isBehindTower());
             SmartDashboard.putBoolean("FieldPositions/isUnderTrench", isUnderTrench());
             SmartDashboard.putBoolean("FieldPositions/isBehindHub", isBehindHub());
@@ -615,7 +616,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 SmartDashboard.putNumber(prefix + "/Angle (deg)", current.angle.getDegrees() % 360);
                 SmartDashboard.putNumber(prefix + "/Target Angle (deg)", target.angle.getDegrees() % 360);
 
-                if (Settings.DEBUG_MODE) {
+                if (Settings.DEBUG_MODE.get()) {
                     SmartDashboard.putNumber(prefix + "/Stator Current",
                             getModule(i).getDriveMotor().getStatorCurrent().getValueAsDouble());
                     SmartDashboard.putNumber(prefix + "/Supply Current",

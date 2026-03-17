@@ -53,6 +53,7 @@ public class LimelightVision extends SubsystemBase {
 
     private boolean hasData;
     private BStream debouncedHasData;
+    private boolean poseSeeded;
 
     public enum MegaTagMode {
         MEGATAG1,
@@ -90,6 +91,7 @@ public class LimelightVision extends SubsystemBase {
         debouncedHasData = BStream.create(
                 () -> hasData)
                 .filtered(new BDebounce.Both(Settings.Vision.BUZZ_DEBOUNCE));
+        poseSeeded = false;
     }
 
     public void setAllLTagWhitelist(int... ids) {
@@ -196,15 +198,15 @@ public class LimelightVision extends SubsystemBase {
                 if (Cameras.LimelightCameras[i].isEnabled()) {
                     String limelightName = names[i];
 
-                    // Seed robot heading (used by MT2)
-                    LimelightHelpers.SetRobotOrientation(
-                            limelightName,
-                            (CommandSwerveDrivetrain.getInstance().getPose().getRotation().getDegrees() + (Robot.isBlue() ? 0 : 180)) % 360,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0
+                        // Seed robot heading (used by MT2)
+                        LimelightHelpers.SetRobotOrientation(
+                                limelightName,
+                                (CommandSwerveDrivetrain.getInstance().getPose().getRotation().getDegrees() + (Robot.isBlue() ? 0 : 180)) % 360,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
                     );
 
                     PoseEstimate poseEstimate;
@@ -284,7 +286,7 @@ public class LimelightVision extends SubsystemBase {
                     SmartDashboard.putNumber("Vision/Limelight Yaw", LimelightHelpers.getIMUData(limelightName).Yaw);
                 }
 
-                if (Settings.DEBUG_MODE) {
+                if (Settings.DEBUG_MODE.get()) {
                     String limelightName = names[i];
                     SmartDashboard.putString("Vision/MegaTag Mode", megaTagMode.toString());
                     // this yaw is seems to be the robot yaw passed into the LL

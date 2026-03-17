@@ -90,7 +90,6 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
         if (periodicCounter % Settings.LOGGING_FREQUENCY == 0) {
             selectedAuto = robot.getAutonomousCommand();
-
             switch (selectedAuto.getName()) {
                 case "LeftTwoCycle":
                     CommandScheduler.getInstance().schedule(new WhitelistRoutineLeftSideAuto());
@@ -99,7 +98,7 @@ public class Robot extends TimedRobot {
                     CommandScheduler.getInstance().schedule(new WhitelistRoutineRightSideAuto());
                     break;
                 default:
-                    CommandScheduler.getInstance().schedule(new WhitelistAllTagsForAllCameras());
+                    if (!CommandScheduler.getInstance().isScheduled(new WhitelistAllTagsForAllCameras())) { CommandScheduler.getInstance().schedule(new WhitelistAllTagsForAllCameras()); }
                     break;
             }
         }
