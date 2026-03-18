@@ -150,13 +150,14 @@ public class TurretImpl extends Turret {
     public void periodic() {
         super.periodic();
 
-        turretConfig.updateGainsConfig(turretMotor, 1, 
-        Gains.Superstructure.Turret.slot1.kP, 
-        Gains.Superstructure.Turret.slot1.kI,
-        Gains.Superstructure.Turret.slot1.kD,
-        Gains.Superstructure.Turret.slot1.kS, 
-        Gains.Superstructure.Turret.slot1.kV, 
-        Gains.Superstructure.Turret.slot1.kA);
+        turretConfig.updateGainsConfig(
+            turretMotor, 1, 
+            Gains.Superstructure.Turret.slot1.kP, 
+            Gains.Superstructure.Turret.slot1.kI,
+            Gains.Superstructure.Turret.slot1.kD,
+            Gains.Superstructure.Turret.slot1.kS, 
+            Gains.Superstructure.Turret.slot1.kV, 
+            Gains.Superstructure.Turret.slot1.kA);
 
         if (!hasUsedAbsoluteEncoder) {
             seedTurret();
@@ -190,18 +191,17 @@ public class TurretImpl extends Turret {
         SmartDashboard.putNumber("Superstructure/Turret/Relative Encoder Position (Rot)", turretMotor.getPosition().getValueAsDouble() * 360.0);
         SmartDashboard.putNumber("Superstructure/Turret/Closed Loop Error (deg)", turretMotor.getClosedLoopError().getValueAsDouble() * 360.0);
         
-            SmartDashboard.putNumber("Superstructure/Turret/Encoder18t Abs Position (Rot)", encoder18t.getAbsolutePosition().getValueAsDouble());
-            SmartDashboard.putNumber("Superstructure/Turret/Encoder17t Abs Position (Rot)", encoder17t.getAbsolutePosition().getValueAsDouble());
-            // SmartDashboard.putNumber("Superstructure/Turret/Vector Space Position (Deg)", getVectorSpaceAngle().getDegrees());
-            
-            SmartDashboard.putNumber("Superstructure/Turret/Voltage (volts)", turretMotor.getMotorVoltage().getValueAsDouble());
-            
-            SmartDashboard.putNumber("Superstructure/Turret/Wrapped Target Angle (deg)", actualTargetDeg);
-            if (Settings.DEBUG_MODE.get()) {      
-                SmartDashboard.putNumber("Superstructure/Turret/Stator Current (amps)", turretMotor.getStatorCurrent().getValueAsDouble());
-                SmartDashboard.putNumber("Superstructure/Turret/Supply Curren (amps)", turretMotor.getSupplyCurrent().getValueAsDouble());
-            }
+        SmartDashboard.putNumber("Superstructure/Turret/Encoder18t Abs Position (Rot)", encoder18t.getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("Superstructure/Turret/Encoder17t Abs Position (Rot)", encoder17t.getAbsolutePosition().getValueAsDouble());
+        // SmartDashboard.putNumber("Superstructure/Turret/Vector Space Position (Deg)", getVectorSpaceAngle().getDegrees());
         
+        SmartDashboard.putNumber("Superstructure/Turret/Voltage (volts)", turretMotor.getMotorVoltage().getValueAsDouble());
+        
+        SmartDashboard.putNumber("Superstructure/Turret/Wrapped Target Angle (deg)", actualTargetDeg);
+        if (Settings.DEBUG_MODE.get()) {      
+            SmartDashboard.putNumber("Superstructure/Turret/Stator Current (amps)", turretMotor.getStatorCurrent().getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Turret/Supply Curren (amps)", turretMotor.getSupplyCurrent().getValueAsDouble());
+        }
     }
     
     private void setVoltageOverride(Optional<Double> volts) {

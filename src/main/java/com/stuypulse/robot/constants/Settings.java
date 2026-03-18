@@ -69,14 +69,13 @@ public interface Settings {
     }
 
     public interface Spindexer {
-        double FORWARD_SPEED = 4500.0;
+        double FORWARD_SPEED = 1500.0;
         double REVERSE_SPEED = -4500.0;
         double STOP_SPEED = 0.0;
 
         double RPM_TOLERANCE = 800.0;
         double TOLERANCE_TO_START_INTAKE_ROLLERS_DURING_SCORING_ROUTINE = 1500.0;
         double STALL_CURRENT_LIMIT = 40.0; // random number as of 3/9
-
 
         /* CONSTANTS */
         double GEAR_RATIO = 8.0 / 1.0;
