@@ -7,7 +7,7 @@ package com.stuypulse.robot.subsystems.superstructure.hood;
 
 import com.stuypulse.stuylib.streams.booleans.BStream;
 import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
-
+import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Gains;
 import com.stuypulse.robot.constants.Motors;
@@ -153,6 +153,9 @@ public class HoodImpl extends Hood {
             SmartDashboard.putNumber("Superstructure/Hood/Stator Current (amps)", hoodMotor.getStatorCurrent().getValueAsDouble());            
             SmartDashboard.putNumber("Superstructure/Hood/Raw Motor Encoder Value", hoodMotor.getPosition().getValueAsDouble());
         }
+
+        Robot.getEnergyUtil().logEnergyUsage(getSubsystem(), getCurrentDraw());
+
     }
 
     private void setVoltageOverride(Optional<Double> voltageOverride) {

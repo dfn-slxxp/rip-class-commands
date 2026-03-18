@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * inspired by Mechanical Advantage
  * https://www.chiefdelphi.com/t/frc-6328-mechanical-advantage-2026-build-thread/509595/699?u=dandon
  * </p>
- * 
- * @author Yunus
  */
 public class EnergyUtil {
     private double totalCurrent = 0.0;

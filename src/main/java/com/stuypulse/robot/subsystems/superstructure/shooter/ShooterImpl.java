@@ -140,6 +140,8 @@ public class ShooterImpl extends Shooter {
             SmartDashboard.putNumber("Superstructure/Shooter/Follower Supply Current (amps)", shooterFollower.getSupplyCurrent().getValueAsDouble());
             SmartDashboard.putNumber("Superstructure/Shooter/Follower Stator Current (amps)", shooterFollower.getStatorCurrent().getValueAsDouble());
         }
+
+        Robot.getEnergyUtil().logEnergyUsage(getSubsystem(), getCurrentDraw());
     }
 
     private void setVoltageOverride(Optional<Double> voltageOverride) {

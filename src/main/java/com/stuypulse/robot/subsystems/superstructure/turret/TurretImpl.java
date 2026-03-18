@@ -5,6 +5,7 @@
 /***************************************************************/
 package com.stuypulse.robot.subsystems.superstructure.turret;
 
+import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Gains;
 import com.stuypulse.robot.constants.Motors;
@@ -200,6 +201,9 @@ public class TurretImpl extends Turret {
                 SmartDashboard.putNumber("Superstructure/Turret/Stator Current (amps)", turretMotor.getStatorCurrent().getValueAsDouble());
                 SmartDashboard.putNumber("Superstructure/Turret/Supply Curren (amps)", turretMotor.getSupplyCurrent().getValueAsDouble());
             }
+        
+        Robot.getEnergyUtil().logEnergyUsage(getSubsystem(), getCurrentDraw());
+
     }
     
     private void setVoltageOverride(Optional<Double> volts) {
