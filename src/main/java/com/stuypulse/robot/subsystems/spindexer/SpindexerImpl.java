@@ -7,7 +7,7 @@ package com.stuypulse.robot.subsystems.spindexer;
 
 import com.stuypulse.stuylib.streams.booleans.BStream;
 import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
-
+import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Gains;
 import com.stuypulse.robot.constants.Motors;
@@ -152,6 +152,8 @@ public class SpindexerImpl extends Spindexer {
             SmartDashboard.putNumber("Spindexer/Follower Stator Current (amps)", followerMotor.getStatorCurrent().getValueAsDouble());
             SmartDashboard.putBoolean("Spindexer/Should Stop?", shouldStop());
         }
+
+        Robot.getEnergyUtil().logEnergyUsage(getSubsystem(), getCurrentDraw());
     }
 
     public boolean isStalling() {

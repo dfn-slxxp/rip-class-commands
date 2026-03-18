@@ -220,6 +220,7 @@ public class IntakeImpl extends Intake {
             }
         }
 
+        Robot.getEnergyUtil().logEnergyUsage(getSubsystem(), getCurrentDraw());
     }
 
     @Override

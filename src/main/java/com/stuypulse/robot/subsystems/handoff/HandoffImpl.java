@@ -7,7 +7,7 @@ package com.stuypulse.robot.subsystems.handoff;
 
 import com.stuypulse.stuylib.streams.booleans.BStream;
 import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
-
+import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Gains;
 import com.stuypulse.robot.constants.Motors;
@@ -101,6 +101,8 @@ public class HandoffImpl extends Handoff {
             SmartDashboard.putNumber("Handoff/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
             SmartDashboard.putNumber("Handoff/Stator Current", motor.getStatorCurrent().getValueAsDouble());
         }
+
+        Robot.getEnergyUtil().logEnergyUsage(getSubsystem(), getCurrentDraw());
     }
     
     @Override

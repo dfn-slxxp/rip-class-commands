@@ -12,6 +12,7 @@ import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.Vector2D;
 
 import com.stuypulse.robot.Robot;
+import com.stuypulse.robot.RobotContainer;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Gains;
@@ -575,6 +576,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 pose.getRotation().plus(Turret.getInstance().getAngle()));
 
         robotPose.set(pose);
+        Robot.getEnergyUtil().logEnergyUsage(this.getName() + " drive", getTotalDriveSupplyCurrent());
+        Robot.getEnergyUtil().logEnergyUsage(this.getName() + " turn", getTotalDriveSupplyCurrent());
 
         turret2d.setPose(Robot.isBlue() ? turretPose : Field.transformToOppositeAlliance(turretPose));
 

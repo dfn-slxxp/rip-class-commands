@@ -417,8 +417,7 @@ public class RobotContainer {
                                     spindexer.getCurrentDraw() +
                                     superstructure.getCurrentDraw() +
                                     swerve.getTotalDriveSupplyCurrent() +
-                                    swerve.getTotalSteerSupplyCurrent();
-                                    
+                                    swerve.getTotalSteerSupplyCurrent();      
         SmartDashboard.putNumber("Robot/Total Current Draw", totalCurrentDraw);
     }
 }
