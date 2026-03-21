@@ -211,4 +211,9 @@ public class IntakeSim extends Intake {
             getInstance()
         );
     }
+
+    @Override
+    public double getCurrentDraw() {
+        return 0;
+    }
 }
