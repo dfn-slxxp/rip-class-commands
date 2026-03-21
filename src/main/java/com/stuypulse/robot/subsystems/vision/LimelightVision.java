@@ -42,6 +42,7 @@ public class LimelightVision extends SubsystemBase {
 
     private String[] names;
     private SmartBoolean enabled;
+    private int maxTagCount;
     private MegaTagMode megaTagMode;
 
     private Pose2d[] limelightPoseArray;
@@ -65,6 +66,8 @@ public class LimelightVision extends SubsystemBase {
         backLimelightPosePublisher = NetworkTableInstance.getDefault().getStructTopic("Limelight/Pose Back", Pose2d.struct).publish();
 
         names = new String[Cameras.LimelightCameras.length];
+
+        maxTagCount = 0;
 
         for (int i = 0; i < Cameras.LimelightCameras.length; i++) {
             names[i] = Cameras.LimelightCameras[i].getName();
@@ -107,6 +110,10 @@ public class LimelightVision extends SubsystemBase {
 
     public void setMegaTagMode(MegaTagMode mode) {
         this.megaTagMode = mode;
+    }
+
+    public int getMaxTagCount() {
+        return this.maxTagCount;
     }
 
     public void setIMUMode(int mode) {
@@ -190,6 +197,8 @@ public class LimelightVision extends SubsystemBase {
     public void periodic() {
         if (enabled.get()) {
             hasData = false;
+
+        this.maxTagCount = 0;
 
             for (int i = 0; i < names.length; i++) {
                 if (Cameras.LimelightCameras[i].isEnabled()) {

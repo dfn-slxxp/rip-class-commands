@@ -8,9 +8,10 @@ package com.stuypulse.robot;
 import com.stuypulse.robot.commands.BuzzController;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.auton.regular.DepotAuton;
+import com.stuypulse.robot.commands.auton.regular.LeftBumpTwoCycle;
 import com.stuypulse.robot.commands.auton.regular.LeftTwoCycle;
+import com.stuypulse.robot.commands.auton.regular.RightBumpTwoCycle;
 import com.stuypulse.robot.commands.auton.regular.RightTwoCycle;
-import com.stuypulse.robot.commands.auton.regular.SecretRightTwoCycle;
 import com.stuypulse.robot.commands.handoff.HandoffReverse;
 import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
@@ -22,6 +23,8 @@ import com.stuypulse.robot.commands.intake.IntakeSetState;
 import com.stuypulse.robot.commands.intake.IntakeStopRollers;
 import com.stuypulse.robot.commands.intake.ZeroPivotDeployed;
 import com.stuypulse.robot.commands.intake.ZeroPivotStowed;
+import com.stuypulse.robot.commands.leds.LEDApplyPattern;
+import com.stuypulse.robot.commands.leds.LEDDefaultCommand;
 import com.stuypulse.robot.commands.spindexer.SpindexerReverse;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
@@ -51,10 +54,12 @@ import com.stuypulse.robot.commands.vision.WhitelistOutpostTags;
 import com.stuypulse.robot.commands.vision.WhitelistTowerTags;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.handoff.Handoff;
 import com.stuypulse.robot.subsystems.handoff.Handoff.HandoffState;
 import com.stuypulse.robot.subsystems.intake.Intake;
 import com.stuypulse.robot.subsystems.intake.Intake.RollerState;
+import com.stuypulse.robot.subsystems.leds.LEDController;
 import com.stuypulse.robot.subsystems.spindexer.Spindexer;
 import com.stuypulse.robot.subsystems.spindexer.Spindexer.SpindexerState;
 import com.stuypulse.robot.subsystems.superstructure.Superstructure;
@@ -81,8 +86,11 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+
+
 public class RobotContainer {
     public interface EnabledSubsystems {
+
         SmartBoolean SWERVE = new SmartBoolean("Enabled Subsystems/Swerve Is Enabled", true);
         SmartBoolean TURRET = new SmartBoolean("Enabled Subsystems/Turret Is Enabled", true);
         SmartBoolean HANDOFF = new SmartBoolean("Enabled Subsystems/Handoff Is Enabled", true);
@@ -90,10 +98,12 @@ public class RobotContainer {
         SmartBoolean SPINDEXER = new SmartBoolean("Enabled Subsystems/Spindexer Is Enabled", true);
         SmartBoolean HOOD = new SmartBoolean("Enabled Subsystems/Hood Is Enabled", true);
         SmartBoolean SHOOTER = new SmartBoolean("Enabled Subsystems/Shooter Is Enabled", true);
+        SmartBoolean LEDS = new SmartBoolean("Enabled Subsystems/LEDs Is Enabled", true);
 
         SmartBoolean BACK_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Back Limelight Is Enabled", true);
         SmartBoolean LEFT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Left Limelight Is Enabled", true);
         SmartBoolean RIGHT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Right Limelight Is Enabled", true);
+
     }
 
     // Gamepads
@@ -112,10 +122,12 @@ public class RobotContainer {
     private final Shooter shooter = Shooter.getInstance();
     private final Hood hood = Hood.getInstance();
 
+    private final LEDController leds = LEDController.getInstance();
+
     // Autons
     private static SendableChooser<Command> autonChooser = new SendableChooser<>();
 
-    // RobotContainer
+    // Robot container
     public RobotContainer() {
         swerve.configureAutoBuilder();
         configureDefaultCommands();
@@ -133,6 +145,47 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         swerve.setDefaultCommand(new SwerveDriveDrive(driver));
+        leds.setDefaultCommand(new LEDDefaultCommand().ignoringDisable(true));
+    }
+
+    /***************/
+    /*** ELASTIC ***/
+    /***************/
+
+    private void configureElasticButtons() {
+        SmartDashboard.putData("Robot/Zero Pivot Encoder at Lower Limit (Deployed)", new ZeroPivotDeployed().ignoringDisable(true));
+        SmartDashboard.putData("Robot/Zero Pivot Encoder at Upper Limit (Stowed)", new ZeroPivotStowed().ignoringDisable(true));
+        SmartDashboard.putData("Robot/Zero Turret Encoders", new ZeroTurret().ignoringDisable(true));
+        SmartDashboard.putData("Robot/Seed Turret", new SeedTurret().ignoringDisable(true));
+        SmartDashboard.putData("Robot/Seed Hood Relative Encoder At Upper Hardstop", new SeedHoodRelativeEncoderAtUpperHardstop().ignoringDisable(true));
+        SmartDashboard.putData("Robot/Set Megatag 1", new SetMegaTagMode(MegaTagMode.MEGATAG1).ignoringDisable(true));
+        SmartDashboard.putData("Robot/Set Megatag 2", new SetMegaTagMode(MegaTagMode.MEGATAG2).ignoringDisable(true));
+
+        SmartDashboard.putData("Robot/Set Left LL PF", new EnableLeftLimelight());
+        SmartDashboard.putData("Robot/Set Right LL PF", new EnableRightLimelight());
+        SmartDashboard.putData("Robot/Set Back LL PF", new EnableBackLimelight());
+
+        SmartDashboard.putData("Robot/WL Outpost Tags Left-Camera", new WhitelistOutpostTags("limelight-left").ignoringDisable(true));
+        // SmartDashboard.putData("Robot/Reset WL Left-Camera", new WhitelistAllTags("limelight-left").ignoringDisable(true));
+
+        SmartDashboard.putData("Robot/WL Tower Tags Right-Camera", new WhitelistTowerTags("limelight-right").ignoringDisable(true));
+        // SmartDashboard.putData("Robot/Reset WL Right-Camera", new WhitelistAllTags("limelight-right").ignoringDisable(true));
+
+        SmartDashboard.putData("Robot/Whitelist All Cameras", new WhitelistAllTagsForAllCameras());
+
+        SmartDashboard.putData("Robot/Handoff Reverse", 
+            new ConditionalCommand(
+                new HandoffReverse().andThen(new WaitCommand(0.25)).andThen(new HandoffRun()), 
+                new HandoffReverse().andThen(new WaitCommand(0.25).andThen(new HandoffStop())),
+                () -> handoff.getState() == HandoffState.FORWARD));
+
+        SmartDashboard.putData("Robot/Intake Reverse", new IntakeSetState(RollerState.OUTTAKE));
+
+        SmartDashboard.putData("Robot/Spindexer Reverse", 
+            new ConditionalCommand(
+                new SpindexerReverse().andThen(new WaitCommand(1)).andThen(new SpindexerRun()), 
+                new SpindexerReverse().andThen(new WaitCommand(1).andThen(new SpindexerStop())),
+                () -> spindexer.getState() == SpindexerState.FORWARD));
     }
 
     /***************/
@@ -186,18 +239,18 @@ public class RobotContainer {
             .onTrue(new IntakeDeploy());
             // .onTrue(new SuperstructureStow()                    
             //         .alongWith(new SpindexerStop()) //TODO: test this logic
-            //         .alongWith(new HandoffStop()));
+            //         .alongWith(new HandoffStop())); // TURNS OFF SOTM
         
         // Reset Heading
         driver.getDPadUp()
             .onTrue(new SwerveResetHeading())
             .onTrue(new ResetLimelightIMU())
+            .onTrue(new LEDApplyPattern(Settings.LED.RESET_HEADING))
             .onFalse(new SetIMUMode(0));   
 
         // Stop Rollers
         driver.getLeftBumper()
-            .onTrue(new IntakeDeploy()
-                .andThen(new IntakeStopRollers()));
+            .onTrue(new IntakeDeploy().andThen(new IntakeStopRollers()));
 
         driver.getRightBumper()
             .whileTrue(new IntakeOuttake())
@@ -230,21 +283,9 @@ public class RobotContainer {
                     new HandoffStop()
                 ),
                 new ParallelCommandGroup(
-                    new SuperstructureSOTM()
-                        .andThen(
-                            Commands.parallel(
-                                new StartEndCommand(
-                                    () -> handoff.setState(HandoffState.FORWARD),
-                                    () -> handoff.setState(HandoffState.STOP),
-                                    handoff),
-                                new StartEndCommand(
-                                    () -> spindexer.setState(SpindexerState.FORWARD),
-                                    () -> spindexer.setState(SpindexerState.STOP),
-                                    spindexer)
-                            )
-                            .onlyWhile(superstructure::isReadyToShoot)
-                            .repeatedly()
-                        ),
+                    new SuperstructureSOTM().alongWith(new WaitUntilCommand(() -> superstructure.atTolerance()))
+                        .andThen(new HandoffRun())
+                        .andThen(new SpindexerRun()),
                     new SwerveDriveSOTM(driver)
                 ),
                 () -> superstructure.getState() == SuperstructureState.SOTM
@@ -269,7 +310,8 @@ public class RobotContainer {
             ));
 
         driver.getDPadDown()
-            .whileTrue(new SwerveXMode());
+            .whileTrue(new SwerveXMode())
+            .onTrue(new LEDApplyPattern(Settings.LED.X_WHEELS));
 
 //--------------------------------------------------------------------------------------------------------------------------\\
 
@@ -299,44 +341,7 @@ public class RobotContainer {
                 .andThen(new HandoffRun()).alongWith(new WaitUntilCommand(() -> handoff.getState() == HandoffState.FORWARD)
                 .andThen(new SpindexerRun())))
             .onFalse(new SuperstructureStow().alongWith(new SpindexerStop()).alongWith(new HandoffStop()));
-    }
-
-    /***************/
-    /*** ELASTIC ***/
-    /***************/
-
-    private void configureElasticButtons() {
-        // Zeroing and Homing
-        SmartDashboard.putData("Robot/Zero Pivot Encoder at Lower Limit (Deployed)", new ZeroPivotDeployed().ignoringDisable(true));
-        SmartDashboard.putData("Robot/Zero Pivot Encoder at Upper Limit (Stowed)", new ZeroPivotStowed().ignoringDisable(true));
-        SmartDashboard.putData("Robot/Zero Turret Encoders", new ZeroTurret().ignoringDisable(true));
-        SmartDashboard.putData("Robot/Seed Turret", new SeedTurret().ignoringDisable(true));
-        SmartDashboard.putData("Robot/Seed Hood Relative Encoder At Upper Hardstop", new SeedHoodRelativeEncoderAtUpperHardstop().ignoringDisable(true));
-
-        // Vision
-        SmartDashboard.putData("Robot/Set Megatag 1", new SetMegaTagMode(MegaTagMode.MEGATAG1).ignoringDisable(true));
-        SmartDashboard.putData("Robot/Set Megatag 2", new SetMegaTagMode(MegaTagMode.MEGATAG2).ignoringDisable(true));
-
-        SmartDashboard.putData("Robot/Set Left LL PF", new EnableLeftLimelight());
-        SmartDashboard.putData("Robot/Set Right LL PF", new EnableRightLimelight());
-        SmartDashboard.putData("Robot/Set Back LL PF", new EnableBackLimelight());
-
-        SmartDashboard.putData("Robot/Whitelist All Cameras", new WhitelistAllTagsForAllCameras());
-
-        // Unjamming
-        SmartDashboard.putData("Robot/Handoff Reverse", 
-            new ConditionalCommand(
-                new HandoffReverse().andThen(new WaitCommand(0.25)).andThen(new HandoffRun()), 
-                new HandoffReverse().andThen(new WaitCommand(0.25).andThen(new HandoffStop())),
-                () -> handoff.getState() == HandoffState.FORWARD));
-
-        SmartDashboard.putData("Robot/Intake Reverse", new IntakeSetState(RollerState.OUTTAKE));
-
-        SmartDashboard.putData("Robot/Spindexer Reverse", 
-            new ConditionalCommand(
-                new SpindexerReverse().andThen(new WaitCommand(1)).andThen(new SpindexerRun()), 
-                new SpindexerReverse().andThen(new WaitCommand(1).andThen(new SpindexerStop())),
-                () -> spindexer.getState() == SpindexerState.FORWARD));
+        
     }
 
     /**************/
@@ -352,16 +357,7 @@ public class RobotContainer {
         "Left Bump To Depot", "Depot To Tower Left");
         DEPOT_AUTON.register(autonChooser);
 
-        // ONE CYCLES
-        // AutonConfig LEFT_ONE_CYCLE = new AutonConfig("Left One Cycle", LeftOneCycle::new,  
-        // "Left Trench To NZ", "Left NZ To Score");
-        // LEFT_ONE_CYCLE.register(autonChooser);
-
-        // AutonConfig RIGHT_ONE_CYCLE = new AutonConfig("Right One Cycle", RightOneCycle::new,  
-        // "Right Trench To NZ", "Right NZ To Score");
-        // RIGHT_ONE_CYCLE.register(autonChooser);
-
-        // TWO CYCLES
+        // TWO CYCLES (TRENCH)
         AutonConfig LEFT_TWO_CYCLE = new AutonConfig("Left Two Cycle", LeftTwoCycle::new,  
         "Left Trench To NZ", "Left NZ To Score", "Left Score To Score");
         LEFT_TWO_CYCLE.register(autonChooser);
@@ -370,9 +366,14 @@ public class RobotContainer {
         "Right Trench To NZ", "Right NZ To Score", "Right Score To Score");
         RIGHT_TWO_CYCLE.register(autonChooser);
 
-        AutonConfig SECRET_RIGHT_TWO_CYCLE = new AutonConfig("Secret Right Two Cycle", SecretRightTwoCycle::new,  
-        "Secret Right Trench To NZ", "Secret Right NZ To Score", "Right Score To Score");
-        SECRET_RIGHT_TWO_CYCLE.register(autonChooser);
+        // TWO CYCLES (BUMP)
+        AutonConfig LEFT_BUMP_TWO_CYCLE = new AutonConfig("Left Bump Two Cycle", LeftBumpTwoCycle::new,
+            "Left Trench To NZ", "Left NZ To Score (B)", "Left Bump To Trench", "Left Trench TO NZ (B)", "Left Bump To Trench", "Left Trench To NZ (F)");
+        LEFT_BUMP_TWO_CYCLE.register(autonChooser);
+
+        AutonConfig RIGHT_BUMP_TWO_CYCLE = new AutonConfig("Right Bump Two Cycle", RightBumpTwoCycle::new,
+            "Right Trench To NZ", "Right NZ To Score (B)", "Right Bump To Trench", "Right Trench TO NZ (B)", "Right Bump To Trench", "Right Trench To NZ (F)");
+        RIGHT_BUMP_TWO_CYCLE.register(autonChooser);
 
         SmartDashboard.putData("Autonomous", autonChooser);
 
@@ -441,19 +442,6 @@ public class RobotContainer {
         else {
             return autonChooser.getSelected();
         }
-    }
-
-    public void logEnergyForAllSubsystems(EnergyUtil energyUtil) {
-        energyUtil.logEnergyUsage(handoff.getName(), handoff.getCurrentDraw());
-        energyUtil.logEnergyUsage(intake.getName(), intake.getCurrentDraw());
-        energyUtil.logEnergyUsage(spindexer.getName(), spindexer.getCurrentDraw());
-        energyUtil.logEnergyUsage(swerve.getName() + " drive", swerve.getTotalDriveSupplyCurrent());
-        energyUtil.logEnergyUsage(swerve.getName() + " turn", swerve.getTotalSteerSupplyCurrent());
-        energyUtil.logEnergyUsage(turret.getName(), turret.getCurrentDraw());
-        energyUtil.logEnergyUsage(shooter.getName(), shooter.getCurrentDraw());
-        energyUtil.logEnergyUsage(hood.getName(), hood.getCurrentDraw());
-
-        energyUtil.periodic();
     }
 
     public void periodic() {
