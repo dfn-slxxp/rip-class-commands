@@ -8,9 +8,10 @@ package com.stuypulse.robot;
 import com.stuypulse.robot.commands.BuzzController;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.auton.regular.DepotAuton;
+import com.stuypulse.robot.commands.auton.regular.LeftBumpTwoCycle;
 import com.stuypulse.robot.commands.auton.regular.LeftTwoCycle;
+import com.stuypulse.robot.commands.auton.regular.RightBumpTwoCycle;
 import com.stuypulse.robot.commands.auton.regular.RightTwoCycle;
-import com.stuypulse.robot.commands.auton.regular.SecretRightTwoCycle;
 import com.stuypulse.robot.commands.handoff.HandoffReverse;
 import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
@@ -346,16 +347,7 @@ public class RobotContainer {
         "Left Bump To Depot", "Depot To Tower Left");
         DEPOT_AUTON.register(autonChooser);
 
-        // ONE CYCLES
-        // AutonConfig LEFT_ONE_CYCLE = new AutonConfig("Left One Cycle", LeftOneCycle::new,  
-        // "Left Trench To NZ", "Left NZ To Score");
-        // LEFT_ONE_CYCLE.register(autonChooser);
-
-        // AutonConfig RIGHT_ONE_CYCLE = new AutonConfig("Right One Cycle", RightOneCycle::new,  
-        // "Right Trench To NZ", "Right NZ To Score");
-        // RIGHT_ONE_CYCLE.register(autonChooser);
-
-        // TWO CYCLES
+        // TWO CYCLES (TRENCH)
         AutonConfig LEFT_TWO_CYCLE = new AutonConfig("Left Two Cycle", LeftTwoCycle::new,  
         "Left Trench To NZ", "Left NZ To Score", "Left Score To Score");
         LEFT_TWO_CYCLE.register(autonChooser);
@@ -364,9 +356,14 @@ public class RobotContainer {
         "Right Trench To NZ", "Right NZ To Score", "Right Score To Score");
         RIGHT_TWO_CYCLE.register(autonChooser);
 
-        AutonConfig SECRET_RIGHT_TWO_CYCLE = new AutonConfig("Secret Right Two Cycle", SecretRightTwoCycle::new,  
-        "Secret Right Trench To NZ", "Secret Right NZ To Score", "Right Score To Score");
-        SECRET_RIGHT_TWO_CYCLE.register(autonChooser);
+        // TWO CYCLES (BUMP)
+        AutonConfig LEFT_BUMP_TWO_CYCLE = new AutonConfig("Left Bump Two Cycle", LeftBumpTwoCycle::new,
+            "Left Trench To NZ", "Left NZ To Score (B)", "Left Bump To Trench", "Left Trench TO NZ (B)", "Left Bump To Trench", "Left Trench To NZ (F)");
+        LEFT_BUMP_TWO_CYCLE.register(autonChooser);
+
+        AutonConfig RIGHT_BUMP_TWO_CYCLE = new AutonConfig("Right Bump Two Cycle", RightBumpTwoCycle::new,
+            "Right Trench To NZ", "Right NZ To Score (B)", "Right Bump To Trench", "Right Trench TO NZ (B)", "Right Bump To Trench", "Right Trench To NZ (F)");
+        RIGHT_BUMP_TWO_CYCLE.register(autonChooser);
 
         SmartDashboard.putData("Autonomous", autonChooser);
 

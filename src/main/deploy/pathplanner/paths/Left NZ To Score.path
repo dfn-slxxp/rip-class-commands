@@ -8,27 +8,32 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.791269614835947,
-        "y": 7.7548644793152635
+        "x": 7.054211150652433,
+        "y": 7.354211150652432
       },
       "isLocked": false,
       "linkedName": "NZ Left Center"
     },
     {
       "anchor": {
-        "x": 3.600510083036774,
+        "x": 3.9878410438908665,
         "y": 7.580154211150653
       },
       "prevControl": {
-        "x": 7.7653922967189715,
-        "y": 7.6125392296718974
+        "x": 6.774472123368921,
+        "y": 7.6447093712930005
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Left Trench Score"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8063943161634181,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -62,7 +67,7 @@
   "folder": "To Score",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -90.0
+    "rotation": -70.29492335206376
   },
   "useDefaultConstraints": false
 }

@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7278054567022547,
-        "y": 5.9339976275207595
+        "x": 4.31061684460261,
+        "y": 0.6512336892052202
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.869489916963227,
-        "y": 6.149181494661922
+        "x": 7.194080664294188,
+        "y": 0.6619928825622776
       },
       "isLocked": false,
-      "linkedName": "Depot Collect"
+      "linkedName": "Right Trench (B)"
     },
     {
       "anchor": {
-        "x": 1.2227283511269282,
-        "y": 4.922633451957295
+        "x": 8.218245363766048,
+        "y": 3.0840085592011417
       },
       "prevControl": {
-        "x": 3.643546856465006,
-        "y": 4.83655990510083
+        "x": 7.301672597864768,
+        "y": 0.6619928825622776
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Tower Left"
+      "linkedName": "Right Center NZ"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.06336939721792927,
-      "rotationDegrees": -90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 77.0217658620465
   },
   "reversed": false,
-  "folder": "Misc",
+  "folder": "Right Bump",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

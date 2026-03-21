@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7278054567022547,
-        "y": 5.9339976275207595
+        "x": 2.911921708185054,
+        "y": 2.491055753262159
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.869489916963227,
-        "y": 6.149181494661922
+        "x": 2.567627520759194,
+        "y": 1.2752669039145905
       },
       "isLocked": false,
-      "linkedName": "Depot Collect"
+      "linkedName": "Right Bump Score"
     },
     {
       "anchor": {
-        "x": 1.2227283511269282,
-        "y": 4.922633451957295
+        "x": 4.31061684460261,
+        "y": 0.6512336892052202
       },
       "prevControl": {
-        "x": 3.643546856465006,
-        "y": 4.83655990510083
+        "x": 2.57838671411625,
+        "y": 0.6942704626334548
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Tower Left"
+      "linkedName": "Right Trench (B)"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.06336939721792927,
-      "rotationDegrees": -90.0
+      "waypointRelativePos": 0.49378330373001517,
+      "rotationDegrees": -45.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.9,
-    "maxAcceleration": 7.5,
-    "maxAngularVelocity": 300.0,
-    "maxAngularAcceleration": 900.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 75.0,
+    "maxAngularAcceleration": 300.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -50,10 +50,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Misc",
+  "folder": "Right Bump",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

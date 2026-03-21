@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 8.373509272467903,
-        "y": 7.4960912981455055
+        "y": 7.496091298145505
       },
       "nextControl": null,
       "isLocked": false,
@@ -52,7 +52,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.5,
+    "maxVelocity": 4.9,
     "maxAcceleration": 7.5,
     "maxAngularVelocity": 300.0,
     "maxAngularAcceleration": 900.0,
@@ -61,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -90.0
+    "rotation": -70.29492335206376
   },
   "reversed": false,
   "folder": "To NZ",
@@ -69,5 +69,5 @@
     "velocity": 0,
     "rotation": -76.49029381374567
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

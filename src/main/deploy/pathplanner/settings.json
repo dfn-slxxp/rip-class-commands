@@ -4,6 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [
     "Misc",
+    "Left Bump",
+    "Right Bump",
     "Tests",
     "To NZ",
     "To Score",
@@ -12,8 +14,8 @@
   "autoFolders": [
     "Tests"
   ],
-  "defaultMaxVel": 2.0,
-  "defaultMaxAccel": 5.0,
+  "defaultMaxVel": 4.9,
+  "defaultMaxAccel": 7.5,
   "defaultMaxAngVel": 300.0,
   "defaultMaxAngAccel": 900.0,
   "defaultNominalVoltage": 12.0,
