@@ -14,6 +14,8 @@ import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.util.SysId;
 import com.stuypulse.robot.util.superstructure.TurretAngleCalculator;
+import com.stuypulse.stuylib.streams.numbers.IStream;
+import com.stuypulse.stuylib.streams.numbers.filters.RateLimit;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -41,6 +43,7 @@ public class TurretImpl extends Turret {
     private boolean hasUsedAbsoluteEncoder;
     private Optional<Double> voltageOverride;
     private final PositionVoltage controller;
+    private final IStream targetAngle;
 
     private boolean isWrapping;
 
@@ -89,6 +92,7 @@ public class TurretImpl extends Turret {
         hasUsedAbsoluteEncoder = false;
         voltageOverride = Optional.empty();
         controller = new PositionVoltage(getTargetAngle().getRotations()).withEnableFOC(true);
+        targetAngle = IStream.create(() -> getWrappedTargetAngle()).filtered(new RateLimit(Settings.Superstructure.Turret.MIN_DEGREE_CHANGE_PER_SECOND));
     }
     
     private Rotation2d getEncoderPos17t() {
@@ -148,6 +152,11 @@ public class TurretImpl extends Turret {
         return delta;
     }
 
+    public double getWrappedTargetAngle() {
+        double currentAngle = getAngle().getDegrees();
+        return currentAngle + getDelta(getTargetAngle().getDegrees(), currentAngle);
+    }
+
     @Override
     public void periodic() {
         super.periodic();
@@ -159,7 +168,8 @@ public class TurretImpl extends Turret {
             Gains.Superstructure.Turret.slot1.kD,
             Gains.Superstructure.Turret.slot1.kS, 
             Gains.Superstructure.Turret.slot1.kV, 
-            Gains.Superstructure.Turret.slot1.kA);
+            Gains.Superstructure.Turret.slot1.kA
+        );
 
         if (!hasUsedAbsoluteEncoder) {
             seedTurret();
@@ -167,9 +177,8 @@ public class TurretImpl extends Turret {
         }
 
         double currentAngle = getAngle().getDegrees();
-        double actualTargetDeg = currentAngle + getDelta(getTargetAngle().getDegrees(), currentAngle);
 
-        isWrapping = Math.abs(actualTargetDeg - currentAngle) > Settings.Superstructure.Turret.GAIN_SWITCHING_THRESHOLD.getDegrees();
+        isWrapping = Math.abs(getWrappedTargetAngle() - currentAngle) > Settings.Superstructure.Turret.GAIN_SWITCHING_THRESHOLD.getDegrees();
         int slot = 0;
 
         if (isWrapping) {
@@ -180,7 +189,7 @@ public class TurretImpl extends Turret {
             if (voltageOverride.isPresent()) {
                 turretMotor.setVoltage(voltageOverride.get());
             } else {
-                turretMotor.setControl(controller.withPosition(actualTargetDeg / 360.0).withSlot(slot));
+                turretMotor.setControl(controller.withPosition(targetAngle.get() / 360.0).withSlot(slot));
             }
         } else {
             turretMotor.stopMotor();
@@ -195,7 +204,7 @@ public class TurretImpl extends Turret {
         
         SmartDashboard.putNumber("Superstructure/Turret/Voltage (volts)", turretMotor.getMotorVoltage().getValueAsDouble());
         
-        SmartDashboard.putNumber("Superstructure/Turret/Wrapped Target Angle (deg)", actualTargetDeg);
+        SmartDashboard.putNumber("Superstructure/Turret/Wrapped Target Angle (deg)", targetAngle.get());
         
         if (Settings.DEBUG_MODE.get()) {      
             SmartDashboard.putNumber("Superstructure/Turret/Stator Current (amps)", turretMotor.getStatorCurrent().getValueAsDouble());
