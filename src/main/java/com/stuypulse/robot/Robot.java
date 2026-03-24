@@ -74,11 +74,12 @@ public class Robot extends TimedRobot {
         robot = new RobotContainer();
         selectedAuto = robot.getAutonomousCommand();
         mode = RobotMode.DISABLED;
+        energyUtil = new EnergyUtil();
+        
         timer.start();
 
         DataLogManager.start();
         SignalLogger.start();
-        energyUtil = new EnergyUtil();
         FollowPathCommand.warmupCommand().schedule();
         PathfindingCommand.warmupCommand().schedule();
     }

@@ -122,7 +122,6 @@ public class HoodImpl extends Hood {
         }
 
         if (isStalling() && getState() == HoodState.HOMING) {
-            // seedHood();
             seedHoodAtUpperHardStop();
             setState(HoodState.IDLE);
             SmartDashboard.putBoolean("Superstructure/Hood/SUCCESFULLY HOMED", true);
@@ -157,7 +156,6 @@ public class HoodImpl extends Hood {
                 // SmartDashboard.putBoolean("Robot/CAN/Canivore/Hood Encoder Connected? (ID " + String.valueOf(hoodEncoder.getDeviceID()) + ")", hoodEncoder.isConnected());
             }
         }
-
     }
 
     private void setVoltageOverride(Optional<Double> voltageOverride) {

@@ -93,12 +93,12 @@ public class RobotContainer {
 
         SmartBoolean SWERVE = new SmartBoolean("Enabled Subsystems/Swerve Is Enabled", true);
         SmartBoolean TURRET = new SmartBoolean("Enabled Subsystems/Turret Is Enabled", true);
-        SmartBoolean HANDOFF = new SmartBoolean("Enabled Subsystems/Handoff Is Enabled", false);
-        SmartBoolean INTAKE = new SmartBoolean("Enabled Subsystems/Intake Is Enabled", false);
-        SmartBoolean SPINDEXER = new SmartBoolean("Enabled Subsystems/Spindexer Is Enabled", false);
-        SmartBoolean HOOD = new SmartBoolean("Enabled Subsystems/Hood Is Enabled", false);
-        SmartBoolean SHOOTER = new SmartBoolean("Enabled Subsystems/Shooter Is Enabled", false);
-        SmartBoolean LEDS = new SmartBoolean("Enabled Subsystems/LEDs Is Enabled", false);
+        SmartBoolean HANDOFF = new SmartBoolean("Enabled Subsystems/Handoff Is Enabled", true);
+        SmartBoolean INTAKE = new SmartBoolean("Enabled Subsystems/Intake Is Enabled", true);
+        SmartBoolean SPINDEXER = new SmartBoolean("Enabled Subsystems/Spindexer Is Enabled", true);
+        SmartBoolean HOOD = new SmartBoolean("Enabled Subsystems/Hood Is Enabled", true);
+        SmartBoolean SHOOTER = new SmartBoolean("Enabled Subsystems/Shooter Is Enabled", true);
+        SmartBoolean LEDS = new SmartBoolean("Enabled Subsystems/LEDs Is Enabled", true);
 
         SmartBoolean BACK_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Back Limelight Is Enabled", true);
         SmartBoolean LEFT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Left Limelight Is Enabled", true);
@@ -175,18 +175,6 @@ public class RobotContainer {
             .onFalse(new SpindexerStop()
                 .alongWith(new SuperstructureStow())
                 .alongWith(new HandoffStop()));
-
-        // driver.getTopButton()
-        //     .whileTrue(new SwerveXMode())
-        //     .whileTrue(new BuzzController(driver).onlyWhile(() -> !vision.hasData()).repeatedly())
-        //     .whileTrue(
-        //         new SuperstructureShoot()
-        //             .andThen(new WaitUntilCommand(() -> superstructure.atTolerance()))
-        //                 .andThen(new HandoffRun().alongWith(new SpindexerRun()))
-        //     )
-        //     .onFalse(new SpindexerStop()
-        //         .alongWith(new SuperstructureStow())
-        //         .alongWith(new HandoffStop()));
 
         // Intake Stow
         // driver.getLeftTriggerButton()

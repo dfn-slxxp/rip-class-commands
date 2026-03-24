@@ -18,10 +18,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -34,10 +32,8 @@ public class ShooterImpl extends Shooter {
     private final TalonFX shooterLeader;
     private final TalonFX shooterFollower;
 
-    // private final VelocityVoltage shooterController;
     private final VelocityTorqueCurrentFOC shooterController;
     private final Follower follower;
-    private final DutyCycleOut bangBang;
 
     private Optional<Double> voltageOverride;
 
@@ -58,8 +54,6 @@ public class ShooterImpl extends Shooter {
             .withSupplyCurrentLimitAmps(100)
             .withSupplyCurrentLimitEnabled(true)
             .withLowerLimitSupplyCurrent(60, 1);
-            // .withTorqueCurrentLimits(40, 5, 0);
-            // .withVelocityTimeFilter(0.1);
 
         shooterLeader = new TalonFX(Ports.Superstructure.Shooter.MOTOR_LEAD, Ports.RIO);
         shooterLeader.getVelocity().setUpdateFrequency(1000.0);
@@ -76,12 +70,10 @@ public class ShooterImpl extends Shooter {
         shooterConfig.configure(shooterLeader);
         shooterConfig.configure(shooterFollower);
 
-        // shooterController = new VelocityVoltage(getTargetRPM() / Settings.SECONDS_IN_A_MINUTE).withEnableFOC(true);
         shooterController = new VelocityTorqueCurrentFOC(getTargetRPM() / Settings.SECONDS_IN_A_MINUTE);
         follower = new Follower(Ports.Superstructure.Shooter.MOTOR_LEAD, MotorAlignmentValue.Opposed);
 
         shooterFollower.setControl(follower);
-        bangBang = new DutyCycleOut(0.0); // this code MUST be below motor initializations or there will be a null pointer error
 
         voltageOverride = Optional.empty();
     }
@@ -132,11 +124,7 @@ public class ShooterImpl extends Shooter {
         if (EnabledSubsystems.SHOOTER.get() || getState() == ShooterState.STOP) {
             if (voltageOverride.isPresent()) {
                 shooterLeader.setVoltage(voltageOverride.get());
-            } 
-            // else if (!atTolerance()) {
-            //     shooterLeader.setControl(bangBang.withOutput(getBangBangOutput(getRPM(), getTargetRPM())));
-            // }
-             else {
+            } else {
                 shooterLeader.setControl(shooterController.withVelocity(getTargetRPM() / Settings.SECONDS_IN_A_MINUTE));
             }
         } else {
@@ -145,8 +133,6 @@ public class ShooterImpl extends Shooter {
 
         SmartDashboard.putNumber("Superstructure/Shooter/Leader RPM", getLeaderRPM());
         SmartDashboard.putNumber("Superstructure/Shooter/Follower RPM", getFollowerRPM());
-
-        SmartDashboard.putNumber("InterpolationTesting/Shooter Closed Loop Error (RPM)", shooterLeader.getClosedLoopError().getValueAsDouble() * 60.0);
 
         if (Settings.DEBUG_MODE.get()) {
             SmartDashboard.putNumber("InterpolationTesting/Shooter Applied Voltage", shooterLeader.getMotorVoltage().getValueAsDouble());
