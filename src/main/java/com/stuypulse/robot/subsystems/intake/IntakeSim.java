@@ -133,13 +133,18 @@ public class IntakeSim extends Intake {
     }
 
     @Override
-    public void zeroPivotStowed() {
+    public void seedPivotStowed() {
         pivotSim.setState(Settings.Intake.PIVOT_MAX_ANGLE.getRadians(), 0.0);
     }
 
     @Override
-    public void zeroPivotDeployed() {
+    public void seedPivotDeployed() {
         pivotSim.setState(Settings.Intake.PIVOT_MIN_ANGLE.getRadians(), 0.0);
+    }
+
+    @Override
+    public void refreshStatusSignals() {
+        // Whole lotta stuff going on here for sure 
     }
 
     @Override

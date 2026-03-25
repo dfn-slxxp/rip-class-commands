@@ -26,21 +26,18 @@ public class RightBumpTwoCycle extends SequentialCommandGroup {
 
             // NZ Trip 1
             CommandSwerveDrivetrain.getInstance().followPathCommand(paths[0]).alongWith(
-                new WaitCommand(0.5).andThen(new IntakeDeploy())
+                new WaitCommand(0.5).andThen(new IntakeDeploy().alongWith(new SuperstructureAutoInterpolationSOTM()))
             ),      
             
-            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]).alongWith(
-                new WaitCommand(0.5).andThen(new SuperstructureAutoInterpolationSOTM())
-            ),
+            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]),
+            new WaitCommand(0.25),
 
             // SOTM 1
             new ParallelCommandGroup(
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]),
                 new SuperstructureSOTM().alongWith(
                     new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()).andThen(
-                        new HandoffRun().alongWith(new WaitUntilCommand(() -> Handoff.getInstance().atTolerance())).andThen(
-                            new SpindexerRun()
-                        )
+                        new HandoffRun().andThen(new SpindexerRun())
                     )
                 ).withTimeout(4.5)
             ),
@@ -52,15 +49,14 @@ public class RightBumpTwoCycle extends SequentialCommandGroup {
                 new HandoffStop(),
                 new SpindexerStop()
             ),
+            new WaitCommand(0.25),
             
             // SOTM 2
             new ParallelCommandGroup(
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[4]),
                 new SuperstructureSOTM().alongWith(
                     new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()).andThen(
-                        new HandoffRun().alongWith(new WaitUntilCommand(() -> Handoff.getInstance().atTolerance())).andThen(
-                            new SpindexerRun()
-                        )
+                        new HandoffRun().andThen(new SpindexerRun())
                     )
                 ).withTimeout(4.5)
             ),

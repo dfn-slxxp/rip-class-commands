@@ -27,6 +27,8 @@ import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.subsystems.vision.LimelightVision;
 
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class LEDDefaultCommand extends Command{
@@ -58,47 +60,43 @@ public class LEDDefaultCommand extends Command{
 
     @Override
     public void execute() {
-        if(Robot.getMode() == RobotMode.DISABLED) {
+        String state = "";
+
+        if (Robot.getMode() == RobotMode.DISABLED) {
             if (LimelightVision.getInstance().getMaxTagCount() >= Settings.LED.DESIRED_TAGS_WHEN_DISABLED) {
                 leds.applyPattern(Settings.LED.DISABLED_ALIGNED);
+                state = "DISABLED_ALIGNED";
             }
             else {
-                leds.applyPattern(LEDPattern.kOff);
+                leds.applyPattern(LEDPattern.solid(Color.kGreen));
+                state = "DISABLED";
             }
         }
+
         else {
             if (swerve.isUnderTrench()) {
                 leds.applyPattern(Settings.LED.PASSING_TRENCH);
+                state = "PASSING_TRENCH";
             }
             else if (turret.isWrapping()) {
                 leds.applyPattern(Settings.LED.TURRET_WRAPPING);
+                state = "WRAPPING";
             }
-            else if (superstructure.getState() == SuperstructureState.LEFT_CORNER) {
-                leds.applyPattern(Settings.LED.LEFT_CORNER);
+            else if (swerve.isBehindHub()) {
+                leds.applyPattern(Settings.LED.IS_BEHIND_HUB);
+                state = "BEHIND_HUB";
             }
-            else if (superstructure.getState() == SuperstructureState.RIGHT_CORNER) {
-                leds.applyPattern(Settings.LED.RIGHT_CORNER);
-            } 
-            else if (superstructure.getState() == SuperstructureState.KB) {
-                leds.applyPattern(Settings.LED.KB_DISTANCE);
-            }
-            else if (superstructure.getState() == SuperstructureState.SOTM) {
-                leds.applyPattern(Settings.LED.SOTM_ON);
-            }
-            else if (superstructure.getState() == SuperstructureState.FOTM) {
-                leds.applyPattern(Settings.LED.FOTM_ON);
-            }
-            else if (spindexer.getState() == SpindexerState.REVERSE || 
-                     handoff.getState() == HandoffState.REVERSE ||
-                     intake.getRollerState() == RollerState.OUTTAKE) {
-                leds.applyPattern(Settings.LED.REVERSE);
-            } 
-            else if (intake.getPivotState() == PivotState.STOW) {
-                leds.applyPattern(Settings.LED.INTAKE_STOW);
-            }
-            else if (intake.getPivotState() == PivotState.DEPLOY) {
-                leds.applyPattern(Settings.LED.INTAKE_DEPLOYED);
+            else {
+                leds.applyPattern(LEDPattern.solid(Color.kRed));
+                state = "NONE";
             }
         }
+
+        SmartDashboard.putString("LEDs/default command state", state);
+    }
+
+    @Override
+    public boolean runsWhenDisabled() {
+        return true;
     }
 }

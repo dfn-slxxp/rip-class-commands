@@ -61,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -70.29492335206376
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "To NZ",

@@ -30,17 +30,16 @@ public class LeftBumpTwoCycle extends SequentialCommandGroup {
             ),      
             
             CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]).alongWith(
-                new WaitCommand(0.5).andThen(new SuperstructureAutoInterpolationSOTM())
+                new SuperstructureAutoInterpolationSOTM()
             ),
+            new WaitCommand(0.75),
 
             // SOTM 1
             new ParallelCommandGroup(
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]),
                 new SuperstructureSOTM().alongWith(
                     new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()).andThen(
-                        new HandoffRun().alongWith(new WaitUntilCommand(() -> Handoff.getInstance().atTolerance())).andThen(
-                            new SpindexerRun()
-                        )
+                        new HandoffRun().andThen(new SpindexerRun())
                     )
                 ).withTimeout(4.5)
             ),
@@ -52,15 +51,14 @@ public class LeftBumpTwoCycle extends SequentialCommandGroup {
                 new HandoffStop(),
                 new SpindexerStop()
             ),
+            new WaitCommand(0.75),
             
             // SOTM 2
             new ParallelCommandGroup(
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[4]),
                 new SuperstructureSOTM().alongWith(
                     new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()).andThen(
-                        new HandoffRun().alongWith(new WaitUntilCommand(() -> Handoff.getInstance().atTolerance())).andThen(
-                            new SpindexerRun()
-                        )
+                        new HandoffRun().andThen(new SpindexerRun())
                     )
                 ).withTimeout(4.5)
             ),
