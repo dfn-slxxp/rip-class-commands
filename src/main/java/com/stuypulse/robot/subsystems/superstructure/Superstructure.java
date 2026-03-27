@@ -144,6 +144,17 @@ public class Superstructure extends SubsystemBase {
         return turret.getCurrentDraw() + shooter.getCurrentDraw() + hood.getCurrentDraw();
     }
 
+    public boolean superstructureInShootIntoHubMode() {
+        return (state == SuperstructureState.AUTO_INTERPOLATION || 
+                state == SuperstructureState.AUTO_INTERPOLATION_SOTM ||
+                state == SuperstructureState.INTERPOLATION ||
+                state == SuperstructureState.SHOOT ||
+                state == SuperstructureState.SOTM ||
+                state == SuperstructureState.KB ||
+                state == SuperstructureState.LEFT_CORNER ||
+                state == SuperstructureState.RIGHT_CORNER);
+    }
+
     @Override
     public void periodic() {
         SuperstructureState state = getState();

@@ -90,7 +90,7 @@ public class HandoffImpl extends Handoff {
     }
 
     public double getCurrentRPM() {
-        return motorVelocity.getValueAsDouble() * Settings.SECONDS_IN_A_MINUTE * Settings.Handoff.GEAR_RATIO;
+        return motorVelocity.getValueAsDouble() * Settings.SECONDS_IN_A_MINUTE;
     }
 
     public boolean shouldStop() {
@@ -129,11 +129,15 @@ public class HandoffImpl extends Handoff {
     @Override
     public void periodic() {
         super.periodic();
+
+        boolean shouldNotShootIntoHub = (Superstructure.getInstance().superstructureInShootIntoHubMode()) ? 
+            !CommandSwerveDrivetrain.getInstance().canShootIntoHub() 
+            : false;
         
         if (EnabledSubsystems.HANDOFF.get() && getState() != HandoffState.STOP) {
             if (voltageOverride.isPresent()) {
                 motor.setVoltage(voltageOverride.get());
-            } else if (shouldStop()) {
+            } else if (shouldStop() || shouldNotShootIntoHub) {
                 motor.stopMotor();
             } else {
                 motor.setControl(controller.withOutput(getTargetDutyCycle()));
@@ -144,7 +148,8 @@ public class HandoffImpl extends Handoff {
         
         
         SmartDashboard.putBoolean("Handoff/ShouldStop?", shouldStop());
-        SmartDashboard.putNumber("Handoff/Signal Velocity", motorVelocity.getValueAsDouble()  * Settings.SECONDS_IN_A_MINUTE * Settings.Handoff.GEAR_RATIO);
+        SmartDashboard.putBoolean("Handoff/ShouldNotShootIntoHub", shouldNotShootIntoHub);
+        SmartDashboard.putNumber("Handoff/Signal Velocity", motorVelocity.getValueAsDouble()  * Settings.SECONDS_IN_A_MINUTE);
         if (Settings.DEBUG_MODE.get()) {     
             SmartDashboard.putNumber("Handoff/Voltage", motorVoltage.getValueAsDouble());
             SmartDashboard.putNumber("Handoff/Supply Current", motorSupplyCurrent.getValueAsDouble());

@@ -18,6 +18,8 @@ import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Gains;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.subsystems.superstructure.Superstructure;
+import com.stuypulse.robot.subsystems.superstructure.Superstructure.SuperstructureState;
 import com.stuypulse.robot.subsystems.superstructure.turret.Turret;
 import com.stuypulse.robot.subsystems.swerve.TunerConstants.TunerSwerveDrivetrain;
 
@@ -569,6 +571,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 		}
 
 		return total;
+	}
+
+	public boolean canShootIntoHub() {
+		Superstructure superstructure = Superstructure.getInstance();
+		SuperstructureState state = superstructure.getState();
+		return !isOutsideAllianceZone() || (state == SuperstructureState.KB || state == SuperstructureState.LEFT_CORNER || state == SuperstructureState.RIGHT_CORNER); 
 	}
 
 	@Override

@@ -157,11 +157,15 @@ public class SpindexerImpl extends Spindexer {
     public void periodic() {
         super.periodic();
 
+        boolean shouldNotShootIntoHub = (Superstructure.getInstance().superstructureInShootIntoHubMode()) ? 
+            !CommandSwerveDrivetrain.getInstance().canShootIntoHub() 
+            : false;
+
         if (EnabledSubsystems.SPINDEXER.get()) {
             if (voltageOverride.isPresent()) {
                 leaderMotor.setVoltage(voltageOverride.get());
             } else {
-                if (shouldStop()) {
+                if (shouldStop() || shouldNotShootIntoHub) {
                     leaderMotor.stopMotor();
                 } else {
                     leaderMotor.setControl(controller.withVelocity(getTargetRPM() / Settings.SECONDS_IN_A_MINUTE));
@@ -181,6 +185,7 @@ public class SpindexerImpl extends Spindexer {
         SmartDashboard.putNumber("Spindexer/Leader Stator Current (amps)", leaderStatorCurrent.getValueAsDouble());
 
         SmartDashboard.putBoolean("Spindexer/Should Stop?", shouldStop());
+        SmartDashboard.putBoolean("Spindexer/shouldNotShootIntoHub", shouldNotShootIntoHub);
 
 
         if (Settings.DEBUG_MODE.get()) {
