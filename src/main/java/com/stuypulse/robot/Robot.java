@@ -29,7 +29,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
+import java.util.List;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.FollowPathCommand;
@@ -49,6 +52,7 @@ public class Robot extends TimedRobot {
     private static Alliance alliance;
     private static RobotMode mode;
     private static EnergyUtil energyUtil;
+    private GcStatsCollector gcStatsCollector;
 
     private static int periodicCounter = 0;
 
@@ -77,7 +81,7 @@ public class Robot extends TimedRobot {
         robot = new RobotContainer();
         mode = RobotMode.DISABLED;
         energyUtil = new EnergyUtil();
-
+        gcStatsCollector = new GcStatsCollector();
 
         try {
             Field watchdogField = IterativeRobotBase.class.getDeclaredField("m_watchdog");
@@ -87,7 +91,7 @@ public class Robot extends TimedRobot {
         } catch (Exception e) {
             DriverStation.reportError("Failed to disable loop overrun warnings.", e.getStackTrace());
         }
-        //this doesnt seem to work? 3/25 11:46AM
+        // this doesnt seem to work? 3/25 11:46AM
 
         DataLogManager.start();
         SignalLogger.start();
@@ -98,7 +102,7 @@ public class Robot extends TimedRobot {
 
         CommandScheduler.getInstance().schedule(new SwerveAutonInit());
     }
-    
+
     @Override
     public void robotPeriodic() {
         robot.refreshAllStatusSignals();
@@ -115,8 +119,7 @@ public class Robot extends TimedRobot {
         SuperstructureState state = Superstructure.getInstance().getState();
         if (state == SuperstructureState.SOTM) {
             SOTMCalculator.updateSOTMSolution();
-        }
-        else if (state == SuperstructureState.FOTM) {
+        } else if (state == SuperstructureState.FOTM) {
             SOTMCalculator.updateFOTMSolution();
         }
 
@@ -124,7 +127,7 @@ public class Robot extends TimedRobot {
         if (!Robot.isReal()) {
             SmartDashboard.putData(CommandScheduler.getInstance());
         }
-        
+
         if (DriverStation.getAlliance().isPresent()) {
             alliance = DriverStation.getAlliance().get();
         }
@@ -132,10 +135,10 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Robot/Match Time", DriverStation.getMatchTime());
         SmartDashboard.putData("Robot/Scheduled Commands", CommandScheduler.getInstance());
         SmartDashboard.putNumber("Robot/Battery Voltage", batteryVoltage);
-    
-        robot.periodic();
-    }
 
+        robot.periodic();
+        gcStatsCollector.update();
+    }
 
     /*********************/
     /*** DISABLED MODE ***/
@@ -144,7 +147,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         mode = RobotMode.DISABLED;
-        
+
         CommandScheduler.getInstance().schedule(new SetMegaTagMode(LimelightVision.MegaTagMode.MEGATAG1));
     }
 
@@ -168,9 +171,9 @@ public class Robot extends TimedRobot {
 
     /***********************/
     /*** AUTONOMOUS MODE ***/
-    /***********************/  
+    /***********************/
 
-    @Override 
+    @Override
     public void autonomousInit() {
         mode = RobotMode.AUTON;
 
@@ -186,7 +189,8 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+    }
 
     @Override
     public void autonomousExit() {
@@ -210,10 +214,12 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+    }
 
     @Override
-    public void teleopExit() {}
+    public void teleopExit() {
+    }
 
     /*****************/
     /*** TEST MODE ***/
@@ -226,8 +232,44 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+    }
 
     @Override
-    public void testExit() {}
+    public void testExit() {
+    }
+
+    private static final class GcStatsCollector {
+        private List<GarbageCollectorMXBean> gcBeans = ManagementFactory.getGarbageCollectorMXBeans();
+        private final long[] lastTimes = new long[gcBeans.size()];
+        private final long[] lastCounts = new long[gcBeans.size()];
+        private int totalTime = 0;
+        private int totalCount = 0;
+
+        public void update() {
+            long accumTime = 0;
+            long accumCounts = 0;
+            for (int i = 0; i < gcBeans.size(); i++) {
+                long gcTime = gcBeans.get(i).getCollectionTime();
+                long gcCount = gcBeans.get(i).getCollectionCount();
+                accumTime += gcTime - lastTimes[i];
+                accumCounts += gcCount - lastCounts[i];
+
+                lastTimes[i] = gcTime;
+                lastCounts[i] = gcCount;
+            }
+
+            totalTime += (int) accumTime;
+            totalCount += (int) accumCounts;
+
+            SmartDashboard.putNumber("Robot/GC Time MS", (double) accumTime);
+            SmartDashboard.putNumber("Robot/GC Counts", (double) accumCounts);
+            SmartDashboard.putNumber("Robot/Sum of GC Time MS", totalTime);
+            SmartDashboard.putNumber("Robot/Sum of GC Counts", totalCount);
+
+            // Logger.recordOutput("LoggedRobot/GCTimeMS", (double) accumTime);
+            // Logger.recordOutput("LoggedRobot/GCCounts", (double) accumCounts);
+        }
+    }
+
 }
