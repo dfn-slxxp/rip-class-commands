@@ -149,7 +149,11 @@ public class HandoffImpl extends Handoff {
         
         SmartDashboard.putBoolean("Handoff/ShouldStop?", shouldStop());
         SmartDashboard.putBoolean("Handoff/ShouldNotShootIntoHub", shouldNotShootIntoHub);
-        SmartDashboard.putNumber("Handoff/Signal Velocity", motorVelocity.getValueAsDouble()  * Settings.SECONDS_IN_A_MINUTE);
+        SmartDashboard.putNumber("Handoff/Signal Velocity", getCurrentRPM());
+
+        SmartDashboard.putBoolean("Spindexer/Should Stop", shouldStop());
+        SmartDashboard.putBoolean("Spindexer/Should Not Shoot Into Hub", shouldNotShootIntoHub);
+
         if (Settings.DEBUG_MODE.get()) {     
             SmartDashboard.putNumber("Handoff/Voltage", motorVoltage.getValueAsDouble());
             SmartDashboard.putNumber("Handoff/Supply Current", motorSupplyCurrent.getValueAsDouble());

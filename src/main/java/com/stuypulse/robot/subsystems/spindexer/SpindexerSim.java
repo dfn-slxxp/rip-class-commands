@@ -7,6 +7,9 @@ package com.stuypulse.robot.subsystems.spindexer;
 
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.subsystems.superstructure.Superstructure;
+import com.stuypulse.robot.subsystems.superstructure.Superstructure.SuperstructureState;
+import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.util.SysId;
 
 import edu.wpi.first.math.Nat;
@@ -59,6 +62,20 @@ public class SpindexerSim extends Spindexer {
         return sim.getOutput(0) * 60.0 / (2.0 * Math.PI);
     }
 
+
+    public boolean shouldStop() {
+        Superstructure superstructure = Superstructure.getInstance();
+        SuperstructureState superstructureState = superstructure.getState();
+
+        boolean isStopState = getState() == SpindexerState.STOP;
+        boolean isTurretWrapping = superstructure.isTurretWrapping();
+        boolean isBehindHubWhileFerrying = superstructureState == SuperstructureState.FOTM
+                && CommandSwerveDrivetrain.getInstance().isBehindHub();
+        boolean turretLaggingSOTM = !superstructure.isTurretAtTolerance() && superstructureState == SuperstructureState.SOTM;
+
+        return isStopState || isTurretWrapping || isBehindHubWhileFerrying || turretLaggingSOTM;
+    }
+
     @Override
     public void periodic() {
         super.periodic();
@@ -67,10 +84,16 @@ public class SpindexerSim extends Spindexer {
         controller.correct(VecBuilder.fill(sim.getOutput(0)));
         controller.predict(Settings.DT);
 
+        boolean shouldNotShootIntoHub = (Superstructure.getInstance().superstructureInShootIntoHubMode()) ? 
+            !CommandSwerveDrivetrain.getInstance().canShootIntoHub() 
+            : false;
+
         if (EnabledSubsystems.SHOOTER.get()) {
             if (voltageOverride.isPresent()) {
                 sim.setInput(voltageOverride.get());
                 SmartDashboard.putNumber("Spindexer/Input Voltage", voltageOverride.get());
+            } else if (shouldStop() || shouldNotShootIntoHub) {
+                sim.setInput(0);
             } else {
                 SmartDashboard.putNumber("Spindexer/Input Voltage", controller.getU(0));
                 sim.setInput(controller.getU(0));
@@ -81,6 +104,8 @@ public class SpindexerSim extends Spindexer {
         }
 
         SmartDashboard.putNumber("Spindexer/Current RPM", getCurrentRPM());
+        SmartDashboard.putBoolean("Spindexer/Should Stop", shouldStop());
+        SmartDashboard.putBoolean("Spindexer/Should Not Shoot Into Hub", shouldNotShootIntoHub);
         
         sim.update(Settings.DT);
     }

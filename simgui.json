@@ -72,6 +72,9 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Handoff": {
+          "open": true
+        },
         "States": {
           "open": false
         },
