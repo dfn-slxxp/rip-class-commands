@@ -190,27 +190,27 @@ public interface Settings {
         public interface Hood {
             /**
              *
-             * The absolute encoder is mounted on a 10.67:1 gear reduction relative to the
+             * The absolute encoder is mounted on a 11:1 gear reduction relative to the
              * hood mechanism. This means:
              *
-             *  - The encoder rotates 10.67 times for every 1 full rotation of the hood.
+             *  - The encoder rotates 11 times for every 1 full rotation of the hood.
              *  - The hood's physical range of motion is only 33 degrees.
              *
-             * Because 33° * 10.67 = ~352°, the encoder will never exceed 360° over the
+             * Because 33° * 11 = ~363°, the encoder will never exceed 360° over the
              * entire hood travel. Therefore, the absolute encoder reading (0–360°)
              * uniquely maps to the hood’s 0–33° mechanical range without any ambiguity.
              *
              */
-            public final double GEAR_RATIO = 1064.0 / 9.0;
-            public final double ENCODER_TO_MECH = 32.0 / 3.0;
+            public final double GEAR_RATIO = 125.4;
+            public final double ENCODER_TO_MECH = 11.0;
             public final double HOOD_HOMING_VOLTAGE = 2.0;
 
             public final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(0.795);
 
-            public final Rotation2d FORWARD_SOFT_LIMIT = Rotation2d.fromDegrees(40.0);
-            public final Rotation2d REVERSE_SOFT_LIMIT = Rotation2d.fromDegrees(20.0);
-            public final Rotation2d MIN_FROM_HORIZON = Rotation2d.fromDegrees(7.0);
-            public final Rotation2d MAX_FROM_HORIZON = Rotation2d.fromDegrees(40.0);
+            public final Rotation2d FORWARD_SOFT_LIMIT = Rotation2d.fromDegrees(43.5);
+            public final Rotation2d REVERSE_SOFT_LIMIT = Rotation2d.fromDegrees(18.0);
+            public final Rotation2d MIN_FROM_HORIZON = Rotation2d.fromDegrees(15.0);
+            public final Rotation2d MAX_FROM_HORIZON = Rotation2d.fromDegrees(45.0);
 
             public final double STALL_CURRENT_LIMIT = 20.0;
             public final double STALL_DEBOUNCE = 0.5;
