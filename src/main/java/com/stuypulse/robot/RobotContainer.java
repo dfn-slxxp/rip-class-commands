@@ -95,7 +95,7 @@ public class RobotContainer {
         SmartBoolean SWERVE = new SmartBoolean("Enabled Subsystems/Swerve Is Enabled", true);
         SmartBoolean TURRET = new SmartBoolean("Enabled Subsystems/Turret Is Enabled", true);
         SmartBoolean HANDOFF = new SmartBoolean("Enabled Subsystems/Handoff Is Enabled", true);
-        SmartBoolean INTAKE = new SmartBoolean("Enabled Subsystems/Intake Is Enabled", false);
+        SmartBoolean INTAKE = new SmartBoolean("Enabled Subsystems/Intake Is Enabled", true);
         SmartBoolean SPINDEXER = new SmartBoolean("Enabled Subsystems/Spindexer Is Enabled", true);
         SmartBoolean HOOD = new SmartBoolean("Enabled Subsystems/Hood Is Enabled", true);
         SmartBoolean SHOOTER = new SmartBoolean("Enabled Subsystems/Shooter Is Enabled", true);
@@ -159,7 +159,7 @@ public class RobotContainer {
             .whileTrue(new SwerveXMode())
             .whileTrue(new BuzzController(driver).onlyWhile(() -> !vision.hasData()).repeatedly())
             .whileTrue(
-                new SuperstructureShoot() //TODO: change back to interpolation
+                new SuperstructureInterpolation() 
                     .andThen(new WaitUntilCommand(superstructure::isReadyToShoot))
                     .andThen(
                         Commands.parallel(
@@ -172,10 +172,7 @@ public class RobotContainer {
                         )
                         .repeatedly()
                     )
-            ); //TODO: uncomment ??
-            // .onFalse(new SpindexerStop()
-            //     .alongWith(new SuperstructureStow())
-            //     .alongWith(new HandoffStop()));
+            ); 
 
         // Intake Stow
         // driver.getLeftTriggerButton()
@@ -186,10 +183,6 @@ public class RobotContainer {
         driver.getRightTriggerButton()
             .onTrue(new LEDApplyPattern(Settings.LED.INTAKE_DEPLOYED))
             .onTrue(new IntakeDeploy());
-
-        // driver.getDPadLeft() //TODO: remove, button normally not binded
-        //     .whileTrue(new HomingRoutineUpper())
-        //     .onFalse(new HomingRoutineLower());
         
         // Reset Heading
         driver.getDPadUp()
