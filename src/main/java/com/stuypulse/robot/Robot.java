@@ -141,6 +141,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         PhoenixUtil.refreshAll();
+        CommandScheduler.getInstance().run();
 
         if (periodicCounter % 50 == 0) {
             DataLogManager.getLog().resume();
@@ -156,20 +157,17 @@ public class Robot extends TimedRobot {
         energyUtil.setBatteryVoltage(batteryVoltage);
 
         SuperstructureState state = Superstructure.getInstance().getState();
+
         if (state == SuperstructureState.SOTM) {
             SOTMCalculator.updateSOTMSolution();
         } else if (state == SuperstructureState.FOTM) {
             SOTMCalculator.updateFOTMSolution();
         }
 
-        CommandScheduler.getInstance().run();
-
-        robot.periodicAfterScheduler();
-
         if (!Robot.isReal()) {
             SmartDashboard.putData(CommandScheduler.getInstance());
         }
-
+        
         if (DriverStation.getAlliance().isPresent()) {
             alliance = DriverStation.getAlliance().get();
         }
@@ -177,8 +175,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Robot/Match Time", DriverStation.getMatchTime());
         SmartDashboard.putData("Robot/Scheduled Commands", CommandScheduler.getInstance());
         SmartDashboard.putNumber("Robot/Battery Voltage", batteryVoltage);
-
-        gcStatsCollector.update();
+    
+        robot.periodicAfterScheduler();
     }
 
     /*********************/
