@@ -76,8 +76,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         robot = new RobotContainer();
         mode = RobotMode.DISABLED;
-        energyUtil = new EnergyUtil();
-
 
         try {
             Field watchdogField = IterativeRobotBase.class.getDeclaredField("m_watchdog");
@@ -102,6 +100,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         robot.refreshAllStatusSignals();
+        CommandScheduler.getInstance().run();
 
         if (periodicCounter % 50 == 0) {
             DataLogManager.getLog().resume();
@@ -113,6 +112,7 @@ public class Robot extends TimedRobot {
         energyUtil.setBatteryVoltage(batteryVoltage);
 
         SuperstructureState state = Superstructure.getInstance().getState();
+
         if (state == SuperstructureState.SOTM) {
             SOTMCalculator.updateSOTMSolution();
         }
@@ -120,11 +120,6 @@ public class Robot extends TimedRobot {
             SOTMCalculator.updateFOTMSolution();
         }
 
-        CommandScheduler.getInstance().run();
-        if (!Robot.isReal()) {
-            SmartDashboard.putData(CommandScheduler.getInstance());
-        }
-        
         if (DriverStation.getAlliance().isPresent()) {
             alliance = DriverStation.getAlliance().get();
         }
@@ -132,8 +127,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Robot/Match Time", DriverStation.getMatchTime());
         SmartDashboard.putData("Robot/Scheduled Commands", CommandScheduler.getInstance());
         SmartDashboard.putNumber("Robot/Battery Voltage", batteryVoltage);
-    
+
         robot.periodic();
+        // energyUtil.periodic();
     }
 
 

@@ -153,7 +153,7 @@ public class HoodImpl extends Hood {
         HoodState state = getState();
 
         if (!hasUsedAbsoluteEncoder) {
-            seedHood();
+            // seedHood();
             seedHoodAtUpperHardStop();
             hasUsedAbsoluteEncoder = true;
         }
@@ -188,21 +188,16 @@ public class HoodImpl extends Hood {
 
         SmartDashboard.putBoolean("Prematch Checks/Hood at Top?", getAngle().getDegrees() > 39.0);
         SmartDashboard.putNumber("Superstructure/Hood/Correct Hood Angle (deg)", getAbsoluteHoodAngleDeg());
-        SmartDashboard.putNumber("Superstructure/Hood/Closed Loop Error (deg)",
-                hoodMotorClosedLoopError.getValueAsDouble() * 360.0);
+        SmartDashboard.putNumber("Superstructure/Hood/Closed Loop Error (deg)", hoodMotorClosedLoopError.getValueAsDouble() * 360.0);
 
         if (Settings.DEBUG_MODE.get()) {
             SmartDashboard.putNumber("Superstructure/Hood/Applied Voltage (amps)", hoodMotorVoltage.getValueAsDouble());
-            SmartDashboard.putNumber("Superstructure/Hood/Supply Current (amps)",
-                    hoodMotorSupplyCurrent.getValueAsDouble());
-            SmartDashboard.putNumber("Superstructure/Hood/Stator Current (amps)",
-                    hoodMotorStatorCurrent.getValueAsDouble());
-            SmartDashboard.putNumber("Superstructure/Hood/Raw Motor Encoder Value",
-                    hoodMotorStatorCurrent.getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Hood/Supply Current (amps)", hoodMotorSupplyCurrent.getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Hood/Stator Current (amps)", hoodMotorStatorCurrent.getValueAsDouble());
+            SmartDashboard.putNumber("Superstructure/Hood/Raw Motor Encoder Value",hoodMotorStatorCurrent.getValueAsDouble());
 
             if (Robot.getMode() == RobotMode.DISABLED && !DriverStation.isFMSAttached()) {
-                SmartDashboard.putBoolean("Robot/CAN/Canivore/Hood Motor Connected? (ID "
-                        + String.valueOf(Ports.Superstructure.Hood.MOTOR) + ")", hoodMotor.isConnected());
+                SmartDashboard.putBoolean("Robot/CAN/Canivore/Hood Motor Connected? (ID " + String.valueOf(Ports.Superstructure.Hood.MOTOR) + ")", hoodMotor.isConnected());
                 // SmartDashboard.putBoolean("Robot/CAN/Canivore/Hood Encoder Connected? (ID " + String.valueOf(hoodEncoder.getDeviceID()) + ")", hoodEncoder.isConnected());
             }
         }

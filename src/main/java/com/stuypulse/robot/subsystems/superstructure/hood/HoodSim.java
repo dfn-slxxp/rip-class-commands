@@ -138,6 +138,6 @@ public class HoodSim extends Hood {
 
     @Override
     public void seedHoodAtLowerHardStop() {
-        // TODO Auto-generated method stub
+        return;
     }
 }
