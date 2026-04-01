@@ -8,7 +8,6 @@ package com.stuypulse.robot.subsystems.vision;
 import java.util.Arrays;
 
 import com.stuypulse.robot.Robot;
-import com.stuypulse.robot.commands.vision.BlacklistAllTags;
 import com.stuypulse.robot.constants.Cameras;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;

@@ -23,7 +23,6 @@ import com.stuypulse.robot.util.superstructure.SOTMCalculator;
 import com.stuypulse.stuylib.network.SmartBoolean;
 
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
@@ -45,9 +44,6 @@ import java.util.Timer;
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathfindingCommand;
-import java.util.TimerTask;
-
-import org.opencv.features2d.FlannBasedMatcher;
 
 public class Robot extends TimedRobot {
 
@@ -58,7 +54,7 @@ public class Robot extends TimedRobot {
         TEST
     }
 
-   private Timer threadTimer;
+    private Timer threadTimer;
 
     private RobotContainer robot;
     private Command auto;
@@ -310,5 +306,4 @@ public class Robot extends TimedRobot {
             // Logger.recordOutput("LoggedRobot/GCCounts", (double) accumCounts);
         }
     }
-
 }

@@ -38,8 +38,7 @@ public class InterpolationCalculator {
         double targetRPM,
         double flightTimeSeconds) {   
     }
-
-
+    
     static {
         distanceAngleInterpolator = new InterpolatingDoubleTreeMap();
         for (double[] pair : AngleInterpolation.distanceAngleInterpolationValues) {
@@ -68,7 +67,6 @@ public class InterpolationCalculator {
         return interpolateShotInfo(swerve.getTurretPose(), Field.getHubPose());
     }
 
-
     public static InterpolatedShotInfo interpolateShotInfo(Pose2d turretPose, Pose2d targetPose) {
         Translation2d hubPose = targetPose.getTranslation();
         Translation2d currentPose = turretPose.getTranslation();
@@ -91,7 +89,6 @@ public class InterpolationCalculator {
         );
     }
     
-
     public static InterpolatedFerryInfo interpolateFerryingInfo() {
         CommandSwerveDrivetrain swerve = CommandSwerveDrivetrain.getInstance();
         Pose2d turretPose = swerve.getTurretPose();
@@ -112,13 +109,12 @@ public class InterpolationCalculator {
     }
 
     public static InterpolatedFerryInfo interpolateFerryingInfo(Pose2d turretPose, Pose2d targetPose) {
-        
         Translation2d currentPose = turretPose.getTranslation();
         Translation2d ferryPose = targetPose.getTranslation();
 
         double distanceMeters = currentPose.getDistance(ferryPose);
 
-        Rotation2d targetAngle = Rotation2d.fromDegrees(Settings.Superstructure.Hood.Angles.FERRY.getAsDouble());
+        Rotation2d targetAngle = Settings.Superstructure.Hood.Angles.FERRY_ANGLE;
         double targetRPM = ferryingDistanceRPMInterpolator.get(distanceMeters);
         double flightTime = 2.1;
         
@@ -131,7 +127,5 @@ public class InterpolationCalculator {
             targetRPM, 
             flightTime
         );
-    }
-
-    
+    }    
 }

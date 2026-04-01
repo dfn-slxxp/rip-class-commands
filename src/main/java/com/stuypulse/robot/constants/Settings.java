@@ -5,8 +5,8 @@
 /***************************************************************/
 package com.stuypulse.robot.constants;
 
-import java.sql.Time;
-import java.time.Duration;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.path.PathConstraints;
@@ -21,16 +21,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.*;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Percent;
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.LEDPattern.GradientType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
 /*-
@@ -99,7 +90,7 @@ public interface Settings {
         double STALL_CURRENT_LIMIT = 40.0; // random number as of 3/9
 
         /* CONSTANTS */
-        double GEAR_RATIO = 8.0 / 1.0;
+        double GEAR_RATIO = 9.6 / 1.0;
     }
     
     public interface Superstructure {
@@ -115,21 +106,21 @@ public interface Settings {
 
         public interface AngleInterpolation {
             double[][] distanceAngleInterpolationValues = {
-                {1.22, Units.degreesToRadians(22.5)},           //BLAY-APPROVED (ALMOST AGAINST HUB), LOCKED IN
-                {2.15, Units.degreesToRadians(27)},             //BLAY-APPROVED
-                {3.38, Units.degreesToRadians(37)},             //BLAY-APPROVED   
-                {4.43, Units.degreesToRadians(39)},             //BLAY-APPROVED
-                {5.66, Units.degreesToRadians(39)}              //KEVIN-APPROVED
+                {1.22, Units.degreesToRadians(22.5)},
+                {2.15, Units.degreesToRadians(27)},
+                {3.38, Units.degreesToRadians(37)},
+                {4.43, Units.degreesToRadians(39)},
+                {5.66, Units.degreesToRadians(39)}
             };
         }
 
         public interface RPMInterpolation{
             double[][] distanceRPMInterpolationValues = {
-                {1.22, 2800.0},                                         //BLAY-APPROVED, LOCKED IN
-                {2.15, 2880.0},                                         //BLAY-APPROVED
-                {3.38, 3250},                                           //BLAY-APPROVED
-                {4.43, 3725.0},                                         //BLAY-APPROVED
-                {5.66, 3900.0}                                          //KEVIN-APPROVED
+                {1.22, 2800.0},
+                {2.15, 2880.0},
+                {3.38, 3250},
+                {4.43, 3725.0},
+                {5.66, 3900.0}
             };
         }
 
@@ -171,14 +162,10 @@ public interface Settings {
         public interface Shooter {
             
             public final double GEAR_RATIO = 1.0;
-            public final double FLYWHEEL_RADIUS = Units.inchesToMeters(3.965 / 2);
+            public final double FLYWHEEL_RADIUS = Units.inchesToMeters(3.965 / 2.0);
             
             public interface RPM {
-                public final SmartBoolean OVERRIDEN = new SmartBoolean("Superstructure/Shooter/RPM Override enabled?", false);
-                public final SmartNumber OVERRIDE_VALUE = new SmartNumber("Superstructure/Shooter/RPM Override value", 0.0);
-
-                public final SmartNumber SHOOT = new SmartNumber("InterpolationTesting/Shoot State Target RPM", 3500.0);
-                public final SmartNumber FERRY = new SmartNumber("InterpolationTesting/Ferry State Target RPM", 2000.0);
+                public final SmartNumber MANUAL_OVERRIDE = new SmartNumber("InterpolationTesting/Shoot State Target RPM", 3500.0);
 
                 public final double REVERSE = 0.0;
                 public final double KB = 2720.0;
@@ -189,16 +176,16 @@ public interface Settings {
 
         public interface Hood {
             /**
-             *
+             * DISCLAIMER: THERE IS NO ABS ENCODER ON THE BOT RN
              * The absolute encoder is mounted on a 11:1 gear reduction relative to the
              * hood mechanism. This means:
              *
              *  - The encoder rotates 11 times for every 1 full rotation of the hood.
-             *  - The hood's physical range of motion is only 33 degrees.
+             *  - The hood's physical range of motion is only 30 degrees.
              *
-             * Because 33° * 11 = ~363°, the encoder will never exceed 360° over the
-             * entire hood travel. Therefore, the absolute encoder reading (0–360°)
-             * uniquely maps to the hood’s 0–33° mechanical range without any ambiguity.
+             * Because 30° * 11 = 330°, the encoder will never exceed 360° over the
+             * entire hood travel. Therefore, the absolute encoder reading (0–330°)
+             * uniquely maps to the hood’s 0–30° mechanical range without any ambiguity.
              *
              */
             public final double GEAR_RATIO = 125.4;
@@ -207,23 +194,20 @@ public interface Settings {
 
             public final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(0.795);
 
-            public final Rotation2d FORWARD_SOFT_LIMIT = Rotation2d.fromDegrees(43.5);
-            public final Rotation2d REVERSE_SOFT_LIMIT = Rotation2d.fromDegrees(18.0);
-            public final Rotation2d MIN_FROM_HORIZON = Rotation2d.fromDegrees(15.0);
             public final Rotation2d MAX_FROM_HORIZON = Rotation2d.fromDegrees(45.0);
+            public final Rotation2d MIN_FROM_HORIZON = Rotation2d.fromDegrees(15.0);
+            public final Rotation2d SOFT_LIMIT = Rotation2d.fromDegrees(.25);
+            public final Rotation2d FORWARD_SOFT_LIMIT = MAX_FROM_HORIZON.minus(SOFT_LIMIT);
+            public final Rotation2d REVERSE_SOFT_LIMIT = MIN_FROM_HORIZON.plus(SOFT_LIMIT);
 
             public final double STALL_CURRENT_LIMIT = 20.0;
             public final double STALL_DEBOUNCE = 0.5;
 
             public interface Angles {
-                public final SmartBoolean OVERRIDEN = new SmartBoolean("Superstructure/Hood/Angle Override enabled?", false);
-                public final SmartNumber OVERRIDE_VALUE_DEG = new SmartNumber("Superstructure/Hood/Angle Override value", 0.0);
-
-                public final SmartNumber SHOOT = new SmartNumber("InterpolationTesting/Shoot State Target Angle (deg)", 20.0);
-                public final SmartNumber FERRY = new SmartNumber("InterpolationTesting/Ferry State Target Angle (deg)", 20.0);
+                public final SmartNumber MANUAL_OVERRIDE = new SmartNumber("InterpolationTesting/Shoot State Target Angle (deg)", 20.0);
                 public final Rotation2d FERRY_ANGLE = Rotation2d.fromDegrees(40.0);
-                public final Rotation2d MIN = Rotation2d.fromDegrees(20.0);
-                public final Rotation2d MAX = Rotation2d.fromDegrees(40.0);
+                public final Rotation2d MAX = FORWARD_SOFT_LIMIT;
+                public final Rotation2d MIN = REVERSE_SOFT_LIMIT;
 
                 public final Rotation2d STOW = Rotation2d.fromDegrees(21.0);
                 public final Rotation2d KB = Rotation2d.fromDegrees(22.0);

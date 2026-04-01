@@ -5,7 +5,6 @@
 /***************************************************************/
 package com.stuypulse.robot.subsystems.handoff;
 
-import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.superstructure.Superstructure;
@@ -70,13 +69,13 @@ public class HandoffSim extends Handoff {
                 && CommandSwerveDrivetrain.getInstance().isBehindHub();
         boolean isOutsideAllianceZone = 
             CommandSwerveDrivetrain.getInstance().isOutsideAllianceZone() && 
-            superstructureState != superstructureState.FOTM;
+            superstructureState != SuperstructureState.FOTM;
         boolean isUnderTrench = CommandSwerveDrivetrain.getInstance().isUnderTrench() 
             && superstructureState != SuperstructureState.FOTM;
         boolean inManualState =       
-            superstructureState == superstructureState.LEFT_CORNER &&
-            superstructureState == superstructureState.RIGHT_CORNER &&
-            superstructureState == superstructureState.KB;
+            superstructureState == SuperstructureState.LEFT_CORNER &&
+            superstructureState == SuperstructureState.RIGHT_CORNER &&
+            superstructureState == SuperstructureState.KB;
 
         boolean turretLaggingSOTM = !superstructure.isTurretAtTolerance() && superstructureState == SuperstructureState.SOTM;
 

@@ -9,6 +9,6 @@ import com.stuypulse.robot.subsystems.superstructure.turret.Turret.TurretState;
 
 public class TurretShoot extends TurretSetState {
     public TurretShoot() {
-        super(TurretState.SHOOT);
+        super(TurretState.SCORE);
     }
 }

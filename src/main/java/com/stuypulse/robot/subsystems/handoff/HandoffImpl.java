@@ -5,7 +5,6 @@
 /***************************************************************/
 package com.stuypulse.robot.subsystems.handoff;
 
-import com.stuypulse.stuylib.math.SLMath;
 import com.stuypulse.stuylib.streams.booleans.BStream;
 import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
 import com.stuypulse.robot.Robot;
@@ -15,29 +14,23 @@ import com.stuypulse.robot.constants.Gains;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.subsystems.spindexer.Spindexer.SpindexerState;
 import com.stuypulse.robot.subsystems.superstructure.Superstructure;
 import com.stuypulse.robot.subsystems.superstructure.Superstructure.SuperstructureState;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
-import com.stuypulse.robot.util.FMSUtil;
 import com.stuypulse.robot.util.PhoenixUtil;
 import com.stuypulse.robot.util.SysId;
 
-import edu.wpi.first.math.jni.WPIMathJNI;
-import edu.wpi.first.math.proto.Wpimath;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import pabeles.concurrency.IntOperatorTask.Max;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -128,13 +121,13 @@ public class HandoffImpl extends Handoff {
                 && CommandSwerveDrivetrain.getInstance().isBehindHub();
         boolean isOutsideAllianceZone = 
             CommandSwerveDrivetrain.getInstance().isOutsideAllianceZone() && 
-            superstructureState != superstructureState.FOTM;
+            superstructureState != SuperstructureState.FOTM;
         boolean isUnderTrench = CommandSwerveDrivetrain.getInstance().isUnderTrench() 
             && superstructureState != SuperstructureState.FOTM;
         boolean inManualState =       
-            superstructureState == superstructureState.LEFT_CORNER &&
-            superstructureState == superstructureState.RIGHT_CORNER &&
-            superstructureState == superstructureState.KB;
+            superstructureState == SuperstructureState.LEFT_CORNER &&
+            superstructureState == SuperstructureState.RIGHT_CORNER &&
+            superstructureState == SuperstructureState.KB;
 
         boolean turretLaggingSOTM = !superstructure.isTurretAtTolerance() && superstructureState == SuperstructureState.SOTM;
 

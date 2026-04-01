@@ -12,7 +12,6 @@ import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.subsystems.superstructure.shooter.Shooter.ShooterState;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.util.superstructure.SOTMCalculator;
 import com.stuypulse.robot.util.superstructure.TurretAngleCalculator;
@@ -40,7 +39,7 @@ public abstract class Turret extends SubsystemBase {
 
     public Turret() {
         driverInput = Vector2D.kOrigin;
-        state = TurretState.SHOOT;
+        state = TurretState.SCORE;
     }
 
     public void setDriverInput(Gamepad gamepad) {
@@ -50,7 +49,7 @@ public abstract class Turret extends SubsystemBase {
     public enum TurretState {
         IDLE,
         ZERO,
-        SHOOT,
+        SCORE,
         SOTM,
         FOTM,
         FERRY,
@@ -64,7 +63,7 @@ public abstract class Turret extends SubsystemBase {
         return switch (getState()) {
             case IDLE -> getAngle(); 
             case ZERO -> Rotation2d.kZero;
-            case SHOOT -> getScoringAngle();
+            case SCORE -> getScoringAngle();
             case SOTM -> SOTMCalculator.calculateTurretAngleSOTM();
             case FOTM -> SOTMCalculator.calculateTurretAngleFOTM();
             case FERRY -> getFerryAngle();
