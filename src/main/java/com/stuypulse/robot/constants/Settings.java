@@ -127,10 +127,10 @@ public interface Settings {
 
         public interface TOFInterpolation{
             double[][] distanceTOFInterpolationValues = {
-                {1.22, 0.965}, // seconds
-                // {2.15, },
-                {3.38, 1.11},  
-                {4.43, 1.1067},
+                {1.22, 0.887}, // seconds
+                {2.15, 1.027},
+                // {3.38, }, FIND
+                // {4.43, }, FIND
                 {5.66, 1.29}
             };
         }
