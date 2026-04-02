@@ -147,25 +147,14 @@ public class Superstructure extends SubsystemBase {
         return turret.getCurrentDraw() + shooter.getCurrentDraw() + hood.getCurrentDraw();
     }
 
-    public boolean superstructureInShootIntoHubMode() {
-        return (state == SuperstructureState.AUTO_INTERPOLATION || 
-                state == SuperstructureState.AUTO_INTERPOLATION_SOTM ||
-                state == SuperstructureState.INTERPOLATION ||
-                state == SuperstructureState.MANUAL_OVERRIDE ||
-                state == SuperstructureState.SOTM ||
-                state == SuperstructureState.KB ||
-                state == SuperstructureState.LEFT_CORNER ||
-                state == SuperstructureState.RIGHT_CORNER);
-    }
-
     public void periodicAfterScheduler() {
         SuperstructureState state = getState();
         
         if (CommandSwerveDrivetrain.getInstance().isOutsideAllianceZone() && state == SuperstructureState.SOTM &&
             Robot.getMode() != RobotMode.AUTON) { // allows us to start SOTM earlier in auto, but currently not desired in teleop
-           setState(SuperstructureState.FOTM);
-           Spindexer.getInstance().setState(SpindexerState.STOP);
-           Handoff.getInstance().setState(HandoffState.STOP);
+            setState(SuperstructureState.FOTM);
+            Spindexer.getInstance().setState(SpindexerState.STOP);
+            Handoff.getInstance().setState(HandoffState.STOP);
         }
 
         SmartDashboard.putString("Superstructure/State", state.name());
