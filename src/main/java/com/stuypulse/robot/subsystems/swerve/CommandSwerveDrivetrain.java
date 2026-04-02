@@ -633,6 +633,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 							getModule(i).getDriveMotor().getSupplyCurrent().getValueAsDouble());
 				}
 			}
+			Robot.getEnergyUtil().logEnergyUsage(getName() + " Drive", getTotalDriveSupplyCurrent());
+			Robot.getEnergyUtil().logEnergyUsage(getName() + " Turn", getTotalSteerSupplyCurrent());
 
 			// CAN SIGNAL LOGGING
 			if (Settings.DEBUG_MODE.get() && Robot.getMode() == RobotMode.DISABLED && !DriverStation.isFMSAttached()) {

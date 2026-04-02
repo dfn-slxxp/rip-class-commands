@@ -115,11 +115,12 @@ public class HandoffImpl extends Handoff {
     public boolean shouldStop() {
         Superstructure superstructure = Superstructure.getInstance();
         SuperstructureState superstructureState = superstructure.getState();
+        CommandSwerveDrivetrain swerve = CommandSwerveDrivetrain.getInstance();
 
         boolean isStopState = getState() == HandoffState.STOP;
         boolean isTurretWrapping = superstructure.isTurretWrapping();
         boolean isBehindHubWhileFerrying = superstructureState == SuperstructureState.FOTM
-                && CommandSwerveDrivetrain.getInstance().isBehindHub();
+                && swerve.isBehindHub();
         boolean isOutsideAllianceZone = 
             CommandSwerveDrivetrain.getInstance().isOutsideAllianceZone() && 
             superstructureState != SuperstructureState.FOTM;
@@ -129,6 +130,7 @@ public class HandoffImpl extends Handoff {
             superstructureState == SuperstructureState.LEFT_CORNER &&
             superstructureState == SuperstructureState.RIGHT_CORNER &&
             superstructureState == SuperstructureState.KB;
+        boolean isBehindTower = swerve.isBehindTower() && superstructureState == SuperstructureState.SOTM;
 
         boolean turretLaggingSOTM = !superstructure.isTurretAtTolerance() && superstructureState == SuperstructureState.SOTM;
 
@@ -137,7 +139,8 @@ public class HandoffImpl extends Handoff {
         (isBehindHubWhileFerrying && !inManualState) || 
         turretLaggingSOTM || 
         (isOutsideAllianceZone  && !inManualState) || 
-        (isUnderTrench && !inManualState);
+        (isUnderTrench && !inManualState) ||
+        isBehindTower;
     }
     
     @Override
@@ -186,8 +189,7 @@ public class HandoffImpl extends Handoff {
                 SmartDashboard.putBoolean("Robot/CAN/Main/Handoff Follow Motor Connected? (ID " + String.valueOf(Ports.Handoff.MOTOR_FOLLOW) + ")", motorFollow.isConnected());
             }
         }
-
-        Robot.getEnergyUtil().logEnergyUsage(getSubsystem(), getCurrentDraw());
+        Robot.getEnergyUtil().logEnergyUsage(getName(), getCurrentDraw());
     }
     
     @Override

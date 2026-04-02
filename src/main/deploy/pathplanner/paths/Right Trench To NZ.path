@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.308815977175463,
-        "y": 0.5221540656205423
+        "x": 8.852239657631953,
+        "y": 0.48333808844507875
       },
       "isLocked": false,
       "linkedName": "Right Trench Start"
     },
     {
       "anchor": {
-        "x": 8.282938659058486,
-        "y": 3.0063766048502147
+        "x": 8.334693295292439,
+        "y": 3.472168330955778
       },
       "prevControl": {
-        "x": 8.399386590584879,
-        "y": 0.3539514978602001
+        "x": 8.244122681883024,
+        "y": 0.5997860199714706
       },
       "nextControl": null,
       "isLocked": false,
@@ -40,7 +40,7 @@
       "minWaypointRelativePos": 0.7192870782940759,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 1.5,
         "maxAcceleration": 2.0,
         "maxAngularVelocity": 300.0,
         "maxAngularAcceleration": 900.0,

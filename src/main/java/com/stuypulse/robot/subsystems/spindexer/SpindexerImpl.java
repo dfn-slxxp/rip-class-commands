@@ -95,14 +95,16 @@ public class SpindexerImpl extends Spindexer {
     public boolean shouldStop() {
         Superstructure superstructure = Superstructure.getInstance();
         SuperstructureState superstructureState = superstructure.getState();
+        CommandSwerveDrivetrain swerve = CommandSwerveDrivetrain.getInstance();
 
         boolean isStopState = getState() == SpindexerState.STOP;
         boolean isTurretWrapping = superstructure.isTurretWrapping();
         boolean isBehindHubWhileFerrying = superstructureState == SuperstructureState.FOTM
-                && CommandSwerveDrivetrain.getInstance().isBehindHub();
+                && swerve.isBehindHub();
         boolean turretLaggingSOTM = !superstructure.isTurretAtTolerance() && superstructureState == SuperstructureState.SOTM;
+        boolean isBehindTower = swerve.isBehindTower() && superstructureState == SuperstructureState.SOTM;
 
-        return isStopState || isTurretWrapping || isBehindHubWhileFerrying || turretLaggingSOTM;
+        return isStopState || isTurretWrapping || isBehindHubWhileFerrying || turretLaggingSOTM || isBehindTower;
     }
 
     private boolean spindexerUnjam() {
@@ -178,6 +180,7 @@ public class SpindexerImpl extends Spindexer {
                         leaderMotor.isConnected());
             }
         }
+        Robot.getEnergyUtil().logEnergyUsage(getName(), getCurrentDraw());
     }
 
     public boolean isStalling() {

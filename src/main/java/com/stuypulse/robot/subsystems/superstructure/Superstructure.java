@@ -155,7 +155,8 @@ public class Superstructure extends SubsystemBase {
                 state == SuperstructureState.SOTM ||
                 state == SuperstructureState.KB ||
                 state == SuperstructureState.LEFT_CORNER ||
-                state == SuperstructureState.RIGHT_CORNER);
+                state == SuperstructureState.RIGHT_CORNER ||
+                state == SuperstructureState.STOW);
     }
 
     public void periodicAfterScheduler() {
@@ -163,9 +164,9 @@ public class Superstructure extends SubsystemBase {
         
         if (CommandSwerveDrivetrain.getInstance().isOutsideAllianceZone() && state == SuperstructureState.SOTM &&
             Robot.getMode() != RobotMode.AUTON) { // allows us to start SOTM earlier in auto, but currently not desired in teleop
-           setState(SuperstructureState.FOTM);
-           Spindexer.getInstance().setState(SpindexerState.STOP);
-           Handoff.getInstance().setState(HandoffState.STOP);
+            setState(SuperstructureState.FOTM);
+            Spindexer.getInstance().setState(SpindexerState.STOP);
+            Handoff.getInstance().setState(HandoffState.STOP);
         }
 
         SmartDashboard.putString("Superstructure/State", state.name());

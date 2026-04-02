@@ -23,6 +23,7 @@
       "/SmartDashboard/Robot/Reset WL Right-Camera": "Command",
       "/SmartDashboard/Robot/Ryan Testing Seed Hood Encoder (NEW)": "Command",
       "/SmartDashboard/Robot/Scheduled Commands": "Scheduler",
+      "/SmartDashboard/Robot/Seed Hood Relative Encoder At Lower Hardstop": "Command",
       "/SmartDashboard/Robot/Seed Hood Relative Encoder At Upper Hardstop": "Command",
       "/SmartDashboard/Robot/Seed Pivot Encoder at Lower Limit (Deployed)": "Command",
       "/SmartDashboard/Robot/Seed Pivot Encoder at Upper Limit (Stowed)": "Command",
@@ -41,6 +42,7 @@
       "/SmartDashboard/Robot/Zero Pivot Encoder at Upper Limit (Stowed)": "Command",
       "/SmartDashboard/Robot/Zero Turret Encoders": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/Selected Camera": "String Chooser",
       "/SmartDashboard/Spindexer Reverse": "Command",
       "/SmartDashboard/Visualizers/Hood": "Mechanism2d",
       "/SmartDashboard/Visualizers/Turret": "Mechanism2d"

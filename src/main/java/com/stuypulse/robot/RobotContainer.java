@@ -45,6 +45,7 @@ import com.stuypulse.robot.commands.swerve.SwerveDriveFOTM;
 import com.stuypulse.robot.commands.swerve.SwerveDriveSOTM;
 import com.stuypulse.robot.commands.swerve.SwerveResetHeading;
 import com.stuypulse.robot.commands.swerve.SwerveXMode;
+import com.stuypulse.robot.commands.swerve.pidToPose.SwerveDrivePIDToPose;
 import com.stuypulse.robot.commands.turret.SeedTurret;
 import com.stuypulse.robot.commands.turret.ZeroTurret;
 import com.stuypulse.robot.commands.vision.EnableBackLimelight;
@@ -79,6 +80,8 @@ import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 import com.stuypulse.stuylib.network.SmartBoolean;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -96,17 +99,17 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 public class RobotContainer {
     public interface EnabledSubsystems {
         SmartBoolean SWERVE = new SmartBoolean("Enabled Subsystems/Swerve Is Enabled", true);
-        SmartBoolean TURRET = new SmartBoolean("Enabled Subsystems/Turret Is Enabled", true);
-        SmartBoolean HANDOFF = new SmartBoolean("Enabled Subsystems/Handoff Is Enabled", true);
-        SmartBoolean INTAKE = new SmartBoolean("Enabled Subsystems/Intake Is Enabled", true);
-        SmartBoolean SPINDEXER = new SmartBoolean("Enabled Subsystems/Spindexer Is Enabled", true);
-        SmartBoolean HOOD = new SmartBoolean("Enabled Subsystems/Hood Is Enabled", true);
-        SmartBoolean SHOOTER = new SmartBoolean("Enabled Subsystems/Shooter Is Enabled", true);
-        SmartBoolean LEDS = new SmartBoolean("Enabled Subsystems/LEDs Is Enabled", true);
+        SmartBoolean TURRET = new SmartBoolean("Enabled Subsystems/Turret Is Enabled", false);
+        SmartBoolean HANDOFF = new SmartBoolean("Enabled Subsystems/Handoff Is Enabled", false);
+        SmartBoolean INTAKE = new SmartBoolean("Enabled Subsystems/Intake Is Enabled", false);
+        SmartBoolean SPINDEXER = new SmartBoolean("Enabled Subsystems/Spindexer Is Enabled", false);
+        SmartBoolean HOOD = new SmartBoolean("Enabled Subsystems/Hood Is Enabled", false);
+        SmartBoolean SHOOTER = new SmartBoolean("Enabled Subsystems/Shooter Is Enabled", false);
+        SmartBoolean LEDS = new SmartBoolean("Enabled Subsystems/LEDs Is Enabled", false);
 
-        SmartBoolean BACK_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Back Limelight Is Enabled", true);
-        SmartBoolean LEFT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Left Limelight Is Enabled", true);
-        SmartBoolean RIGHT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Right Limelight Is Enabled", true);
+        SmartBoolean BACK_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Back Limelight Is Enabled", false);
+        SmartBoolean LEFT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Left Limelight Is Enabled", false);
+        SmartBoolean RIGHT_LIMELIGHT = new SmartBoolean("Enabled Subsystems/Right Limelight Is Enabled", false);
     }
 
     // Gamepads
@@ -158,24 +161,27 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Scoring Routine (TR)
         driver.getTopButton()
-            .whileTrue(new LEDApplyPattern(Settings.LED.SHOOT_IN_PLACE))
-            .whileTrue(new SwerveXMode())
-            .whileTrue(new BuzzController(driver).onlyWhile(() -> !vision.hasData()).repeatedly())
-            .whileTrue(
-                new SuperstructureInterpolation() 
-                    .andThen(new WaitUntilCommand(superstructure::isReadyToShoot))
-                    .andThen(
-                        Commands.parallel(
-                            new RunCommand(
-                                () -> handoff.setState(HandoffState.FORWARD),
-                                handoff),
-                            new RunCommand(
-                                () -> spindexer.setState(SpindexerState.FORWARD),
-                                spindexer)
-                        )
-                        .repeatedly()
-                    )
-            ); 
+            .whileTrue(new SwerveDrivePIDToPose(new Pose2d(0.0, 0, new Rotation2d(Math.PI))))
+            .onFalse( new SwerveDrivePIDToPose(new Pose2d(0.0, 0, new Rotation2d())));
+        
+            // .whileTrue(new LEDApplyPattern(Settings.LED.SHOOT_IN_PLACE))
+            // .whileTrue(new SwerveXMode())
+            // .whileTrue(new BuzzController(driver).onlyWhile(() -> !vision.hasData()).repeatedly())
+            // .whileTrue(
+            //     new SuperstructureInterpolation() 
+            //         .andThen(new WaitUntilCommand(superstructure::isReadyToShoot))
+            //         .andThen(
+            //             Commands.parallel(
+            //                 new RunCommand(
+            //                     () -> handoff.setState(HandoffState.FORWARD),
+            //                     handoff),
+            //                 new RunCommand(
+            //                     () -> spindexer.setState(SpindexerState.FORWARD),
+            //                     spindexer)
+            //             )
+            //             .repeatedly()
+            //         )
+            // ); 
 
         // Intake Stow
         // driver.getLeftTriggerButton()
@@ -351,27 +357,18 @@ public class RobotContainer {
         LEFT_TWO_CYCLE.register(autonChooser);
 
         AutonConfig RIGHT_TWO_CYCLE = new AutonConfig("Right Two Cycle", RightTwoCycle::new,  
-        "Right Trench To NZ", "Right NZ To Score", "Right Score To Score", "Right Score To NZ (F)");
+        "Right Trench To NZ", "Right NZ To Score", "Right Score To Score", "Right Score To NZ (F)", "Right NZ To Score");
         RIGHT_TWO_CYCLE.register(autonChooser);
-
-        // TWO CYCLES (BUMP)
-        AutonConfig LEFT_BUMP_TWO_CYCLE = new AutonConfig("Left Bump Two Cycle", LeftBumpTwoCycle::new,
-            "Left Trench To NZ", "Left NZ To Score (B)", "Left Bump To Trench", "Left Trench To NZ (B)", "Left Bump To Trench", "Left Trench To NZ (F)");
-        LEFT_BUMP_TWO_CYCLE.register(autonChooser);
-
-        AutonConfig RIGHT_BUMP_TWO_CYCLE = new AutonConfig("Right Bump Two Cycle", RightBumpTwoCycle::new,
-            "Right Trench To NZ", "Right NZ To Score (B)", "Right Bump To Trench", "Right Trench To NZ (B)", "Right Bump To Trench", "Right Trench To NZ (F)");
-        RIGHT_BUMP_TWO_CYCLE.register(autonChooser);
 
         SmartDashboard.putData("Autonomous", autonChooser);
 
     }
 
     public void configureSysids() {
-        autonChooser.addOption("SysID Module Translation Dynamic Forwards", swerve.sysIdDynamic(Direction.kForward));
-        autonChooser.addOption("SysID Module Translation Dynamic Backwards", swerve.sysIdDynamic(Direction.kReverse));
-        autonChooser.addOption("SysID Module Translation Quasi Forwards", swerve.sysIdQuasistatic(Direction.kForward));
-        autonChooser.addOption("SysID Module Translation Quasi Backwards", swerve.sysIdQuasistatic(Direction.kReverse)); 
+        // autonChooser.addOption("SysID Module Translation Dynamic Forwards", swerve.sysIdDynamic(Direction.kForward));
+        // autonChooser.addOption("SysID Module Translation Dynamic Backwards", swerve.sysIdDynamic(Direction.kReverse));
+        // autonChooser.addOption("SysID Module Translation Quasi Forwards", swerve.sysIdQuasistatic(Direction.kForward));
+        // autonChooser.addOption("SysID Module Translation Quasi Backwards", swerve.sysIdQuasistatic(Direction.kReverse)); 
 
         // autonChooser.addOption("SysID Rotation Translation Dynamic Forwards", swerve.sysidRotationDynamic(Direction.kForward));
         // autonChooser.addOption("SysID Rotation Translation Dynamic Backwards", swerve.sysidRotationDynamic(Direction.kReverse));

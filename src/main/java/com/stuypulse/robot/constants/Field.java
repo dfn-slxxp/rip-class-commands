@@ -44,7 +44,7 @@ public interface Field {
     public static final double OPPONENT_ZONE_X = LENGTH - Units.inchesToMeters(158.6);
 
     public static final double hubToleranceX = Units.inchesToMeters(100);
-    public static final double hubToleranceY = Units.inchesToMeters(6);
+    public static final double hubToleranceY = Units.inchesToMeters(3);
 
     public static Pose2d getHubPose() {
         return hubCenter;
@@ -52,8 +52,8 @@ public interface Field {
 
     // Alliance relative tower center coordinates
     public final Pose2d towerFarCenter = new Pose2d(Units.inchesToMeters(42.0), Units.inchesToMeters(147.47), new Rotation2d());
-    public final Pose2d towerFarRight = new Pose2d(Units.inchesToMeters(42.0), Units.inchesToMeters(147.47 - 23.5), new Rotation2d());
-    public final Pose2d towerFarLeft = new Pose2d(Units.inchesToMeters(42.0), Units.inchesToMeters(147.47 + 23.5), new Rotation2d());
+    public final Pose2d towerFarRight = new Pose2d(Units.inchesToMeters(42.0), Units.inchesToMeters(147.47 - 23.5 - 10), new Rotation2d());
+    public final Pose2d towerFarLeft = new Pose2d(Units.inchesToMeters(42.0), Units.inchesToMeters(147.47 + 23.5 - 5 + 3.5), new Rotation2d());
     public final double barDisplacement = Units.inchesToMeters(11.38);
 
     public final double DISTANCE_TO_RUNGS = Units.inchesToMeters(20); // placeholder value, how far away in terms of y-cord from the rung
