@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.118459343794578,
-        "y": 0.6903566333808839
+        "x": 7.623067047075606,
+        "y": 0.5739087018544944
       },
       "isLocked": false,
       "linkedName": "Right Score (F)"
     },
     {
       "anchor": {
-        "x": 8.282938659058486,
-        "y": 3.0063766048502147
+        "x": 8.334693295292439,
+        "y": 3.472168330955778
       },
       "prevControl": {
-        "x": 8.02416547788873,
-        "y": 0.9103138373751789
+        "x": 8.282938659058486,
+        "y": 0.7421112696148362
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,11 +38,11 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.9,
-    "maxAcceleration": 7.5,
+    "maxVelocity": 4.16,
+    "maxAcceleration": 10.0,
     "maxAngularVelocity": 300.0,
     "maxAngularAcceleration": 900.0,
-    "nominalVoltage": 12.0,
+    "nominalVoltage": 12.5,
     "unlimited": false
   },
   "goalEndState": {

@@ -58,13 +58,12 @@ public interface Settings {
     }
 
     public interface Intake {
-        Rotation2d PIVOT_ZERO_STOW_ANGLE = Rotation2d.fromDegrees(90.0);
-        Rotation2d PIVOT_STOW_ANGLE = Rotation2d.fromDegrees(80.0); 
+        Rotation2d PIVOT_STOW_ANGLE = Rotation2d.fromDegrees(71.0); 
         Rotation2d PIVOT_DEPLOY_ANGLE = Rotation2d.fromDegrees(-10.0);
 
         Rotation2d PIVOT_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5.0); 
 
-        Rotation2d PIVOT_MAX_ANGLE = Rotation2d.fromDegrees(88.0);
+        Rotation2d PIVOT_MAX_ANGLE = Rotation2d.fromDegrees(76.4);
         Rotation2d PIVOT_MIN_ANGLE = Rotation2d.fromDegrees(-10.0);
 
         Rotation2d THRESHOLD_TO_START_ROLLERS = Rotation2d.fromDegrees(10.0);
@@ -72,7 +71,7 @@ public interface Settings {
         Rotation2d ANGLE_THRESHOLD_FOR_HOLDING_VOLTAGE = Rotation2d.fromDegrees(15.0);
         double HOMING_VOLTAGE = 3.0;
         
-        double PUSHDOWN_VOLTAGE = 1.5; // TODO: Verify 
+        double PUSHDOWN_VOLTAGE = 1.75; // TODO: Verify 
 
         double GEAR_RATIO = 37.93;
         
@@ -81,8 +80,8 @@ public interface Settings {
     }
 
     public interface Spindexer {
-        double FORWARD_SPEED = 4500.0;
-        double REVERSE_SPEED = -4500.0;
+        double FORWARD_DUTY_CYCLE = -0.8; //TODO: GET
+        double REVERSE_DUTY_CYCLE = 0.8;
         double STOP_SPEED = 0.0;
         double REVERSE_TIME = 2.0;
 
@@ -95,8 +94,8 @@ public interface Settings {
     }
     
     public interface Superstructure {
-        public final double SHOOTER_TOLERANCE_RPM_HIGH = 25.0;
-        public final double SHOOTER_TOLERANCE_RPM_LOW = 40.0;        
+        public final double SHOOTER_TOLERANCE_RPM_HIGH = 50.0;
+        public final double SHOOTER_TOLERANCE_RPM_LOW = 80.0;        
         public final double SHOOTER_SOTM_TOLERANCE_RPM_HIGH = 50.0;
         public final double SHOOTER_SOTM_TOLERANCE_RPM_LOW = 80.0;
         public final double SHOOTER_FOTM_TOLERANCE_RPM_HIGH = 150.0;
@@ -109,7 +108,7 @@ public interface Settings {
             double[][] distanceAngleInterpolationValues = {
                 {1.22, Units.degreesToRadians(20)},
                 {2.15, Units.degreesToRadians(27)},
-                {3.38, Units.degreesToRadians(37)},
+                {3.38, Units.degreesToRadians(34)}, 
                 {4.43, Units.degreesToRadians(39)},
                 {5.66, Units.degreesToRadians(39)}
             };
@@ -118,45 +117,45 @@ public interface Settings {
         public interface RPMInterpolation{
             double[][] distanceRPMInterpolationValues = {
                 {1.22, 2600.0},
-                {2.15, 2855.0},
-                {3.38, 3000},
-                {4.43, 3525.0},
-                {5.66, 3600.0}
+                {2.15, 2805.0},
+                {3.38, 3075},
+                {4.43, 3350.0},
+                {5.66, 3650.0}
             };
         }
 
         public interface TOFInterpolation{
             double[][] distanceTOFInterpolationValues = {
-                {1.22, 0.887}, // seconds
-                {2.15, 1.027},
-                // {3.38, }, FIND
-                // {4.43, }, FIND
-                {5.66, 1.29}
+                {1.22, 0.965}, // seconds
+                {2.15, 1.01},
+                {3.38, 1.00},  
+                {4.43, 1.165},
+                {5.50, 1.21}
             };
         }
 
         public interface FerryRPMInterpolation {
             double[][] ferryDistanceRPMInterpolation = {
-                {5.16, 3500.0},
-                {6.94, 3700.0},
-                {7.87, 4000.0},
-                {9.77, 4500.0},
-                {10.694, 4795.0},       //STARTING FROM HERE THE DATA IS UNRELIABLE!!!
-                {11.516, 4950.0},
-                {12.416, 5100.0},
-                {13.316, 5250.0},
-                {14.216, 5375.0},
-                {15.148, 5400.0},
-                {16.54, 5500}           //FIELD LENGTH
+                {5.16, 3300.0},
+                {6.94, 3600.0},
+                {7.87, 3800.0},
+                {9.77, 4300.0},
+                {10.694, 4595.0},       //STARTING FROM HERE THE DATA IS UNRELIABLE!!!
+                {11.516, 4750.0},
+                {12.416, 4900.0},
+                {13.316, 5050.0},
+                {14.216, 5175.0},
+                {15.148, 5200.0},
+                {16.54, 5300}           //FIELD LENGTH
             };
         }
 
         public interface FerryTOFInterpolation {
             double [][] FerryTOFInterpolationInterpolation = {
-                // {5.16, },
-                // {6.94, },
-                // {7.87, },
-                // {9.77, },
+                {5.16, 1.16},
+                {6.94, 1.37},
+                {7.87, 1.57},
+                {9.77, 1.64},
             };
         }
 
@@ -206,7 +205,7 @@ public interface Settings {
 
             public interface Angles {
                 public final SmartNumber MANUAL_OVERRIDE = new SmartNumber("InterpolationTesting/Shoot State Target Angle (deg)", 20.0);
-                public final Rotation2d FERRY_ANGLE = Rotation2d.fromDegrees(40.0);
+                public final Rotation2d FERRY_ANGLE = Rotation2d.fromDegrees(44.0);
                 public final Rotation2d MAX = FORWARD_SOFT_LIMIT;
                 public final Rotation2d MIN = REVERSE_SOFT_LIMIT;
 
@@ -281,17 +280,17 @@ public interface Settings {
         public final double ROTATIONAL_DEADBAND_RAD_PER_S = 0.1;
 
         public interface Constraints {
-            public final double MAX_VELOCITY_M_PER_S = 4.93; 
-            public final double MAX_VELOCITY_SOTM_M_PER_S = 1.5;
-            public final double MAX_VELOCITY_FOTM_M_PER_S = 3.00;
+            public final double MAX_VELOCITY_M_PER_S = 4.16; 
+            public final double MAX_VELOCITY_SOTM_M_PER_S = 2.5;
+            public final double MAX_VELOCITY_FOTM_M_PER_S = 4.16;
 
             public final double MAX_ANGULAR_VEL_RAD_PER_S = Units.degreesToRadians(300.0);
             public final double MAX_ANGULAR_VEL_SOTM_RAD_PER_S = Units.degreesToRadians(75.0);
-            public final double MAX_ANGULAR_VEL_FOTM_RAD_PER_S = Units.degreesToRadians(75.0);
+            public final double MAX_ANGULAR_VEL_FOTM_RAD_PER_S = Units.degreesToRadians(300.0);
 
             public final double MAX_ACCEL_M_PER_S_SQUARED = 15.0;
             public final double MAX_ACCEL_M_PER_S_SQUARED_SOTM = 4.0;
-            public final double MAX_ACCEL_M_PER_S_SQUARED_FOTM = 10.0;
+            public final double MAX_ACCEL_M_PER_S_SQUARED_FOTM = 15.0;
             public final double MAX_ANGULAR_ACCEL_RAD_PER_S_SQUARED = Units.degreesToRadians(900.0);
 
             public final PathConstraints DEFAULT_CONSTRAINTS =

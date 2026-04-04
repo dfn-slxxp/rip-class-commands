@@ -191,6 +191,7 @@ public class HoodImpl extends Hood {
                 // SmartDashboard.putBoolean("Robot/CAN/Canivore/Hood Encoder Connected? (ID " + String.valueOf(hoodEncoder.getDeviceID()) + ")", hoodEncoder.isConnected());
             }
         }
+        Robot.getEnergyUtil().logEnergyUsage(getName(), getCurrentDraw());
     }
 
     private void setVoltageOverride(Optional<Double> voltageOverride) {

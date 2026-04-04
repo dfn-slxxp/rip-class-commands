@@ -45,6 +45,7 @@ import com.stuypulse.robot.commands.swerve.SwerveDriveFOTM;
 import com.stuypulse.robot.commands.swerve.SwerveDriveSOTM;
 import com.stuypulse.robot.commands.swerve.SwerveResetHeading;
 import com.stuypulse.robot.commands.swerve.SwerveXMode;
+import com.stuypulse.robot.commands.swerve.pidToPose.SwerveDrivePIDToPose;
 import com.stuypulse.robot.commands.turret.SeedTurret;
 import com.stuypulse.robot.commands.turret.ZeroTurret;
 import com.stuypulse.robot.commands.vision.EnableBackLimelight;
@@ -79,6 +80,8 @@ import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 import com.stuypulse.stuylib.network.SmartBoolean;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -158,6 +161,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Scoring Routine (TR)
         driver.getTopButton()
+            // .whileTrue(new SwerveDrivePIDToPose(new Pose2d(0.0, 0, new Rotation2d(Math.PI))))
+            // .onFalse( new SwerveDrivePIDToPose(new Pose2d(0.0, 0, new Rotation2d())));
             .whileTrue(new LEDApplyPattern(Settings.LED.SHOOT_IN_PLACE))
             .whileTrue(new SwerveXMode())
             .whileTrue(new BuzzController(driver).onlyWhile(() -> !vision.hasData()).repeatedly())
@@ -178,8 +183,8 @@ public class RobotContainer {
             ); 
 
         // Intake Stow
-        // driver.getLeftTriggerButton()
-        //     .onTrue(new IntakeStow());
+        driver.getLeftTriggerButton()
+            .onTrue(new IntakeStow());
 
         // Intake Deploy
         driver.getRightTriggerButton()
@@ -351,27 +356,18 @@ public class RobotContainer {
         LEFT_TWO_CYCLE.register(autonChooser);
 
         AutonConfig RIGHT_TWO_CYCLE = new AutonConfig("Right Two Cycle", RightTwoCycle::new,  
-        "Right Trench To NZ", "Right NZ To Score", "Right Score To Score", "Right Score To NZ (F)");
+        "Right Trench To NZ", "Right NZ To Score", "Right Score To Score", "Right Score To NZ (F)", "Right NZ To Score");
         RIGHT_TWO_CYCLE.register(autonChooser);
-
-        // TWO CYCLES (BUMP)
-        AutonConfig LEFT_BUMP_TWO_CYCLE = new AutonConfig("Left Bump Two Cycle", LeftBumpTwoCycle::new,
-            "Left Trench To NZ", "Left NZ To Score (B)", "Left Bump To Trench", "Left Trench To NZ (B)", "Left Bump To Trench", "Left Trench To NZ (F)");
-        LEFT_BUMP_TWO_CYCLE.register(autonChooser);
-
-        AutonConfig RIGHT_BUMP_TWO_CYCLE = new AutonConfig("Right Bump Two Cycle", RightBumpTwoCycle::new,
-            "Right Trench To NZ", "Right NZ To Score (B)", "Right Bump To Trench", "Right Trench To NZ (B)", "Right Bump To Trench", "Right Trench To NZ (F)");
-        RIGHT_BUMP_TWO_CYCLE.register(autonChooser);
 
         SmartDashboard.putData("Autonomous", autonChooser);
 
     }
 
     public void configureSysids() {
-        autonChooser.addOption("SysID Module Translation Dynamic Forwards", swerve.sysIdDynamic(Direction.kForward));
-        autonChooser.addOption("SysID Module Translation Dynamic Backwards", swerve.sysIdDynamic(Direction.kReverse));
-        autonChooser.addOption("SysID Module Translation Quasi Forwards", swerve.sysIdQuasistatic(Direction.kForward));
-        autonChooser.addOption("SysID Module Translation Quasi Backwards", swerve.sysIdQuasistatic(Direction.kReverse)); 
+        // autonChooser.addOption("SysID Module Translation Dynamic Forwards", swerve.sysIdDynamic(Direction.kForward));
+        // autonChooser.addOption("SysID Module Translation Dynamic Backwards", swerve.sysIdDynamic(Direction.kReverse));
+        // autonChooser.addOption("SysID Module Translation Quasi Forwards", swerve.sysIdQuasistatic(Direction.kForward));
+        // autonChooser.addOption("SysID Module Translation Quasi Backwards", swerve.sysIdQuasistatic(Direction.kReverse)); 
 
         // autonChooser.addOption("SysID Rotation Translation Dynamic Forwards", swerve.sysidRotationDynamic(Direction.kForward));
         // autonChooser.addOption("SysID Rotation Translation Dynamic Backwards", swerve.sysidRotationDynamic(Direction.kReverse));

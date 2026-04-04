@@ -9,6 +9,7 @@ import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Superstructure.AngleInterpolation;
 import com.stuypulse.robot.constants.Settings.Superstructure.FerryRPMInterpolation;
+import com.stuypulse.robot.constants.Settings.Superstructure.FerryTOFInterpolation;
 import com.stuypulse.robot.constants.Settings.Superstructure.RPMInterpolation;
 import com.stuypulse.robot.constants.Settings.Superstructure.TOFInterpolation;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
@@ -26,6 +27,7 @@ public class InterpolationCalculator {
     public static InterpolatingDoubleTreeMap distanceTOFInterpolator;
 
     public static InterpolatingDoubleTreeMap ferryingDistanceRPMInterpolator;
+    public static InterpolatingDoubleTreeMap ferryingDistanceTOFInterpolator;
 
     public record InterpolatedShotInfo(
         Rotation2d targetHoodAngle,
@@ -59,6 +61,13 @@ public class InterpolationCalculator {
         for(double[] pair: FerryRPMInterpolation.ferryDistanceRPMInterpolation) {
             ferryingDistanceRPMInterpolator.put(pair[0], pair[1]);
         }
+
+        ferryingDistanceTOFInterpolator = new InterpolatingDoubleTreeMap();
+        for(double[] pair: FerryTOFInterpolation.FerryTOFInterpolationInterpolation) {
+            ferryingDistanceTOFInterpolator.put(pair[0], pair[1]);
+        }
+
+
     }
     
     public static InterpolatedShotInfo interpolateShotInfo(){
@@ -116,7 +125,7 @@ public class InterpolationCalculator {
 
         Rotation2d targetAngle = Settings.Superstructure.Hood.Angles.FERRY_ANGLE;
         double targetRPM = ferryingDistanceRPMInterpolator.get(distanceMeters);
-        double flightTime = 2.1;
+        double flightTime = ferryingDistanceTOFInterpolator.get(distanceMeters);
         
         SmartDashboard.putNumber("Superstructure/Interpolated Ferry Target Angle", targetAngle.getDegrees());
         SmartDashboard.putNumber("Superstructure/Interpolated Ferry RPM", targetRPM);

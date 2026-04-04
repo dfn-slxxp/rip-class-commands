@@ -36,12 +36,22 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
+
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import java.util.Optional;
+
 public class SpindexerImpl extends Spindexer {
     private final Motors.TalonFXConfig spindexerLeadConfig;
 
     private final TalonFX leaderMotor;
 
-    private final VelocityVoltage controller;
+    private final DutyCycleOut controller;
     private final BStream isStalling;
     private boolean hasStartedStallTimer;
     private final Timer unjamTimer;
@@ -55,7 +65,7 @@ public class SpindexerImpl extends Spindexer {
 
     public SpindexerImpl() {
         spindexerLeadConfig = new Motors.TalonFXConfig()
-                .withInvertedValue(InvertedValue.Clockwise_Positive)    //TODO: VERIFY DIR
+                .withInvertedValue(InvertedValue.CounterClockwise_Positive)
                 .withNeutralMode(NeutralModeValue.Brake)
 
                 .withSupplyCurrentLimitAmps(45)
@@ -71,7 +81,7 @@ public class SpindexerImpl extends Spindexer {
 
         spindexerLeadConfig.configure(leaderMotor);
 
-        controller = new VelocityVoltage(getTargetRPM()).withEnableFOC(true);
+        controller = new DutyCycleOut(getTargetDutyCycle()).withEnableFOC(true);
 
         leaderSupplyCurrent = leaderMotor.getSupplyCurrent();
         leaderStatorCurrent = leaderMotor.getStatorCurrent();
@@ -94,14 +104,16 @@ public class SpindexerImpl extends Spindexer {
     public boolean shouldStop() {
         Superstructure superstructure = Superstructure.getInstance();
         SuperstructureState superstructureState = superstructure.getState();
+        CommandSwerveDrivetrain swerve = CommandSwerveDrivetrain.getInstance();
 
         boolean isStopState = getState() == SpindexerState.STOP;
         boolean isTurretWrapping = superstructure.isTurretWrapping();
         boolean isBehindHubWhileFerrying = superstructureState == SuperstructureState.FOTM
-                && CommandSwerveDrivetrain.getInstance().isBehindHub();
+                && swerve.isBehindHub();
         boolean turretLaggingSOTM = !superstructure.isTurretAtTolerance() && superstructureState == SuperstructureState.SOTM;
+        boolean isBehindTower = swerve.isBehindTower() && superstructureState == SuperstructureState.SOTM;
 
-        return isStopState || isTurretWrapping || isBehindHubWhileFerrying || turretLaggingSOTM;
+        return isStopState || isTurretWrapping || isBehindHubWhileFerrying || turretLaggingSOTM || isBehindTower;
     }
 
     private boolean spindexerUnjam() {
@@ -120,18 +132,6 @@ public class SpindexerImpl extends Spindexer {
     }
 
     @Override
-    public boolean atTolerance() {
-        double error = getMotorRPM() - getTargetRPM();
-        return Math.abs(error) <= Settings.Spindexer.RPM_TOLERANCE;
-    }
-
-    @Override
-    public boolean canStartIntakeRollers() {
-        double error = getMotorRPM() - getTargetRPM();
-        return Math.abs(error) <= Settings.Spindexer.TOLERANCE_TO_START_INTAKE_ROLLERS_DURING_SCORING_ROUTINE;
-    }
-
-    @Override
     public void periodicAfterScheduler() {
         super.periodicAfterScheduler();
 
@@ -147,7 +147,7 @@ public class SpindexerImpl extends Spindexer {
                     leaderMotor.stopMotor();
                 }             
                 else {
-                    leaderMotor.setControl(controller.withVelocity(getTargetRPM() / Settings.SECONDS_IN_A_MINUTE));
+                    leaderMotor.setControl(controller.withOutput(getTargetDutyCycle()));
                 }
             }
         } else {
@@ -157,14 +157,11 @@ public class SpindexerImpl extends Spindexer {
         SmartDashboard.putNumber("Spindexer/Leader Motor RPM", getMotorRPM());
         // SmartDashboard.putBoolean("Spindexer/Unjamming", unJamming);
 
-        SmartDashboard.putBoolean("Spindexer/At Tolerance", atTolerance());
-
         SmartDashboard.putNumber("Spindexer/Leader Voltage (volts)", leaderMotorVoltage.getValueAsDouble());
         SmartDashboard.putNumber("Spindexer/Leader Supply Current (amps)", leaderSupplyCurrent.getValueAsDouble());
         SmartDashboard.putNumber("Spindexer/Leader Stator Current (amps)", leaderStatorCurrent.getValueAsDouble());
 
     SmartDashboard.putBoolean("Spindexer/Should Stop?", shouldStop());
-
 
         if (Settings.DEBUG_MODE.get()) {
             if (Robot.getMode() == RobotMode.DISABLED && !DriverStation.isFMSAttached()) {
@@ -174,6 +171,7 @@ public class SpindexerImpl extends Spindexer {
                         leaderMotor.isConnected());
             }
         }
+        Robot.getEnergyUtil().logEnergyUsage(getName(), getCurrentDraw());
     }
 
     public boolean isStalling() {

@@ -62,11 +62,12 @@ public class HandoffSim extends Handoff {
     public boolean shouldStop() {
         Superstructure superstructure = Superstructure.getInstance();
         SuperstructureState superstructureState = superstructure.getState();
+        CommandSwerveDrivetrain swerve = CommandSwerveDrivetrain.getInstance();
 
         boolean isStopState = getState() == HandoffState.STOP;
         boolean isTurretWrapping = superstructure.isTurretWrapping();
         boolean isBehindHubWhileFerrying = superstructureState == SuperstructureState.FOTM
-                && CommandSwerveDrivetrain.getInstance().isBehindHub();
+                && swerve.isBehindHub();
         boolean isOutsideAllianceZone = 
             CommandSwerveDrivetrain.getInstance().isOutsideAllianceZone() && 
             superstructureState != SuperstructureState.FOTM;
@@ -76,6 +77,7 @@ public class HandoffSim extends Handoff {
             superstructureState == SuperstructureState.LEFT_CORNER &&
             superstructureState == SuperstructureState.RIGHT_CORNER &&
             superstructureState == SuperstructureState.KB;
+        boolean isBehindTower = swerve.isBehindTower() && superstructureState == SuperstructureState.SOTM;
 
         boolean turretLaggingSOTM = !superstructure.isTurretAtTolerance() && superstructureState == SuperstructureState.SOTM;
 
@@ -84,7 +86,8 @@ public class HandoffSim extends Handoff {
         (isBehindHubWhileFerrying && !inManualState) || 
         turretLaggingSOTM || 
         (isOutsideAllianceZone  && !inManualState) || 
-        (isUnderTrench && !inManualState);
+        (isUnderTrench && !inManualState) ||
+        isBehindTower;
     }
 
     @Override

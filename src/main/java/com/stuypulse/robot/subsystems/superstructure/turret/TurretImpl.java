@@ -15,6 +15,7 @@ import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
+import com.stuypulse.robot.util.EnergyUtil;
 import com.stuypulse.robot.util.PhoenixUtil;
 import com.stuypulse.robot.util.SysId;
 import com.stuypulse.robot.util.superstructure.TurretAngleCalculator;
@@ -261,6 +262,7 @@ public class TurretImpl extends Turret {
             else {
                 double omega = CommandSwerveDrivetrain.getInstance().getChassisSpeeds().omegaRadiansPerSecond;
                 double omegaFF = Gains.Superstructure.Turret.kOmega.get() * omega;
+                // double translationFF = Gains.Superstructure.Turret.slot0.kV * (delta / (360 * Settings.DT));
 
                 turretMotor.setControl(controller
                     .withPosition(prevActualTargetAngle / 360.0)
@@ -303,6 +305,7 @@ public class TurretImpl extends Turret {
                         + String.valueOf(Ports.Superstructure.Turret.ENCODER18T) + ")", encoder18t.isConnected());
             }
         }
+        Robot.getEnergyUtil().logEnergyUsage(getName(), getCurrentDraw());
     }
 
     private void setVoltageOverride(Optional<Double> volts) {

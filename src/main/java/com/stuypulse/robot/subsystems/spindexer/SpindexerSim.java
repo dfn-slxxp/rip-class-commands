@@ -72,14 +72,16 @@ public class SpindexerSim extends Spindexer {
     public boolean shouldStop() {
         Superstructure superstructure = Superstructure.getInstance();
         SuperstructureState superstructureState = superstructure.getState();
+        CommandSwerveDrivetrain swerve = CommandSwerveDrivetrain.getInstance();
 
         boolean isStopState = getState() == SpindexerState.STOP;
         boolean isTurretWrapping = superstructure.isTurretWrapping();
         boolean isBehindHubWhileFerrying = superstructureState == SuperstructureState.FOTM
-                && CommandSwerveDrivetrain.getInstance().isBehindHub();
+                && swerve.isBehindHub();
         boolean turretLaggingSOTM = !superstructure.isTurretAtTolerance() && superstructureState == SuperstructureState.SOTM;
+        boolean isBehindTower = swerve.isBehindTower() && superstructureState == SuperstructureState.SOTM;
 
-        return isStopState || isTurretWrapping || isBehindHubWhileFerrying || turretLaggingSOTM;
+        return isStopState || isTurretWrapping || isBehindHubWhileFerrying || turretLaggingSOTM || isBehindTower;
     }
 
     private boolean spindexerUnjam() {
@@ -101,7 +103,7 @@ public class SpindexerSim extends Spindexer {
     public void periodic() {
         super.periodic();
 
-        controller.setNextR(VecBuilder.fill(getTargetRPM() * 2.0 * Math.PI / 60.0));
+        controller.setNextR(VecBuilder.fill(getTargetDutyCycle() * 2.0 * Math.PI / 60.0));
         controller.correct(VecBuilder.fill(sim.getOutput(0)));
         controller.predict(Settings.DT);
 
@@ -147,18 +149,6 @@ public class SpindexerSim extends Spindexer {
                 () -> 0.0,
                 () -> sim.getInput(0),
                 getInstance());
-    }
-
-    @Override
-    public boolean atTolerance() {
-        double error = getCurrentRPM() - getTargetRPM();
-        return Math.abs(error) <= Settings.Spindexer.RPM_TOLERANCE;
-    }
-
-    @Override
-    public boolean canStartIntakeRollers() {
-        double error = getCurrentRPM() - getTargetRPM();
-        return Math.abs(error) <= Settings.Spindexer.TOLERANCE_TO_START_INTAKE_ROLLERS_DURING_SCORING_ROUTINE;
     }
 
     @Override
