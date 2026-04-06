@@ -182,7 +182,7 @@ public class RobotContainer {
             ); 
 
         // driver.getTopButton()
-        //     .whileTrue(new IntakeAutoDigest())
+        //     .whileTrue(new IntakeAutoDigest().repeatedly())
         //     .onFalse(new IntakeDeploy());
 
         // Intake Stow
