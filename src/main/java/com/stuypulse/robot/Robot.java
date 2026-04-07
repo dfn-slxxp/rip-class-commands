@@ -103,6 +103,7 @@ public class Robot extends TimedRobot {
         energyUtil = new EnergyUtil();
 
         CommandScheduler.getInstance().schedule(new SwerveAutonInit());
+        RobotController.setBrownoutVoltage(6.3);
     }
 
     @Override

@@ -53,6 +53,7 @@ import com.stuypulse.robot.commands.vision.EnableRightLimelight;
 import com.stuypulse.robot.commands.vision.ResetLimelightIMU;
 import com.stuypulse.robot.commands.vision.SetIMUMode;
 import com.stuypulse.robot.commands.vision.SetMegaTagMode;
+import com.stuypulse.robot.commands.vision.SetPipeline;
 import com.stuypulse.robot.commands.vision.WhitelistAllTagsForAllCameras;
 import com.stuypulse.robot.commands.vision.WhitelistOutpostTags;
 import com.stuypulse.robot.commands.vision.WhitelistTowerTags;
@@ -74,6 +75,7 @@ import com.stuypulse.robot.subsystems.superstructure.turret.Turret;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.subsystems.vision.LimelightVision;
 import com.stuypulse.robot.subsystems.vision.LimelightVision.MegaTagMode;
+import com.stuypulse.robot.subsystems.vision.LimelightVision.Pipeline;
 import com.stuypulse.robot.util.PathUtil.AutonConfig;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
@@ -326,6 +328,11 @@ public class RobotContainer {
         SmartDashboard.putData("Robot/WL Outpost Tags Left-Camera", new WhitelistOutpostTags("limelight-left"));
         SmartDashboard.putData("Robot/WL Tower Tags Right-Camera", new WhitelistTowerTags("limelight-right"));
         SmartDashboard.putData("Robot/Whitelist All Cameras", new WhitelistAllTagsForAllCameras());
+
+        SmartDashboard.putData("Robot/Set Exposure 25", new SetPipeline(Pipeline.NO_SUN));
+        SmartDashboard.putData("Robot/Set Exposure 80", new SetPipeline(Pipeline.LOW_SUN));
+        SmartDashboard.putData("Robot/Set Exposure 100", new SetPipeline(Pipeline.MED_SUN));
+        SmartDashboard.putData("Robot/Set Exposure 130", new SetPipeline(Pipeline.HIGH_SUN));
 
         // Unjamming
         SmartDashboard.putData("Robot/Handoff Reverse", 

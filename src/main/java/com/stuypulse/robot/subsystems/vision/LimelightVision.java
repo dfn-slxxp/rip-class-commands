@@ -77,17 +77,11 @@ public class LimelightVision extends SubsystemBase {
         };
     }
 
-    private void iteratePipelineValue() {
-        this.currentPipeline = switch(this.currentPipeline) {
-            case NO_SUN -> Pipeline.LOW_SUN;
-            case LOW_SUN -> Pipeline.MED_SUN;
-            case MED_SUN -> Pipeline.HIGH_SUN;
-            case HIGH_SUN -> Pipeline.NO_SUN;
-        };
-    }
-
-    public void setPipeline(String cameraName, Pipeline pipeline) {
-        this.currentPipeline = pipeline;
+    public void setPipeline(Pipeline pipeline) {
+        for(String camName: names) {
+            this.currentPipeline = pipeline;
+            LimelightHelpers.setPipelineIndex(camName, getCurrentPipelineID());
+        }
     }
 
     public LimelightVision() {
@@ -332,11 +326,6 @@ public class LimelightVision extends SubsystemBase {
             }
 
             SmartDashboard.putBoolean("Vision/Has Data", hasData);
-            
-            for(String cameraName: names) {
-                iteratePipelineValue();
-                LimelightHelpers.setPipelineIndex(cameraName, getCurrentPipelineID());
-            }
         }
     }
 }
