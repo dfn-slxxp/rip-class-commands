@@ -21,6 +21,12 @@
           "data": {
             "pathName": "Right Bump Score To Depot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot To Score"
+          }
         }
       ]
     }

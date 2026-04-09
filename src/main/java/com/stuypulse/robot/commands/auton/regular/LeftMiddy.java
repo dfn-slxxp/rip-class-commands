@@ -2,8 +2,11 @@ package com.stuypulse.robot.commands.auton.regular;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.stuypulse.robot.commands.handoff.HandoffRun;
+import com.stuypulse.robot.commands.handoff.HandoffStop;
+import com.stuypulse.robot.commands.intake.IntakeAutoDigest;
 import com.stuypulse.robot.commands.intake.IntakeDeploy;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
+import com.stuypulse.robot.commands.spindexer.SpindexerStop;
 import com.stuypulse.robot.commands.superstructure.SuperstructureAutoInterpolation;
 import com.stuypulse.robot.commands.superstructure.SuperstructureSOTM;
 import com.stuypulse.robot.commands.swerve.SwerveResetPose;
@@ -36,11 +39,22 @@ public class LeftMiddy extends SequentialCommandGroup {
             // SOTM To Depot
             new SuperstructureSOTM(),
             new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
+            new HandoffRun().alongWith(new SpindexerRun()),
             new ParallelCommandGroup(
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]),
-                new HandoffRun().andThen(
-                    new SpindexerRun()
-                    )
+                new WaitCommand(3.0).andThen(
+                    new IntakeAutoDigest().repeatedly().withTimeout(2.0).andThen(new IntakeDeploy())
+                ),
+                new WaitCommand(5.0).andThen(
+                    new HandoffStop().alongWith(new SpindexerStop())
+                )
+            ),
+
+            // Off Depot
+            new ParallelCommandGroup(
+                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[3]),
+                new WaitCommand(1.0).andThen(new HandoffRun().alongWith(new SpindexerRun())),
+                new WaitCommand(2.5).andThen(new IntakeAutoDigest().repeatedly())
             )
 
         );

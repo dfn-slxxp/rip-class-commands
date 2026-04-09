@@ -356,10 +356,10 @@ public class RobotContainer {
 
         // DEPOT
         AutonConfig LEFT_MIDDY = new AutonConfig("Left Middy", LeftMiddy::new,  
-        "Left Bump To NZ", "Left Middy To Bump Score", "Left Bump Score To Depot");
+        "Left Bump To NZ", "Left Middy To Bump Score", "Left Bump Score To Depot", "Depot To Score");
         LEFT_MIDDY.register(autonChooser);
         AutonConfig RIGHT_MIDDY = new AutonConfig("Right Middy", RightMiddy::new,  
-        "Right Bump To NZ", "Right Middy To Bump Score", "Right Bump Score To Depot");
+        "Right Bump To NZ", "Right Middy To Bump Score", "Right Bump Score To Depot", "Depot To Score");
         RIGHT_MIDDY.register(autonChooser);
 
         // TWO CYCLES (TRENCH)
