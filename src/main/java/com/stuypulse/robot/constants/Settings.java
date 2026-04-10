@@ -180,7 +180,7 @@ public interface Settings {
                 public final SmartNumber MANUAL_OVERRIDE = new SmartNumber("InterpolationTesting/Shoot State Target RPM", 3500.0);
 
                 public final double REVERSE = 0.0;
-                public final double KB = 2600.0;
+                public final double KB = 2675.0;
                 public final double LEFT_CORNER = 3650.0;
                 public final double RIGHT_CORNER = 3650.0;
             }

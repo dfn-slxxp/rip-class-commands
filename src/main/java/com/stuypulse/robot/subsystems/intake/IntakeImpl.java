@@ -30,6 +30,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -187,6 +188,7 @@ public class IntakeImpl extends Intake {
                     getPivotAngle().getDegrees() <= Settings.Intake.ANGLE_THRESHOLD_FOR_HOLDING_VOLTAGE.getDegrees()
                     && rollerState != RollerState.STOP) {
                         pivot.setControl(new VoltageOut(-Settings.Intake.PUSHDOWN_VOLTAGE)); // applying 3 volts
+                        // pivot.setControl(new TorqueCurrentFOC(Settings.Intake.PUSHDOWN_CURRENT));
                         applyingPushdownVoltage = true;
                 } else if (pivotState == PivotState.HOMING) {
                     pivot.setControl(new VoltageOut(-Settings.Intake.HOMING_VOLTAGE));
