@@ -73,10 +73,10 @@ public class LimelightVision extends SubsystemBase {
 
     private int getCurrentPipelineID() {
         return switch(this.currentPipeline) {
-            case NO_SUN -> 0;
-            case LOW_SUN -> 1;
-            case MED_SUN -> 2;
-            case HIGH_SUN -> 3;
+            case NO_SUN -> 3;
+            case LOW_SUN -> 2;
+            case MED_SUN -> 1;
+            case HIGH_SUN -> 0;
         };
     }
 
@@ -122,6 +122,8 @@ public class LimelightVision extends SubsystemBase {
         debouncedHasData = BStream.create(
                 () -> hasData)
                 .filtered(new BDebounce.Both(Settings.Vision.BUZZ_DEBOUNCE));
+
+        setPipeline(Pipeline.NO_SUN);
     }
 
     public void setAllLTagWhitelist(int... ids) {
