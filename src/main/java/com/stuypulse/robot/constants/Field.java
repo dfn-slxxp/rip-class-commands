@@ -39,7 +39,7 @@ public interface Field {
     public static final Pose2d HUB_FAR_RIGHT_CORNER = new Pose2d(Units.inchesToMeters(205.6), WIDTH / 2.0 - Units.inchesToMeters(47 / 2.0), Rotation2d.kZero);
     public static final Pose2d HUB_FAR_LEFT_CORNER = new Pose2d(Units.inchesToMeters(205.6), WIDTH / 2.0 + Units.inchesToMeters(47 / 2.0), Rotation2d.kZero);
 
-    public static final double HUB_RADIUS = Units.inchesToMeters(41.7 / 2);
+    public static final double HUB_RADIUS = Units.inchesToMeters(41.7 / 2.0);
 
     public static final double OPPONENT_ZONE_X = LENGTH - Units.inchesToMeters(158.6);
 

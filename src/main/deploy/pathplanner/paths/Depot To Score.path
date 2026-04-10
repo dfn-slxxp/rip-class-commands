@@ -28,7 +28,12 @@
       "linkedName": "Depot Out"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3262260127931784,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -36,9 +41,9 @@
       "maxWaypointRelativePos": 0.9448818897637792,
       "constraints": {
         "maxVelocity": 0.5,
-        "maxAcceleration": 1.0,
-        "maxAngularVelocity": 300.0,
-        "maxAngularAcceleration": 900.0,
+        "maxAcceleration": 0.75,
+        "maxAngularVelocity": 50.0,
+        "maxAngularAcceleration": 100.0,
         "nominalVoltage": 12.5,
         "unlimited": false
       }
@@ -56,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "To Score",

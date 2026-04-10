@@ -28,7 +28,7 @@ public class RightMiddy extends SequentialCommandGroup {
 
             // NZ Trip 1
             CommandSwerveDrivetrain.getInstance().followPathCommand(paths[0]).alongWith(
-                new WaitCommand(1.0).andThen(new IntakeDeploy())
+                new WaitCommand(0.75).andThen(new IntakeDeploy())
             ),
 
             // Trip 1 To Score
@@ -54,7 +54,7 @@ public class RightMiddy extends SequentialCommandGroup {
             new ParallelCommandGroup(
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[3]),
                 new WaitCommand(1.0).andThen(new HandoffRun().alongWith(new SpindexerRun())),
-                new WaitCommand(2.5).andThen(new IntakeAutoDigest().repeatedly())
+                new WaitCommand(3.0).andThen(new IntakeAutoDigest().repeatedly())
             )
 
         );

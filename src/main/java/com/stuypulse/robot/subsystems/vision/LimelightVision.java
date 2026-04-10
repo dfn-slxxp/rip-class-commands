@@ -261,7 +261,7 @@ public class LimelightVision extends SubsystemBase {
                     boolean notNull = false;
                     boolean withinAngularVelocityTolerance = false;
                     boolean withinInvalidPositionTolerance = false;
-                    boolean withinTargetAreaTolerance = false;
+                    // boolean withinTargetAreaTolerance = false;
 
                     if (poseEstimate != null && poseEstimate.tagCount > 0)  {
                         notNull = true;
@@ -278,16 +278,16 @@ public class LimelightVision extends SubsystemBase {
                             Cameras.LimelightCameras[i].incrementRejection(RejectionValue.ANGULAR_VELOCITY);
                         }
 
-                        if(poseEstimate.avgTagArea >= Settings.Vision.MIN_TAG_AREA) {
-                            withinTargetAreaTolerance = true;
-                        } else {
-                            Cameras.LimelightCameras[i].incrementRejection(RejectionValue.TARGET_AREA);
-                        }
+                        // if (poseEstimate.avgTagArea >= Settings.Vision.MIN_TAG_AREA) {
+                        //     withinTargetAreaTolerance = true;
+                        // } else {
+                        //     Cameras.LimelightCameras[i].incrementRejection(RejectionValue.TARGET_AREA);
+                        // }
 
                         Pose2d robotPose = poseEstimate.pose;
                         double timestamp = poseEstimate.timestampSeconds;
 
-                        boolean isAcceptablePose = notNull && withinAngularVelocityTolerance && !withinInvalidPositionTolerance && withinTargetAreaTolerance;
+                        boolean isAcceptablePose = notNull && withinAngularVelocityTolerance && !withinInvalidPositionTolerance;// && withinTargetAreaTolerance;
 
                         if (megaTagMode == MegaTagMode.MEGATAG1 && isAcceptablePose) {
                             CommandSwerveDrivetrain.getInstance().addVisionMeasurement(robotPose, timestamp, Settings.Vision.MT1_STDEVS);

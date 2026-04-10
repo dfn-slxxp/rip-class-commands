@@ -141,6 +141,7 @@ public interface Settings {
 
         public interface FerryRPMInterpolation {
             double[][] ferryDistanceRPMInterpolation = {
+                {1, 2000},
                 {5.16, 3300.0},
                 {6.94, 3600.0},
                 {7.87, 3800.0},
