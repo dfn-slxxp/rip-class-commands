@@ -296,7 +296,7 @@ public class TurretImpl extends Turret {
         if (Settings.DEBUG_MODE.get()) {
             SmartDashboard.putNumber("Superstructure/Turret/Stator Current (amps)",
                     turretMotorStatorCurrent.getValueAsDouble());
-            SmartDashboard.putNumber("Superstructure/Turret/Supply Curren (amps)",
+            SmartDashboard.putNumber("Superstructure/Turret/Supply Current (amps)",
                     turretMotorSupplyCurrent.getValueAsDouble());
 
             if (Robot.getMode() == RobotMode.DISABLED && !DriverStation.isFMSAttached()) {

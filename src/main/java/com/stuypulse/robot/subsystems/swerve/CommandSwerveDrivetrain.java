@@ -76,7 +76,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
 	static {
 		instance = TunerConstants.createDrivetrain();
-		instance.registerTelemetry(instance::telemeterize);
+		// instance.registerTelemetry(instance::telemeterize);
 	}
 
 	public void telemeterize(SwerveDriveState state) {
@@ -377,8 +377,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 	 */
 	@Override
 	public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
-		SignalLogger.writeStruct("Vision/Pose", Pose2d.struct, visionRobotPoseMeters);
-		SignalLogger.writeDouble("Vision/Timestamp", timestampSeconds);
+		// SignalLogger.writeStruct("Vision/Pose", Pose2d.struct, visionRobotPoseMeters);
+		// SignalLogger.writeDouble("Vision/Timestamp", timestampSeconds);
 
 		if(checkIfVisionMeasurementValid(visionRobotPoseMeters)) { 
 			super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
@@ -405,8 +405,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 	 */
 	@Override
 	public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
-		SignalLogger.writeStruct("Vision/Pose", Pose2d.struct, visionRobotPoseMeters);
-		SignalLogger.writeDouble("Vision/Timestamp", timestampSeconds);
+		// SignalLogger.writeStruct("Vision/Pose", Pose2d.struct, visionRobotPoseMeters);
+		// SignalLogger.writeDouble("Vision/Timestamp", timestampSeconds);
 
 		if(checkIfVisionMeasurementValid(visionRobotPoseMeters)) { 
 			super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds),

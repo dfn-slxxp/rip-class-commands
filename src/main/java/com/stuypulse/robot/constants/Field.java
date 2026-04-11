@@ -66,13 +66,13 @@ public interface Field {
 
     public final Pose2d LEFT_FERRY_ZONE = new Pose2d(
             Units.inchesToMeters(31.5),
-            WIDTH - Units.inchesToMeters(34.5),
+            WIDTH - Units.inchesToMeters(34.5) - Units.inchesToMeters(12),
             new Rotation2d()
     );
 
     public final Pose2d RIGHT_FERRY_ZONE = new Pose2d(
             Units.inchesToMeters(20.75),
-            Units.inchesToMeters(76),
+            Units.inchesToMeters(76) + Units.inchesToMeters(12),
             new Rotation2d()
     );
 

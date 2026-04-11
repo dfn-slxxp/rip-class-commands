@@ -97,7 +97,7 @@ public class Robot extends TimedRobot {
         gcStatsCollector = new GcStatsCollector();
 
         DataLogManager.start();
-        SignalLogger.start();
+        // SignalLogger.start();
         CommandScheduler.getInstance().schedule(new SwerveAutonInit());
         CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
         CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
@@ -115,11 +115,7 @@ public class Robot extends TimedRobot {
         if (periodicCounter % 50 == 0) {
             DataLogManager.getLog().resume();
         }
-        // if (cameras.getSelected() != selected) {
-        //     PortForwarder.remove(5801);
-        //     selected = cameras.getSelected();
-        //     PortForwarder.add(5801, selected + ".local:5801", 5801);
-        // }
+
         periodicCounter++;
 
         double batteryVoltage = RobotController.getBatteryVoltage();
@@ -137,15 +133,11 @@ public class Robot extends TimedRobot {
             SmartDashboard.putData(CommandScheduler.getInstance());
         }
         
-        if (DriverStation.getAlliance().isPresent()) {
-            alliance = DriverStation.getAlliance().get();
-        }
 
         SmartDashboard.putNumber("Robot/Match Time", DriverStation.getMatchTime());
         SmartDashboard.putData("Robot/Scheduled Commands", CommandScheduler.getInstance());
         SmartDashboard.putNumber("Robot/Battery Voltage", batteryVoltage);
         SmartDashboard.putNumber("Robot/CPU Temperature (C)", RobotController.getCPUTemp());
-        SmartDashboard.putNumber("Robot/Times Disconnected", HAL.getCommsDisableCount());
         
         robot.periodicAfterScheduler();
         energyUtil.periodic();
@@ -169,6 +161,10 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
         if (periodicCounter % Settings.LOGGING_FREQUENCY == 0) {
             auto = robot.getAutonomousCommand();
+
+            if (DriverStation.getAlliance().isPresent()) {
+                alliance = DriverStation.getAlliance().get();
+            }
         }
     }
 

@@ -74,6 +74,7 @@ public interface Settings {
         double HOMING_VOLTAGE = 3.0;
         
         double PUSHDOWN_VOLTAGE = 3.0;
+        double PUSHDOWN_CURRENT = 15; //TODO: GET ACTUAL TYTY
 
         double GEAR_RATIO = 37.93;
         
