@@ -5,48 +5,38 @@
 /***************************************************************/
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.commands.swerve.SwerveAutonInit;
-import com.stuypulse.robot.commands.swerve.SwerveTeleopInit;
-import com.stuypulse.robot.commands.vision.SetMegaTagMode;
-import com.stuypulse.robot.commands.vision.WhitelistAllTagsForAllCameras;
-import com.stuypulse.robot.commands.vision.WhitelistRoutineLeftSideAuto;
-import com.stuypulse.robot.commands.vision.WhitelistRoutineRightSideAuto;
-import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.constants.Cameras.Camera;
-import com.stuypulse.robot.subsystems.superstructure.Superstructure;
-import com.stuypulse.robot.subsystems.superstructure.Superstructure.SuperstructureState;
-import com.stuypulse.robot.subsystems.vision.LimelightVision;
-import com.stuypulse.robot.util.EnergyUtil;
-import com.stuypulse.robot.util.FMSUtil;
-import com.stuypulse.robot.util.PhoenixUtil;
-import com.stuypulse.robot.util.superstructure.SOTMCalculator;
-import com.stuypulse.stuylib.network.SmartBoolean;
-
-import edu.wpi.first.hal.HAL;
-import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
 import com.stuypulse.robot.commands.superstructure.SuperstructureFOTM;
+import com.stuypulse.robot.commands.swerve.SwerveAutonInit;
+import com.stuypulse.robot.commands.swerve.SwerveTeleopInit;
 import com.stuypulse.robot.commands.vision.BlackListAllTagsForAllCameras;
+import com.stuypulse.robot.commands.vision.SetMegaTagMode;
+import com.stuypulse.robot.commands.vision.WhitelistAllTagsForAllCameras;
+import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.subsystems.superstructure.Superstructure;
+import com.stuypulse.robot.subsystems.superstructure.Superstructure.SuperstructureState;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
+import com.stuypulse.robot.subsystems.vision.LimelightVision;
+import com.stuypulse.robot.util.EnergyUtil;
+import com.stuypulse.robot.util.FMSUtil;
+import com.stuypulse.robot.util.PhoenixUtil;
+import com.stuypulse.robot.util.superstructure.SOTMCalculator;
+
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
 
     public enum RobotMode {
@@ -62,9 +52,8 @@ public class Robot extends TimedRobot {
     private static RobotMode mode;
     private static EnergyUtil energyUtil;
     private FMSUtil fmsUtil;
-    private SendableChooser<Camera> cameras = new SendableChooser<Camera>();
-    private Camera selected;
     private GcStatsCollector gcStatsCollector;
+    public static boolean fmsAttached;
 
     private static int periodicCounter = 0; 
 
@@ -164,6 +153,10 @@ public class Robot extends TimedRobot {
 
             if (DriverStation.getAlliance().isPresent()) {
                 alliance = DriverStation.getAlliance().get();
+            }
+
+            if (DriverStation.isFMSAttached()) {
+                fmsAttached = true;
             }
         }
     }
