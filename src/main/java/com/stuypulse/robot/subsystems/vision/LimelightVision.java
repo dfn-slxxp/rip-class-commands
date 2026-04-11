@@ -12,6 +12,8 @@ import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Cameras;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.constants.Cameras.Camera;
+import com.stuypulse.robot.constants.Cameras.Camera.Pipeline;
 import com.stuypulse.robot.constants.Cameras.Camera.RejectionValue;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.util.vision.LimelightHelpers;
@@ -56,34 +58,17 @@ public class LimelightVision extends SubsystemBase {
     private boolean hasData;
     private BStream debouncedHasData;
 
-    private Pipeline currentPipeline;
     private Timer hdrTimer = new Timer();
+    private boolean lastHdrEnabledVal = false;
 
     public enum MegaTagMode {
         MEGATAG1,
         MEGATAG2
     }
 
-    public enum Pipeline {
-        NO_SUN,
-        LOW_SUN,
-        MED_SUN,
-        HIGH_SUN
-    }
-
-    private int getCurrentPipelineID() {
-        return switch(this.currentPipeline) {
-            case NO_SUN -> 3;
-            case LOW_SUN -> 2;
-            case MED_SUN -> 1;
-            case HIGH_SUN -> 0;
-        };
-    }
-
     public void setPipeline(Pipeline pipeline) {
-        for(String camName: names) {
-            this.currentPipeline = pipeline;
-            LimelightHelpers.setPipelineIndex(camName, getCurrentPipelineID());
+        for(Camera camera: Cameras.LimelightCameras) {
+            camera.setPipeline(pipeline);
         }
     }
 
@@ -347,15 +332,17 @@ public class LimelightVision extends SubsystemBase {
                 }
             }
 
+            if(lastHdrEnabledVal != Settings.Vision.HDR_ENABLED.get()) {
+                //TODO: Offset if lastHdr was false, otherwise make them all the same
+            }
+
+            lastHdrEnabledVal = Settings.Vision.HDR_ENABLED.get();
+
             if (Settings.Vision.HDR_ENABLED.get()) {
-                Pipeline nextHdrPipeline = Pipeline.NO_SUN;
-                if (!hdrTimer.hasElapsed(Settings.Vision.HDR_TIMEOUT_SEC)) {
-
-                    if (currentPipeline == Pipeline.NO_SUN) {
-                        nextHdrPipeline = Pipeline.HIGH_SUN;
+                if(hdrTimer.hasElapsed(Settings.Vision.HDR_TIMEOUT_SEC)) {
+                    for(Camera camera: Cameras.LimelightCameras) {
+                        camera.performHDR();
                     }
-
-                    setPipeline(nextHdrPipeline);
                     hdrTimer.reset();
                 }
             }
