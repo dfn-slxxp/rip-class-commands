@@ -27,7 +27,6 @@ import com.stuypulse.robot.util.SysId;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -159,7 +158,7 @@ public class ShooterImpl extends Shooter {
             SmartDashboard.putNumber("Superstructure/Shooter/Follower Stator Current (amps)",
                     shooterFollowStatorCurrent.getValueAsDouble());
 
-            if (Robot.getMode() == RobotMode.DISABLED && !DriverStation.isFMSAttached()) {
+            if (Robot.getMode() == RobotMode.DISABLED && !Robot.fmsAttached) {
                 SmartDashboard.putBoolean(
                         "Robot/CAN/Main/Shooter Leader Motor Connected? (ID "
                                 + String.valueOf(Ports.Superstructure.Shooter.MOTOR_LEAD) + ")",

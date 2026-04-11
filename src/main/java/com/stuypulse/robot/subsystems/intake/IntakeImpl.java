@@ -5,26 +5,7 @@
 /***************************************************************/
 package com.stuypulse.robot.subsystems.intake;
 
-import com.stuypulse.stuylib.streams.booleans.BStream;
-import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
-import com.stuypulse.robot.Robot;
-import com.stuypulse.robot.Robot.RobotMode;
-import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
-import com.stuypulse.robot.constants.Gains;
-import com.stuypulse.robot.constants.Motors;
-import com.stuypulse.robot.constants.Ports;
-import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.util.PhoenixUtil;
-import com.stuypulse.robot.util.SysId;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import java.util.Optional;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -38,7 +19,25 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-import java.util.Optional;
+import com.stuypulse.robot.Robot;
+import com.stuypulse.robot.Robot.RobotMode;
+import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
+import com.stuypulse.robot.constants.Gains;
+import com.stuypulse.robot.constants.Motors;
+import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.util.PhoenixUtil;
+import com.stuypulse.robot.util.SysId;
+import com.stuypulse.stuylib.streams.booleans.BStream;
+import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class IntakeImpl extends Intake {
     private Motors.TalonFXConfig pivotConfig;
@@ -52,6 +51,9 @@ public class IntakeImpl extends Intake {
     private final Follower follower;
 
     private Optional<Double> pivotVoltageOverride;
+    private TorqueCurrentFOC torqueCurrentFOC;
+    private VoltageOut voltageOut;
+    private PositionVoltage positionVoltage;
 
     private BStream pivotStalling;
 
@@ -93,6 +95,10 @@ public class IntakeImpl extends Intake {
                 .withSupplyCurrentLimitAmps(37.0)
                 .withStatorCurrentLimitEnabled(false)
                 .withRampRate(0.50);
+
+        torqueCurrentFOC = new TorqueCurrentFOC(0.0);
+        voltageOut = new VoltageOut(0.0);
+        positionVoltage = new PositionVoltage(0.0);
 
         pivot = new TalonFX(Ports.Intake.PIVOT, Ports.RIO);
         pivotConfig.configure(pivot);
@@ -191,14 +197,12 @@ public class IntakeImpl extends Intake {
                         // double pushdownCurrent = 
                         //     Robot.getMode() == RobotMode.AUTON ? 
                         //     Settings.Intake.PUSHDOWN_CURRENT_AUTON : Settings.Intake.PUSHDOWN_CURRENT_TELEOP;
-                        
-
-                        pivot.setControl(new TorqueCurrentFOC(Settings.Intake.PUSHDOWN_CURRENT_TELEOP));
+                        pivot.setControl(torqueCurrentFOC.withOutput(Settings.Intake.PUSHDOWN_CURRENT_TELEOP));
                         applyingPushdownVoltage = true;
                 } else if (pivotState == PivotState.HOMING) {
-                    pivot.setControl(new VoltageOut(-Settings.Intake.HOMING_VOLTAGE));
+                    pivot.setControl(voltageOut.withOutput(-Settings.Intake.HOMING_VOLTAGE));
                 } else {
-                    pivot.setControl(new PositionVoltage(pivotState.getTargetAngle().getRotations()));
+                    pivot.setControl(positionVoltage.withPosition(getPivotState().getTargetAngle().getRotations()));
                 }
 
                 // ROLLERS
@@ -260,7 +264,7 @@ public class IntakeImpl extends Intake {
                 SmartDashboard.putNumber("Intake/Pivot Stator Current (amps)",
                         pivotStatorCurrent.getValueAsDouble());
 
-                if (Robot.getMode() == RobotMode.DISABLED && !DriverStation.isFMSAttached()) {
+                if (Robot.getMode() == RobotMode.DISABLED && !Robot.fmsAttached) {
                     SmartDashboard.putBoolean("Robot/CAN/Main/Intake Pivot Motor Connected? (ID "
                             + String.valueOf(Ports.Intake.PIVOT) + ")", pivot.isConnected());
                     SmartDashboard.putBoolean("Robot/CAN/Main/Intake Roller Leader Motor Connected? (ID "

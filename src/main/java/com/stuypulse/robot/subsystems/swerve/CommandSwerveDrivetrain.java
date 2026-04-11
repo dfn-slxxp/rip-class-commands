@@ -49,7 +49,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -737,7 +736,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 			Robot.getEnergyUtil().logEnergyUsage(getName() + " Turn", getTotalSteerSupplyCurrent());
 
 			// CAN SIGNAL LOGGING
-			if (Settings.DEBUG_MODE.get() && Robot.getMode() == RobotMode.DISABLED && !DriverStation.isFMSAttached()) {
+			if (Settings.DEBUG_MODE.get() && Robot.getMode() == RobotMode.DISABLED && !Robot.fmsAttached) {
 				SmartDashboard.putBoolean(
 						"Robot/CAN/Canivore/Front Left Drive Motor Connected? (ID "
 								+ String.valueOf(TunerConstants.kFrontLeftDriveMotorId) + ")",
