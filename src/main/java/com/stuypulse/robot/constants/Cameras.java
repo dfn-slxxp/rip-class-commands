@@ -6,6 +6,7 @@
 package com.stuypulse.robot.constants;
 
 import com.stuypulse.robot.RobotContainer;
+import com.stuypulse.robot.util.vision.LimelightHelpers;
 import com.stuypulse.stuylib.network.SmartBoolean;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -45,12 +46,45 @@ public interface Cameras {
         private int rejectedCounterInvalidPosition;
         private int rejectedCounterTargetArea;
 
+        private Pipeline currentPipeline;
+
+        public enum Pipeline {
+            NO_SUN,
+            LOW_SUN,
+            MED_SUN,
+            HIGH_SUN
+        }
+        
+        private int getCurrentPipelineID() {
+            return switch(this.currentPipeline) {
+                case NO_SUN -> 3;
+                case LOW_SUN -> 2;
+                case MED_SUN -> 1;
+                case HIGH_SUN -> 0;
+            };
+        }
+
         public enum RejectionValue {
             NOT_NULL,
             ANGULAR_VELOCITY,
             INVALID_POSITION,
             TARGET_AREA
         };
+
+        public void setPipeline(Pipeline pipeline) {
+            this.currentPipeline = pipeline;
+            LimelightHelpers.setPipelineIndex(name, getCurrentPipelineID());
+        }
+
+        public void performHDR() {
+            Pipeline nextHdrPipeline = Pipeline.NO_SUN;
+
+            if (currentPipeline == Pipeline.NO_SUN) {
+                nextHdrPipeline = Pipeline.HIGH_SUN;
+            }
+
+            setPipeline(nextHdrPipeline);
+        }
 
         public void incrementRejection(RejectionValue rejectionValue) {
             switch (rejectionValue) {
