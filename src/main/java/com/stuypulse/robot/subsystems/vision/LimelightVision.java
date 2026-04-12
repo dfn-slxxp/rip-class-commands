@@ -332,8 +332,12 @@ public class LimelightVision extends SubsystemBase {
                 }
             }
 
-            if(lastHdrEnabledVal != Settings.Vision.HDR_ENABLED.get()) {
-                //TODO: Offset if lastHdr was false, otherwise make them all the same
+            // Alternating pipelines for hdr
+            if (lastHdrEnabledVal != Settings.Vision.HDR_ENABLED.get()) {
+                setPipeline(Pipeline.NO_SUN);
+                if(!lastHdrEnabledVal) {
+                    Cameras.LimelightCameras[2].setPipeline(Pipeline.HIGH_SUN);      
+                }
             }
 
             lastHdrEnabledVal = Settings.Vision.HDR_ENABLED.get();

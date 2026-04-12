@@ -5,9 +5,8 @@
 /***************************************************************/
 package com.stuypulse.robot.commands.vision;
 
+import com.stuypulse.robot.constants.Cameras.Camera.Pipeline;
 import com.stuypulse.robot.subsystems.vision.LimelightVision;
-import com.stuypulse.robot.subsystems.vision.LimelightVision.MegaTagMode;
-import com.stuypulse.robot.subsystems.vision.LimelightVision.Pipeline;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
