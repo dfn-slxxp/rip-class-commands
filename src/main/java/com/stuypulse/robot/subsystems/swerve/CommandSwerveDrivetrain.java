@@ -6,6 +6,7 @@
 package com.stuypulse.robot.subsystems.swerve;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -32,6 +33,7 @@ import com.stuypulse.robot.subsystems.superstructure.Superstructure;
 import com.stuypulse.robot.subsystems.superstructure.Superstructure.SuperstructureState;
 import com.stuypulse.robot.subsystems.superstructure.turret.Turret;
 import com.stuypulse.robot.subsystems.swerve.TunerConstants.TunerSwerveDrivetrain;
+import com.stuypulse.robot.util.PhoenixUtil;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.Vector2D;
 
@@ -47,6 +49,9 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.LinearAcceleration;
+
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj.Notifier;
@@ -69,6 +74,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 	private StructPublisher<Pose2d> leftBehindHubYPlublisher;
 	private StructPublisher<Pose2d> rightBehindHubYPlublisher;
 	private StructPublisher<Pose2d> vertexBehindHubPublisher;
+	private StatusSignal<LinearAcceleration> robotAccelerationX;
+	private StatusSignal<LinearAcceleration> robotAccelerationY;
 
 	private StructPublisher<Pose2d> robotPose = NetworkTableInstance.getDefault()
 			.getStructTopic("Robot Pose", Pose2d.struct).publish();
@@ -78,18 +85,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 		// instance.registerTelemetry(instance::telemeterize);
 	}
 
-	public void telemeterize(SwerveDriveState state) {
-		/* Write drive state to the log file */
-		SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
-		SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
-		SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
-		SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
-		SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
-		SignalLogger.writeStruct("DriveState/RawHeading", Rotation2d.struct, state.RawHeading);
-		SignalLogger.writeDouble("DriveState/Timestamp", state.Timestamp, "seconds");
-		SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
-		SignalLogger.writeInteger("DriveState/FailedDaqs", state.FailedDaqs);
-	}
+	// public void telemeterize(SwerveDriveState state) {
+	// 	/* Write drive state to the log file */
+	// 	SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
+	// 	SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
+	// 	SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
+	// 	SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
+	// 	SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
+	// 	SignalLogger.writeStruct("DriveState/RawHeading", Rotation2d.struct, state.RawHeading);
+	// 	SignalLogger.writeDouble("DriveState/Timestamp", state.Timestamp, "seconds");
+	// 	SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+	// 	SignalLogger.writeInteger("DriveState/FailedDaqs", state.FailedDaqs);
+	// }
 
 	public static CommandSwerveDrivetrain getInstance() {
 		return instance;
@@ -239,6 +246,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 		leftBehindHubYPlublisher = NetworkTableInstance.getDefault().getStructTopic("FieldPositions/LeftBehindHubY", Pose2d.struct).publish();
 		rightBehindHubYPlublisher = NetworkTableInstance.getDefault().getStructTopic("FieldPositions/RightBehindHubY", Pose2d.struct).publish();
 		vertexBehindHubPublisher = NetworkTableInstance.getDefault().getStructTopic("FieldPositions/VertexBehindHub", Pose2d.struct).publish();
+
+		robotAccelerationX = this.getPigeon2().getAccelerationX();
+		robotAccelerationY = this.getPigeon2().getAccelerationY();
+
+		PhoenixUtil.registerToCanivore(
+			robotAccelerationX,
+			robotAccelerationY
+		);
 	}
 
 	/**
@@ -699,6 +714,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 		Field.FIELD2D.getRobotObject().setPose(Robot.isBlue() ? pose : Field.transformToOppositeAlliance(pose));
 
 		if (Robot.getPeriodicCounter() % Settings.LOGGING_FREQUENCY == 0) {
+			SmartDashboard.putNumber("Swerve/Robot Accel X", robotAccelerationX.getValueAsDouble());
+			SmartDashboard.putNumber("Swerve/Robot Accel Y", robotAccelerationY.getValueAsDouble());
+
 			SmartDashboard.putNumber("Swerve/Failed DAQ Count", this.getState().FailedDaqs);
 			SmartDashboard.putNumber("Swerve/CANBus Utiliaztion", Ports.CANIVORE.getStatus().BusUtilization);
 			// will confirm whether we are even getting data
