@@ -103,6 +103,7 @@ public class LimelightVision extends SubsystemBase {
         setIMUMode(1);
 
         hdrTimer.reset();
+        hdrTimer.start();
 
         debouncedHasData = BStream.create(
                 () -> hasData)
@@ -336,13 +337,13 @@ public class LimelightVision extends SubsystemBase {
             if (lastHdrEnabledVal != Settings.Vision.HDR_ENABLED.get()) {
                 setPipeline(Pipeline.NO_SUN);
                 if(!lastHdrEnabledVal) {
-                    Cameras.LimelightCameras[2].setPipeline(Pipeline.HIGH_SUN);      
+                    Cameras.LimelightCameras[2].setPipeline(Pipeline.HIGH_SUN);
                 }
             }
 
             lastHdrEnabledVal = Settings.Vision.HDR_ENABLED.get();
 
-            if (Settings.Vision.HDR_ENABLED.get()) {
+            if(Settings.Vision.HDR_ENABLED.get()) {
                 if(hdrTimer.hasElapsed(Settings.Vision.HDR_TIMEOUT_SEC)) {
                     for(Camera camera: Cameras.LimelightCameras) {
                         camera.performHDR();
