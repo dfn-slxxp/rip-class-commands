@@ -81,9 +81,14 @@ public abstract class Turret extends SubsystemBase {
  
     public boolean atTolerance() {
         double error = getAngle().minus(getTargetAngle()).getRotations();
+        CommandSwerveDrivetrain swerve = CommandSwerveDrivetrain.getInstance();
 
         double tolerance = switch (state) {
-            case SOTM -> Settings.Superstructure.Turret.SOTM_TOLERANCE.get() / 360.0;
+            case SOTM -> 
+                swerve.getTurretPose().getTranslation().getDistance(Field.HUB_CENTER.getTranslation()) > 
+                Settings.Superstructure.Turret.SOTM_TOLERANCE_THRESHOLD_METERS.get() ?
+                Settings.Superstructure.Turret.SOTM_TOLERANCE_CLOSE.get() / 360.0 :
+                Settings.Superstructure.Turret.SOTM_TOLERANCE_FAR.get() / 360.0;
             case FOTM -> Settings.Superstructure.Turret.FOTM_TOLERANCE.getRotations();
             default  -> Settings.Superstructure.Turret.TOLERANCE.getRotations();
         };

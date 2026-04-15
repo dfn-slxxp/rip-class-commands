@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4749522900763368,
-        "y": 2.486860687022901
+        "x": 2.175891583452211,
+        "y": 2.514707560627676
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8598664122137403,
-        "y": 4.838358778625954
+        "x": 2.2535235378031384,
+        "y": 6.49981455064194
       },
       "isLocked": false,
       "linkedName": "Right Bump Score"
     },
     {
       "anchor": {
-        "x": 0.5795133587786261,
-        "y": 5.959713740458016
+        "x": 0.5585592011412266,
+        "y": 5.969329529243937
       },
       "prevControl": {
-        "x": 2.072382310984308,
-        "y": 6.266918687589158
+        "x": 2.473480741797432,
+        "y": 5.814065620542082
       },
       "nextControl": null,
       "isLocked": false,
@@ -52,7 +52,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 1.75,
     "maxAcceleration": 10.0,
     "maxAngularVelocity": 300.0,
     "maxAngularAcceleration": 900.0,

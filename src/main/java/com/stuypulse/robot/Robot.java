@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
         energyUtil = new EnergyUtil();
 
 
-        //TODO: UNCOMMENT WHEN TESTING ALL OF THESE CHANGES.
+        // TODO: UNCOMMENT WHEN TESTING ALL OF THESE CHANGES.
         // try {
         //     Field watchdogField = IterativeRobotBase.class.getDeclaredField("m_watchdog");
         //     watchdogField.setAccessible(true);
@@ -114,21 +114,21 @@ public class Robot extends TimedRobot {
         // CommandScheduler.getInstance().setPeriod(Settings.DT);
 
         CommandScheduler.getInstance().schedule(new SwerveAutonInit());
-        RobotController.setBrownoutVoltage(6.3);
+        RobotController.setBrownoutVoltage(5.5);
 
-        BiConsumer<Command, Boolean> logCommandFunction
-                = (Command command, Boolean active) -> {
-                    String name = command.getName();
-                    SmartDashboard.putBoolean(
-                            "CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()), active);
-                };
+        // BiConsumer<Command, Boolean> logCommandFunction
+        //         = (Command command, Boolean active) -> {
+        //             String name = command.getName();
+        //             SmartDashboard.putBoolean(
+        //                     "CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()), active);
+        //         };
 
-        CommandScheduler.getInstance()
-                .onCommandInitialize((Command command) -> logCommandFunction.accept(command, true));
-        CommandScheduler.getInstance()
-                .onCommandFinish((Command command) -> logCommandFunction.accept(command, false));
-        CommandScheduler.getInstance()
-                .onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
+        // CommandScheduler.getInstance()
+        //         .onCommandInitialize((Command command) -> logCommandFunction.accept(command, true));
+        // CommandScheduler.getInstance()
+        //         .onCommandFinish((Command command) -> logCommandFunction.accept(command, false));
+        // CommandScheduler.getInstance()
+        //         .onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
     }
 
     @Override

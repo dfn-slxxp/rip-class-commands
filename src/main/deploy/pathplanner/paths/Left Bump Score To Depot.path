@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0114122681883022,
-        "y": 6.176348074179743
+        "x": 1.0114122681883018,
+        "y": 6.1375320970042795
       },
       "isLocked": false,
       "linkedName": "Left Bump Score"
     },
     {
       "anchor": {
-        "x": 0.5795133587786261,
-        "y": 5.959713740458016
+        "x": 0.5585592011412266,
+        "y": 5.969329529243937
       },
       "prevControl": {
-        "x": 1.4665553435114504,
-        "y": 5.959713740458016
+        "x": 1.445601185874051,
+        "y": 5.969329529243937
       },
       "nextControl": null,
       "isLocked": false,
@@ -52,7 +52,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 1.75,
     "maxAcceleration": 10.0,
     "maxAngularVelocity": 300.0,
     "maxAngularAcceleration": 900.0,

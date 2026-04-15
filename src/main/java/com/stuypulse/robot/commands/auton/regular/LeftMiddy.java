@@ -33,16 +33,15 @@ public class LeftMiddy extends SequentialCommandGroup {
                 new HandoffRun(),
                 new SpindexerRun(),
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[0]),
-                new WaitCommand(2.0)
+                new WaitCommand(0.5).andThen(new IntakeDeploy()).andThen(new WaitCommand(1.0))
             ),
 
             // NZ Trip 1
-            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]).alongWith(
-                new ParallelCommandGroup(
-                    new IntakeDeploy(),
-                    new HandoffStop(),
-                    new SpindexerStop()
-                )
+            new ParallelCommandGroup(
+                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]),
+                new IntakeDeploy(),
+                new HandoffStop(),
+                new SpindexerStop()
             ),
 
             new WaitCommand(0.5),

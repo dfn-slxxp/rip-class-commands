@@ -97,7 +97,7 @@ public interface Settings {
         double STALL_CURRENT_LIMIT = 40.0; // random number as of 3/9
 
         /* CONSTANTS */
-        double GEAR_RATIO = 9.6 / 1.0;
+        double GEAR_RATIO = 11.04 / 1.0;
     }
     
     public interface Superstructure {
@@ -241,7 +241,9 @@ public interface Settings {
             public final Rotation2d MAX_VEL = new Rotation2d(Units.degreesToRadians(600.0));
             public final Rotation2d MAX_ACCEL = new Rotation2d(Units.degreesToRadians(600.0));
             public final Rotation2d TOLERANCE = Rotation2d.fromDegrees(2.0);
-            public final SmartNumber SOTM_TOLERANCE = new SmartNumber("Superstructure/Turret/SOTM Tolerance", 6);//Rotation2d.fromDegrees(10.0);
+            public final SmartNumber SOTM_TOLERANCE_THRESHOLD_METERS = new SmartNumber("Superstructure/Turret/SOTM Tolerance Dist Threshold (Meters)", 1.75);
+            public final SmartNumber SOTM_TOLERANCE_CLOSE = new SmartNumber("Superstructure/Turret/SOTM Tolerance (Close)", 10.0);
+            public final SmartNumber SOTM_TOLERANCE_FAR = new SmartNumber("Superstructure/Turret/SOTM Tolerance (Far)", 6.0);//Rotation2d.fromDegrees(10.0);
             public final Rotation2d FOTM_TOLERANCE = Rotation2d.fromDegrees(10.0);
             
             public final Rotation2d KB = Rotation2d.fromDegrees(0.0);
