@@ -10,6 +10,7 @@ import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.subsystems.superstructure.Superstructure;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.util.superstructure.InterpolationCalculator;
 import com.stuypulse.robot.util.superstructure.SOTMCalculator;
@@ -74,12 +75,12 @@ public abstract class Hood extends SubsystemBase{
 
         return switch(state) {
             case STOW -> Settings.Superstructure.Hood.Angles.STOW;
-            case FERRY -> Settings.Superstructure.Hood.Angles.FERRY_ANGLE;
+            case FERRY -> InterpolationCalculator.getInterpolatedFerryAngle();
             case MANUAL_OVERRIDE -> Rotation2d.fromDegrees(Settings.Superstructure.Hood.Angles.MANUAL_OVERRIDE.get());
             case KB -> Settings.Superstructure.Hood.Angles.KB;
             case LEFT_CORNER -> Settings.Superstructure.Hood.Angles.LEFT_CORNER;
             case RIGHT_CORNER -> Settings.Superstructure.Hood.Angles.RIGHT_CORNER;
-            case INTERPOLATION -> InterpolationCalculator.interpolateShotInfo().targetHoodAngle();
+            case INTERPOLATION -> InterpolationCalculator.getInterpolatedShotAngle();
             case HOMING_UPPER -> new Rotation2d(); //should just apply a voltage, not an angle!
             case HOMING_LOWER -> new Rotation2d();
             case SOTM -> SOTMCalculator.calculateHoodAngleSOTM();

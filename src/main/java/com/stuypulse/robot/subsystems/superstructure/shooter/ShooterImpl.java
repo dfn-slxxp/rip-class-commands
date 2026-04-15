@@ -105,6 +105,7 @@ public class ShooterImpl extends Shooter {
         voltageOverride = Optional.empty();
     }
 
+    //TODO: make all this RPM stuff one method. Should use a paramaeter to identify the RPM to get - like the motor
     @Override
     public double getRPM() {
         return getLeaderRPM();

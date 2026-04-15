@@ -157,7 +157,7 @@ public class Superstructure extends SubsystemBase {
     public double getCurrentDraw() {
         return turret.getCurrentDraw() + shooter.getCurrentDraw() + hood.getCurrentDraw();
     }
-
+    
     public boolean shouldStop() {
         CommandSwerveDrivetrain swerve = CommandSwerveDrivetrain.getInstance();
 
@@ -166,7 +166,7 @@ public class Superstructure extends SubsystemBase {
 
         boolean isTurretWrapping = isTurretWrapping();
         boolean isBehindHubWhileFerrying = getState() == SuperstructureState.FOTM
-                && swerve.getIsBehindHub();
+                && swerve.isBehindHub();
         boolean isOutsideAllianceZone = 
             CommandSwerveDrivetrain.getInstance().isOutsideAllianceZone() && 
             getState() != SuperstructureState.FOTM;
@@ -181,13 +181,12 @@ public class Superstructure extends SubsystemBase {
         boolean turretLaggingSOTM = !isTurretAtTolerance() && getState() == SuperstructureState.SOTM;
 
 
-        SmartDashboard.putBoolean("Spindexer/Should Stop/turret lagging sotm", turretLaggingSOTM);
-        SmartDashboard.putBoolean("Spindexer/Should Stop/is Behind Hub While Ferrying?", isBehindHubWhileFerrying);
-        SmartDashboard.putBoolean("Spindexer/Should Stop/is Turret Wrapping?", isTurretWrapping);
-        SmartDashboard.putBoolean("Spindexer/Should Stop/is Outside Alliance zone?", isOutsideAllianceZone);
-        SmartDashboard.putBoolean("Spindexer/Should Stop/is Under Trenche?", isUnderTrench);
-        SmartDashboard.putBoolean("Spindexer/Should Stop/turret lagging sotm", turretLaggingSOTM);
-        SmartDashboard.putBoolean("Spindexer/Should Stop/inManualState", inManualState);
+        SmartDashboard.putBoolean("Spindexer/Should Stop/Is Behind Hub While Ferrying?", isBehindHubWhileFerrying);
+        SmartDashboard.putBoolean("Spindexer/Should Stop/Is Turret Wrapping?", isTurretWrapping);
+        SmartDashboard.putBoolean("Spindexer/Should Stop/Is Outside Alliance Zone?", isOutsideAllianceZone);
+        SmartDashboard.putBoolean("Spindexer/Should Stop/Is Under Trench?", isUnderTrench);
+        SmartDashboard.putBoolean("Spindexer/Should Stop/Turret Lagging SOTM", turretLaggingSOTM);
+        SmartDashboard.putBoolean("Spindexer/Should Stop/In Manual State", inManualState);
         
         return isSpindexerStopState || 
         isHandOffStopState ||

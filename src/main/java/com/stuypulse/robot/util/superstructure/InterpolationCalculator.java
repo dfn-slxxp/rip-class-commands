@@ -5,6 +5,8 @@
 /***************************************************************/
 package com.stuypulse.robot.util.superstructure;
 
+import java.util.Optional;
+
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Superstructure.AngleInterpolation;
@@ -28,6 +30,42 @@ public class InterpolationCalculator {
 
     public static InterpolatingDoubleTreeMap ferryingDistanceRPMInterpolator;
     public static InterpolatingDoubleTreeMap ferryingDistanceTOFInterpolator;
+
+    private static Optional<InterpolatedShotInfo> cachedInterpolatedShotInfo = Optional.empty();
+    private static Optional<InterpolatedFerryInfo> cachedInterpolatedFerryInfo = Optional.empty();
+
+    public static void clearMemoized() {
+        cachedInterpolatedShotInfo = Optional.empty();
+        cachedInterpolatedFerryInfo = Optional.empty();
+    }
+
+    public static double getInterpolatedShotRPM() {
+        if (cachedInterpolatedShotInfo.isEmpty()) {
+            cachedInterpolatedShotInfo = Optional.of(interpolateShotInfo());
+        }
+        return cachedInterpolatedShotInfo.get().targetRPM();
+    }
+
+    public static Rotation2d getInterpolatedShotAngle() {
+       if (cachedInterpolatedShotInfo.isEmpty()) {
+            cachedInterpolatedShotInfo = Optional.of(interpolateShotInfo());
+        }
+        return cachedInterpolatedShotInfo.get().targetHoodAngle();
+    }
+
+    public static double getInterpolatedFerryRPM() {
+        if (cachedInterpolatedFerryInfo.isEmpty()) {
+            cachedInterpolatedFerryInfo = Optional.of(interpolateFerryingInfo());
+        }
+        return cachedInterpolatedFerryInfo.get().targetRPM();
+    }
+
+    public static Rotation2d getInterpolatedFerryAngle() {
+       if (cachedInterpolatedFerryInfo.isEmpty()) {
+            cachedInterpolatedFerryInfo = Optional.of(interpolateFerryingInfo());
+        }
+        return cachedInterpolatedFerryInfo.get().targetHoodAngle();
+    }
 
     public record InterpolatedShotInfo(
         Rotation2d targetHoodAngle,
