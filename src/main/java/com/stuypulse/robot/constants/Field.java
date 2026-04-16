@@ -66,13 +66,13 @@ public interface Field {
 
     public final Pose2d INNER_LEFT_FERRY_ZONE = new Pose2d(
             Units.inchesToMeters(31.5),
-            WIDTH - Units.inchesToMeters(34.5) - Units.inchesToMeters(18),
+            WIDTH - Units.inchesToMeters(34.5) - Units.inchesToMeters(36),
             new Rotation2d()
     );
 
     public final Pose2d INNER_RIGHT_FERRY_ZONE = new Pose2d(
             Units.inchesToMeters(20.75),
-            Units.inchesToMeters(76) + Units.inchesToMeters(18),
+            Units.inchesToMeters(76) + Units.inchesToMeters(36),
             new Rotation2d()
     );
 
@@ -88,7 +88,7 @@ public interface Field {
             new Rotation2d()
     );
 
-    public final double FERRY_SWITCH_TRIGGER_METERS_FROM_EDGE = Units.inchesToMeters(50);
+    public final double FERRY_SWITCH_TRIGGER_METERS_FROM_EDGE = Units.inchesToMeters(75);
 
     public static Pose2d getFerryZonePose(Translation2d robot) {
         double fieldMidY = WIDTH / 2.0;

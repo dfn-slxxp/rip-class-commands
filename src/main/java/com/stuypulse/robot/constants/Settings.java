@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.util.Color;
 
 public interface Settings {
     public final double DT = 0.020;
+    public final double WATCHDOG_TIMEOUT = 0.2;
     public final int LOGGING_FREQUENCY = 5;
     public final double SECONDS_IN_A_MINUTE = 60.0;
     public final SmartBoolean DEBUG_MODE = new SmartBoolean("Robot/DebugMode", true);
@@ -50,6 +51,8 @@ public interface Settings {
         double REVERSE_TIME = 2.0;
         double RPM_SOTM_TOLERANCE = 700.0;
         SmartNumber HANDOFF_RPM = new SmartNumber("Handoff/Target RPM", HANDOFF_MAX);
+
+        double IS_EMPTY_AMPERAGE = 8; //TODO: update IS EMPTY VALUE
 
         double FORWARD_DUTY_CYCLE = 1.0;
         double REVERSE_DUTY_CYCLE = -1.0;
@@ -96,6 +99,8 @@ public interface Settings {
         double TOLERANCE_TO_START_INTAKE_ROLLERS_DURING_SCORING_ROUTINE = 1500.0;
         double STALL_CURRENT_LIMIT = 40.0; // random number as of 3/9
 
+        double IS_EMPTY_AMPERAGE = 10; //TODO: update IS EMPTY VALUE
+
         /* CONSTANTS */
         double GEAR_RATIO = 11.04 / 1.0;
     }
@@ -107,6 +112,9 @@ public interface Settings {
         public final double SHOOTER_SOTM_TOLERANCE_RPM_LOW = 100.0;
         public final double SHOOTER_FOTM_TOLERANCE_RPM_HIGH = 150.0;
         public final double SHOOTER_FOTM_TOLERANCE_RPM_LOW = 250.0;
+
+        public final double IS_EMPTY_RPM_TOLERANCE = 150; //TODO: update IS EMPTY VALUE
+        public final double IS_EMPTY_DEBOUNCE_TIME = 0.4; //TODO: update IS EMPTY VALUE
         
         public final Rotation2d HOOD_TOLERANCE = Rotation2d.fromDegrees(0.5);
         public final Rotation2d HOOD_SOTM_TOLERANCE = Rotation2d.fromDegrees(2);

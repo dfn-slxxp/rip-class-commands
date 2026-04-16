@@ -7,6 +7,7 @@ package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.BuzzController;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
+import com.stuypulse.robot.commands.auton.regular.Depot;
 import com.stuypulse.robot.commands.auton.regular.LeftMiddy;
 import com.stuypulse.robot.commands.auton.regular.LeftTwoCycle;
 import com.stuypulse.robot.commands.auton.regular.RightMiddy;
@@ -231,7 +232,7 @@ public class RobotContainer {
                 () -> superstructure.getState() == SuperstructureState.SOTM && swerve.canShootIntoHub())
             );
 
-        // FOTM
+        // FOTM (BL)
         driver.getLeftMenuButton()
             .onTrue(new LEDApplyPattern(Settings.LED.FOTM_ON))
             .onTrue(new IntakeRunRollers())
@@ -361,6 +362,9 @@ public class RobotContainer {
         autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
 
         // DEPOT
+        AutonConfig DEPOT_ONLY = new AutonConfig("Depot Only", Depot::new,  
+        "Center Hub To Depot");
+        DEPOT_ONLY.register(autonChooser);
         AutonConfig LEFT_MIDDY = new AutonConfig("Left Middy", LeftMiddy::new,  
         "Left Bump To Score (Start)", "Left Bump To Score", "Left Bump Score To Depot");
         LEFT_MIDDY.register(autonChooser);

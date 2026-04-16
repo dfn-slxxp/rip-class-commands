@@ -7,6 +7,7 @@ package com.stuypulse.robot;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -35,8 +36,10 @@ import com.stuypulse.robot.util.superstructure.SOTMCalculator;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -103,15 +106,15 @@ public class Robot extends TimedRobot {
 
 
         // TODO: UNCOMMENT WHEN TESTING ALL OF THESE CHANGES.
-        // try {
-        //     Field watchdogField = IterativeRobotBase.class.getDeclaredField("m_watchdog");
-        //     watchdogField.setAccessible(true);
-        //     Watchdog watchdog = (Watchdog) watchdogField.get(this);
-        //     watchdog.setTimeout(Settings.DT);
-        // } catch (Exception e) {
-        //     DriverStation.reportWarning("Failed to disable loop overrun warnings.", false);
-        // }
-        // CommandScheduler.getInstance().setPeriod(Settings.DT);
+        try {
+            Field watchdogField = IterativeRobotBase.class.getDeclaredField("m_watchdog");
+            watchdogField.setAccessible(true);
+            Watchdog watchdog = (Watchdog) watchdogField.get(this);
+            watchdog.setTimeout(Settings.WATCHDOG_TIMEOUT);
+        } catch (Exception e) {
+            DriverStation.reportWarning("Failed to disable loop overrun warnings.", false);
+        }
+        CommandScheduler.getInstance().setPeriod(Settings.WATCHDOG_TIMEOUT);
 
         CommandScheduler.getInstance().schedule(new SwerveAutonInit());
         RobotController.setBrownoutVoltage(5.5);
