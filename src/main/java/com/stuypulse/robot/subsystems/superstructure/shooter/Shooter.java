@@ -9,6 +9,8 @@ import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.util.superstructure.InterpolationCalculator;
 import com.stuypulse.robot.util.superstructure.SOTMCalculator;
+import com.stuypulse.stuylib.streams.booleans.BStream;
+import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public abstract class Shooter extends SubsystemBase {
     private static final Shooter instance;
+
+    private BStream readyToShoot;
 
     private ShooterState state;
 
@@ -46,6 +50,9 @@ public abstract class Shooter extends SubsystemBase {
 
     public Shooter() {
         state = ShooterState.MANUAL_OVERRIDE;
+
+        readyToShoot = BStream.create(this::atTolerance)
+            .filtered(new BDebounce.Both(0.05));
     }
 
     public void setState(ShooterState state) {
@@ -96,6 +103,12 @@ public abstract class Shooter extends SubsystemBase {
 
         return error > -toleranceLow && error < toleranceHigh;
     }
+
+    public boolean shooterReadyToShoot() {
+        return readyToShoot.get();
+    }
+
+    
 
     public abstract double getRPM();
 

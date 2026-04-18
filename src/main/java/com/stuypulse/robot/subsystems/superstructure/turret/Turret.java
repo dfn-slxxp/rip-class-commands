@@ -15,6 +15,8 @@ import com.stuypulse.robot.util.superstructure.TurretAngleCalculator;
 import com.stuypulse.robot.util.superstructure.VisualizerTurret;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.math.Vector2D;
+import com.stuypulse.stuylib.streams.booleans.BStream;
+import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,6 +30,8 @@ public abstract class Turret extends SubsystemBase {
     private TurretState state;
     private Vector2D driverInput;
 
+    private final BStream readyToShoot;
+
     static {
         instance = Robot.isReal() ? new TurretImpl() : new TurretSim();
     }
@@ -39,6 +43,8 @@ public abstract class Turret extends SubsystemBase {
     public Turret() {
         driverInput = Vector2D.kOrigin;
         state = TurretState.SCORE;
+        readyToShoot = BStream.create(this::atTolerance)
+            .filtered(new BDebounce.Both(0.05));
     }
 
     public void setDriverInput(Gamepad gamepad) {
@@ -93,6 +99,10 @@ public abstract class Turret extends SubsystemBase {
         };
 
         return Math.abs(error) < tolerance;
+    }
+
+    public boolean turretReadyToShoot() {
+        return readyToShoot.get();
     }
 
     public Rotation2d getScoringAngle() {

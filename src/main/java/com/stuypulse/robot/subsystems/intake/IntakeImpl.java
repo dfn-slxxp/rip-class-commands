@@ -137,8 +137,8 @@ public class IntakeImpl extends Intake {
                 rollerLeaderVoltage, rollerFollowerVoltage);
 
         pivotStalling = BStream.create(
-                () -> Math.abs(pivotSupplyCurrent.getValueAsDouble()) > Settings.Intake.STALL_CURRENT_LIMIT)
-                .filtered(new BDebounce.Both(Settings.Intake.STALL_DEBOUNCE));
+                () -> Math.abs(pivotSupplyCurrent.getValueAsDouble()) > Settings.Intake.PIVOT_STALL_CURRENT)
+                .filtered(new BDebounce.Both(Settings.Intake.PIVOT_STALL_DEBOUNCE));
     }
 
     @Override

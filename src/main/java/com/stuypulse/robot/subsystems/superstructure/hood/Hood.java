@@ -13,6 +13,8 @@ import com.stuypulse.robot.util.superstructure.InterpolationCalculator;
 import com.stuypulse.robot.util.superstructure.SOTMCalculator;
 import com.stuypulse.robot.util.superstructure.VisualizerHood;
 import com.stuypulse.stuylib.input.Gamepad;
+import com.stuypulse.stuylib.streams.booleans.BStream;
+import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +25,7 @@ public abstract class Hood extends SubsystemBase{
     private static final Hood instance;
     
     private HoodState state;
+    private BStream readyToShoot;
 
     private Rotation2d driverInput;
 
@@ -56,6 +59,8 @@ public abstract class Hood extends SubsystemBase{
 
     public Hood() {
         state = HoodState.STOW;
+        readyToShoot = BStream.create(this::atTolerance)
+            .filtered(new BDebounce.Both(0.05));
     }
 
     public HoodState getState(){
@@ -99,6 +104,10 @@ public abstract class Hood extends SubsystemBase{
         } else {
             return Math.abs(error) < Settings.Superstructure.HOOD_TOLERANCE.getRotations() + (5 / 360.0);
         }
+    }
+
+    public boolean hoodReadyToShoot() {
+        return readyToShoot.get();
     }
 
     public abstract Rotation2d getAngle();

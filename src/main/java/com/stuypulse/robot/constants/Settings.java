@@ -64,7 +64,7 @@ public interface Settings {
     public interface Intake {
         Rotation2d PIVOT_STOW_ANGLE = Rotation2d.fromDegrees(71.0); 
         Rotation2d PIVOT_DEPLOY_ANGLE = Rotation2d.fromDegrees(-10.0);
-        Rotation2d PIVOT_DIGEST_ANGLE = Rotation2d.fromDegrees(30);
+        Rotation2d PIVOT_DIGEST_ANGLE = Rotation2d.fromDegrees(50);
 
         Rotation2d PIVOT_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5.0); 
 
@@ -82,8 +82,11 @@ public interface Settings {
 
         double GEAR_RATIO = 32.0/20.0 * 64.0/18.0 * 60.0/8.0;
         
-        double STALL_CURRENT_LIMIT = 0; //TODO: set value
-        double STALL_DEBOUNCE = 1.0; //TODO: VERIFY
+        double PIVOT_STALL_CURRENT = 0; //TODO: set value
+        double PIVOT_STALL_DEBOUNCE = 1.0; //TODO: VERIFY
+
+        double ROLLER_STALL_DEBOUNCE = 0.05; //TODO: VERIFY
+        double ROLLER_STALL_CURRENT = 50.0;
     }
 
     public interface Spindexer {

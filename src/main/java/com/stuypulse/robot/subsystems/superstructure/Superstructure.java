@@ -48,7 +48,7 @@ public class Superstructure extends SubsystemBase {
     private final Shooter shooter;
     private final Turret turret;
 
-    private final BStream readyToShoot;
+    // private final BStream readyToShoot;
 
     public Superstructure() {
         state = SuperstructureState.INTERPOLATION;
@@ -56,8 +56,8 @@ public class Superstructure extends SubsystemBase {
         shooter = Shooter.getInstance();
         turret = Turret.getInstance();
 
-        readyToShoot = BStream.create(this::atTolerance)
-            .filtered(new BDebounce.Both(0.05));
+        // readyToShoot = BStream.create(this::atTolerance)
+        //     .filtered(new BDebounce.Both(0.05));
 
         sotmStoppedTimer = new Timer();
         sotmStoppedTimer.restart();
@@ -118,7 +118,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public boolean isReadyToShoot() {
-        return readyToShoot.get();
+        return turret.turretReadyToShoot() && shooter.shooterReadyToShoot() && hood.hoodReadyToShoot();
     }
 
     public boolean atTolerance() {
@@ -233,6 +233,8 @@ public class Superstructure extends SubsystemBase {
         DogLog.log("Superstructure/Shooter At Tolerance?", isShooterAtTolerance());
         DogLog.log("Superstructure/Hood At Tolerance?", isHoodAtTolerance());
         DogLog.log("Superstructure/Turret At Tolerance?", isTurretAtTolerance());
+
+        DogLog.log("Superstructure/Is Ready To Shoot?", isReadyToShoot());
 
         DogLog.log("Superstructure/Should Stop?", shouldStop());
     }
