@@ -27,6 +27,7 @@ import com.stuypulse.robot.util.SysId;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -49,6 +50,8 @@ public class ShooterImpl extends Shooter {
     private StatusSignal<Voltage> shooterLeaderVoltage;
     private StatusSignal<Voltage> shooterFollowerVoltage;
     private StatusSignal<Double> shooterLeaderClosedLoopError;
+    private StatusSignal<Temperature> shooterLeaderTemperature;
+    private StatusSignal<Temperature> shooterFollowerTemperature;
 
     public ShooterImpl() {
         shooterConfig = new Motors.TalonFXConfig()
@@ -99,9 +102,14 @@ public class ShooterImpl extends Shooter {
         shooterLeaderVoltage = shooterLeader.getMotorVoltage();
         shooterFollowerVoltage = shooterLeader.getMotorVoltage();
         shooterLeaderClosedLoopError = shooterLeader.getClosedLoopError();
+
+        shooterLeaderTemperature = shooterLeader.getDeviceTemp();
+        shooterFollowerTemperature = shooterFollower.getDeviceTemp();
+
         PhoenixUtil.registerToRio(shooterLeaderSpeed, shooterFollowerSpeed, shooterFollowSupplyCurrent, 
                 shooterFollowStatorCurrent, shooterLeadSupplyCurrent, shooterLeadStatorCurrent, 
-                shooterLeaderVoltage, shooterFollowerVoltage, shooterLeaderClosedLoopError);
+                shooterLeaderVoltage, shooterFollowerVoltage, shooterLeaderClosedLoopError,
+                shooterLeaderTemperature, shooterFollowerTemperature);
         voltageOverride = Optional.empty();
     }
 
@@ -152,12 +160,20 @@ public class ShooterImpl extends Shooter {
             DogLog.log("Superstructure/Shooter/Leader Stator Current (amps)",
                     shooterLeadStatorCurrent.getValueAsDouble());
 
+            DogLog.log("Superstructure/Shooter/Leader Motor Temp (C)",
+                    shooterLeaderTemperature.getValueAsDouble());
+
             DogLog.log("Superstructure/Shooter/Follower Voltage (volts)",
                     shooterFollowerVoltage.getValueAsDouble());
             DogLog.log("Superstructure/Shooter/Follower Supply Current (amps)",
                     shooterFollowSupplyCurrent.getValueAsDouble());
             DogLog.log("Superstructure/Shooter/Follower Stator Current (amps)",
                     shooterFollowStatorCurrent.getValueAsDouble());
+                    
+            DogLog.log("Superstructure/Shooter/Follower Motor Temp (C)",
+                    shooterFollowerTemperature.getValueAsDouble());
+
+            
 
             if (Robot.getMode() == RobotMode.DISABLED && !Robot.fmsAttached) {
                 DogLog.log(
