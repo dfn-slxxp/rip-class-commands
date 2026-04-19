@@ -5,19 +5,19 @@
 /***************************************************************/
 package com.stuypulse.robot.subsystems.superstructure.hood;
 
-import com.stuypulse.stuylib.input.Gamepad;
-
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.RobotContainer.EnabledSubsystems;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.subsystems.superstructure.Superstructure;
 import com.stuypulse.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import com.stuypulse.robot.util.superstructure.InterpolationCalculator;
 import com.stuypulse.robot.util.superstructure.SOTMCalculator;
 import com.stuypulse.robot.util.superstructure.VisualizerHood;
+import com.stuypulse.stuylib.input.Gamepad;
+import com.stuypulse.stuylib.streams.booleans.BStream;
+import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -25,6 +25,7 @@ public abstract class Hood extends SubsystemBase{
     private static final Hood instance;
     
     private HoodState state;
+    private BStream readyToShoot;
 
     private Rotation2d driverInput;
 
@@ -58,6 +59,8 @@ public abstract class Hood extends SubsystemBase{
 
     public Hood() {
         state = HoodState.STOW;
+        readyToShoot = BStream.create(this::atTolerance)
+            .filtered(new BDebounce.Both(0.05));
     }
 
     public HoodState getState(){
@@ -103,6 +106,10 @@ public abstract class Hood extends SubsystemBase{
         }
     }
 
+    public boolean hoodReadyToShoot() {
+        return readyToShoot.get();
+    }
+
     public abstract Rotation2d getAngle();
 
     public void hoodAnalogToInput(Gamepad gamepad) {
@@ -131,10 +138,10 @@ public abstract class Hood extends SubsystemBase{
 
 
     public void periodicAfterScheduler() {
-        SmartDashboard.putString("Superstructure/Hood/State", state.name());
+        DogLog.log("Superstructure/Hood/State", state.name());
 
-        SmartDashboard.putNumber("Superstructure/Hood/Target Angle (deg)", getTargetAngle().getDegrees());
-        SmartDashboard.putNumber("Superstructure/Hood/Current Angle (deg)", getAngle().getDegrees());
+        DogLog.log("Superstructure/Hood/Target Angle (deg)", getTargetAngle().getDegrees());
+        DogLog.log("Superstructure/Hood/Current Angle (deg)", getAngle().getDegrees());
 
         if (Settings.DEBUG_MODE.get()) {
             if (EnabledSubsystems.HOOD.get()) {

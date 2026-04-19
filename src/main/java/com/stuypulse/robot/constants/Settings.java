@@ -64,7 +64,7 @@ public interface Settings {
     public interface Intake {
         Rotation2d PIVOT_STOW_ANGLE = Rotation2d.fromDegrees(71.0); 
         Rotation2d PIVOT_DEPLOY_ANGLE = Rotation2d.fromDegrees(-10.0);
-        Rotation2d PIVOT_DIGEST_ANGLE = Rotation2d.fromDegrees(30);
+        Rotation2d PIVOT_DIGEST_ANGLE = Rotation2d.fromDegrees(50);
 
         Rotation2d PIVOT_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5.0); 
 
@@ -80,10 +80,13 @@ public interface Settings {
         double PUSHDOWN_CURRENT_TELEOP = -75.0;//new SmartNumber("Intake/Pushdown Current", -65.0); //TODO: GET ACTUAL TYTY
         double PUSHDOWN_CURRENT_AUTON = -80.0;
 
-        double GEAR_RATIO = 37.93;
+        double GEAR_RATIO = 32.0/20.0 * 64.0/18.0 * 60.0/8.0;
         
-        double STALL_CURRENT_LIMIT = 0; //TODO: set value
-        double STALL_DEBOUNCE = 1.0; //TODO: VERIFY
+        double PIVOT_STALL_CURRENT = 0; //TODO: set value
+        double PIVOT_STALL_DEBOUNCE = 1.0; //TODO: VERIFY
+
+        double ROLLER_STALL_DEBOUNCE = 0.05; //TODO: VERIFY
+        double ROLLER_STALL_CURRENT = 50.0;
     }
 
     public interface Spindexer {
@@ -269,8 +272,9 @@ public interface Settings {
             public final double RANGE_CW = 90.0;//-360.0;
             public final double RANGE_CCW = -360.0;//85.0; // -397.0 is further
         
-            public final Rotation2d GAIN_SWITCHING_THRESHOLD = Rotation2d.fromDegrees(30);
-        
+            public final Rotation2d GAIN_SWITCHING_THRESHOLD_START = Rotation2d.fromDegrees(30);
+            public final Rotation2d GAIN_SWITCHING_THRESHOLD_END = Rotation2d.fromDegrees(3);
+
             public final Transform2d TURRET_OFFSET = new Transform2d(Units.inchesToMeters(-4.0), Units.inchesToMeters(8.0), Rotation2d.kZero);
             public final double TURRET_HEIGHT = Units.inchesToMeters(0.0);
         
