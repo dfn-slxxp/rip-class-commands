@@ -28,6 +28,7 @@ import com.stuypulse.stuylib.streams.vectors.filters.VLowPassFilter;
 import com.stuypulse.stuylib.streams.vectors.filters.VRateLimit;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -45,7 +46,7 @@ public class SwerveDriveSOTM extends Command {
     private final IStream turn;
 
     private final BStream isIdle;
-    private final Trigger isIdleTrigger;
+    private boolean isIdleInit;
 
     public SwerveDriveSOTM(Gamepad driver) {
         swerve = CommandSwerveDrivetrain.getInstance();
@@ -75,12 +76,7 @@ public class SwerveDriveSOTM extends Command {
                 .filtered(new BDebounce.Rising(0.5), new BDebounce.Falling(0.1));
 
         this.driver = driver;
-        isIdleTrigger = new Trigger(() -> isIdle.get());
-        isIdleTrigger
-            .onTrue(new IntakeAutoDigest().repeatedly())
-            .onTrue(new SwerveXMode())
-            .onFalse(new IntakeDeploy())
-            .onFalse(new SwerveDriveDrive(driver));
+        isIdleInit = false;
 
        addRequirements(swerve);
     }
@@ -94,14 +90,19 @@ public class SwerveDriveSOTM extends Command {
         DogLog.log("Swerve/SOTM/Idle?", isIdle.get());
 
         if (isIdle.get()) {
-            return;
+            if (!isIdleInit) {
+                CommandScheduler.getInstance().schedule(new IntakeAutoDigest().repeatedly().onlyWhile(() -> isIdle.get()).andThen(new IntakeDeploy()));
+                swerve.setControl(new SwerveRequest.SwerveDriveBrake());
+            }
+            isIdleInit = true;
+        } else {
+            Vector2D velocity = speed.get();
+            swerve.setControl(swerve.getFieldCentricSwerveRequest()
+                .withVelocityX(velocity.x)
+                .withVelocityY(velocity.y)
+                .withRotationalRate(-turn.get()));
+            isIdleInit = false;
         }
-        Vector2D velocity = speed.get();
-        swerve.setControl(swerve.getFieldCentricSwerveRequest()
-            .withVelocityX(velocity.x)
-            .withVelocityY(velocity.y)
-            .withRotationalRate(-turn.get()));
-        
 
     }
 
@@ -114,4 +115,5 @@ public class SwerveDriveSOTM extends Command {
             return true;
         }
     }
+
 }
