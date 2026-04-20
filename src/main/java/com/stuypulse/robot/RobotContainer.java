@@ -389,19 +389,13 @@ public class RobotContainer {
         RIGHT_TWO_CYCLE.register(autonChooser);
 
         // FOLLOWERS
-        AutonConfig LEFT_FOLLOWER = new AutonConfig("Left Follower", LeftFollower::new,
+        AutonConfig LEFT_FOLLOWER = new AutonConfig("Left Follower", LeftFollower::new, prevWaitTime,
         "Left Follower To Bump", "Left Follower Over Bump", "Left Follower Bump To Corner");
         LEFT_FOLLOWER.register(autonChooser);
 
-        AutonConfig RIGHT_FOLLOWER = new AutonConfig("Right Follower", RightFollower::new,
+        AutonConfig RIGHT_FOLLOWER = new AutonConfig("Right Follower", RightFollower::new, prevWaitTime,
         "Right Follower To Bump", "Right Follower Over Bump", "Right Follower Bump To Corner");
         RIGHT_FOLLOWER.register(autonChooser);
-
-        SmartDashboard.putData("Autonomous", autonChooser);
-
-        AutonConfig BOX = new AutonConfig("Skibidi", BoxTest::new,  
-        "Right Trench To NZ");
-        BOX.register(autonChooser);
 
         SmartDashboard.putData("Autonomous", autonChooser);
     }

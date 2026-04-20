@@ -82,15 +82,9 @@ public class Robot extends TimedRobot {
         return periodicCounter;
     }
 
-    /**
-     * **********************
-     */
-    /**
-     * * ROBOT SCHEDULEING **
-     */
-    /**
-     * **********************
-     */
+    /**************************/
+    /**** ROBOT SCHEDULEING ***/
+    /**************************/
     @Override
     public void robotInit() {
         DogLog.setOptions(new DogLogOptions().withCaptureDs(true));

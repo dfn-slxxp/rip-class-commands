@@ -96,14 +96,14 @@
                 }
               },
               {
-                "title": "Back Limelight",
+                "title": "Swerve",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 166.0,
                 "height": 166.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "SmartDashboard/Enabled Subsystems/Back Limelight Is Enabled",
+                  "topic": "SmartDashboard/Enabled Subsystems/Swerve Is Enabled",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -122,27 +122,14 @@
                 }
               },
               {
-                "title": "LEDs Is Enabled",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Toggle Switch",
-                "properties": {
-                  "topic": "SmartDashboard/Enabled Subsystems/LEDs Is Enabled",
-                  "period": 0.5,
-                  "data_type": "boolean"
-                }
-              },
-              {
-                "title": "Swerve",
+                "title": "Back Limelight",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 166.0,
                 "height": 166.0,
                 "type": "Toggle Switch",
                 "properties": {
-                  "topic": "SmartDashboard/Enabled Subsystems/Swerve Is Enabled",
+                  "topic": "SmartDashboard/Enabled Subsystems/Back Limelight Is Enabled",
                   "period": 0.06,
                   "data_type": "boolean"
                 }
@@ -518,6 +505,20 @@
               "topic": "/SmartDashboard/Autonomous",
               "period": 0.5,
               "sort_options": false
+            }
+          },
+          {
+            "title": "Wait Time",
+            "x": 840.0,
+            "y": 560.0,
+            "width": 140.0,
+            "height": 140.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "SmartDashboard/Robot/Auton/Wait Time",
+              "period": 0.5,
+              "data_type": "double",
+              "show_submit_button": false
             }
           }
         ]
