@@ -8,6 +8,8 @@ package com.stuypulse.robot.commands.swerve;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.stuypulse.robot.constants.DriverConstants.Driver.Drive;
 import com.stuypulse.robot.constants.DriverConstants.Driver.Turn;
+import com.stuypulse.robot.commands.intake.IntakeAutoDigest;
+import com.stuypulse.robot.commands.intake.IntakeDeploy;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve;
 import com.stuypulse.robot.subsystems.superstructure.Superstructure;
@@ -27,6 +29,10 @@ import com.stuypulse.stuylib.streams.vectors.filters.VRateLimit;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class SwerveDriveSOTM extends Command {
 
@@ -39,10 +45,12 @@ public class SwerveDriveSOTM extends Command {
     private final IStream turn;
 
     private final BStream isIdle;
+    private final Trigger isIdleTrigger;
 
     public SwerveDriveSOTM(Gamepad driver) {
         swerve = CommandSwerveDrivetrain.getInstance();
         superstructure = Superstructure.getInstance();
+
 
         speed = VStream.create(this::getDriverInputAsVelocity)
         .filtered(
@@ -67,8 +75,14 @@ public class SwerveDriveSOTM extends Command {
                 .filtered(new BDebounce.Rising(0.5), new BDebounce.Falling(0.1));
 
         this.driver = driver;
+        isIdleTrigger = new Trigger(() -> isIdle.get());
+        isIdleTrigger
+            .onTrue(new IntakeAutoDigest().repeatedly())
+            .onTrue(new SwerveXMode())
+            .onFalse(new IntakeDeploy())
+            .onFalse(new SwerveDriveDrive(driver));
 
-        addRequirements(swerve);
+       addRequirements(swerve);
     }
 
     private Vector2D getDriverInputAsVelocity() {
@@ -77,18 +91,18 @@ public class SwerveDriveSOTM extends Command {
 
     @Override
     public void execute() {
-        if (isIdle.get()) {
-            swerve.setControl(new SwerveRequest.SwerveDriveBrake());
-        } else {
-            Vector2D velocity = speed.get();
-
-            swerve.setControl(swerve.getFieldCentricSwerveRequest()
-                .withVelocityX(velocity.x)
-                .withVelocityY(velocity.y)
-                .withRotationalRate(-turn.get()));
-        }
-
         DogLog.log("Swerve/SOTM/Idle?", isIdle.get());
+
+        if (isIdle.get()) {
+            return;
+        }
+        Vector2D velocity = speed.get();
+        swerve.setControl(swerve.getFieldCentricSwerveRequest()
+            .withVelocityX(velocity.x)
+            .withVelocityY(velocity.y)
+            .withRotationalRate(-turn.get()));
+        
+
     }
 
     @Override 

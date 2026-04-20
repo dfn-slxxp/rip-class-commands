@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Follower To Bump"
+            "pathName": "Left Follow To Bump"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Right Follower Over Bump"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right Follower Bump To Corner"
+            "pathName": "Left Follow To Score"
           }
         }
       ]

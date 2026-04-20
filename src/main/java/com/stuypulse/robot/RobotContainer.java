@@ -8,11 +8,13 @@ package com.stuypulse.robot;
 import com.stuypulse.robot.commands.BuzzController;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.auton.regular.Depot;
-import com.stuypulse.robot.commands.auton.regular.LeftFollower;
-import com.stuypulse.robot.commands.auton.regular.LeftMiddy;
+import com.stuypulse.robot.commands.auton.regular.LeftBump;
+import com.stuypulse.robot.commands.auton.regular.LeftFollow;
+import com.stuypulse.robot.commands.auton.regular.LeftTwoCorner;
 import com.stuypulse.robot.commands.auton.regular.LeftTwoCycle;
-import com.stuypulse.robot.commands.auton.regular.RightFollower;
-import com.stuypulse.robot.commands.auton.regular.RightMiddy;
+import com.stuypulse.robot.commands.auton.regular.RightBump;
+import com.stuypulse.robot.commands.auton.regular.RightFollow;
+import com.stuypulse.robot.commands.auton.regular.RightTwoCorner;
 import com.stuypulse.robot.commands.auton.regular.RightTwoCycle;
 import com.stuypulse.robot.commands.auton.test.BoxTest;
 import com.stuypulse.robot.commands.handoff.HandoffReverse;
@@ -365,19 +367,23 @@ public class RobotContainer {
     /*** AUTONS ***/
     /**************/
 
+
     public void configureAutons() {
+
         autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
 
         // DEPOT
         AutonConfig DEPOT_ONLY = new AutonConfig("Depot Only", Depot::new,  
         "Center Hub To Depot");
         DEPOT_ONLY.register(autonChooser);
-        AutonConfig LEFT_MIDDY = new AutonConfig("Left Middy", LeftMiddy::new,  
+
+        AutonConfig LEFT_BUMP = new AutonConfig("Left Bump", LeftBump::new,  
         "Left Bump To Score (Start)", "Left Bump To Score", "Left Bump Score To Depot");
-        LEFT_MIDDY.register(autonChooser);
-        AutonConfig RIGHT_MIDDY = new AutonConfig("Right Middy", RightMiddy::new,  
+        LEFT_BUMP.register(autonChooser);
+
+        AutonConfig RIGHT_BUMP = new AutonConfig("Right Bump", RightBump::new,  
         "Right Bump To Score (Start)", "Right Bump To Score", "Right Bump Score To Depot");
-        RIGHT_MIDDY.register(autonChooser);
+        RIGHT_BUMP.register(autonChooser);
 
         // TWO CYCLES (TRENCH)
         AutonConfig LEFT_TWO_CYCLE = new AutonConfig("Left Two Cycle", LeftTwoCycle::new,
@@ -388,16 +394,26 @@ public class RobotContainer {
         "Right Trench To NZ", "Right NZ To Score", "Right Score To Score", "Right Score To NZ (F)", "Right NZ To Score");
         RIGHT_TWO_CYCLE.register(autonChooser);
 
-        // FOLLOWERS
-        AutonConfig LEFT_FOLLOWER = new AutonConfig("Left Follower", LeftFollower::new, prevWaitTime,
-        "Left Follower To Bump", "Left Follower Over Bump", "Left Follower Bump To Corner");
-        LEFT_FOLLOWER.register(autonChooser);
+        // TWO CYCLES (CORNER)
+        AutonConfig LEFT_TWO_CORNER = new AutonConfig("Left Two Corner", LeftTwoCorner::new,
+        "Left Corner Bite", "Left Corner Bite To Score", "Left Bite Score To Score", "Left Score To NZ (F)", "Left NZ To Score");
+        LEFT_TWO_CORNER.register(autonChooser);
 
-        AutonConfig RIGHT_FOLLOWER = new AutonConfig("Right Follower", RightFollower::new, prevWaitTime,
-        "Right Follower To Bump", "Right Follower Over Bump", "Right Follower Bump To Corner");
-        RIGHT_FOLLOWER.register(autonChooser);
+        AutonConfig RIGHT_TWO_CORNER = new AutonConfig("Right Two Corner", RightTwoCorner::new,
+        "Right Corner Bite", "Right Corner Bite To Score", "Right Bite Score To Score", "Right Score To NZ (F)", "Right NZ To Score");
+        RIGHT_TWO_CORNER.register(autonChooser);
+
+        // FOLLOWS
+        AutonConfig LEFT_FOLLOW = new AutonConfig("Left Follow", LeftFollow::new, prevWaitTime,
+        "Left Follow To Bump", "Left Follow To Score");
+        LEFT_FOLLOW.register(autonChooser);
+
+        AutonConfig RIGHT_FOLLOW = new AutonConfig("Right Follow", RightFollow::new, prevWaitTime,
+        "Right Follow To Bump", "Right Follow To Score");
+        RIGHT_FOLLOW.register(autonChooser);
 
         SmartDashboard.putData("Autonomous", autonChooser);
+
     }
 
     public boolean hasWaitTimeChanged() {

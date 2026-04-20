@@ -26,9 +26,9 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
-public class LeftTwoCycle extends SequentialCommandGroup {
+public class RightTwoCorner extends SequentialCommandGroup {
     
-    public LeftTwoCycle(PathPlannerPath... paths) {
+    public RightTwoCorner(PathPlannerPath... paths) {
 
         addCommands(
 
@@ -48,7 +48,7 @@ public class LeftTwoCycle extends SequentialCommandGroup {
             new HandoffRun().andThen(
                 new SpindexerRun()
             ).andThen(new WaitCommand(0.5)
-                .andThen(new IntakeAutoDigest()).repeatedly()).withTimeout(4.0),
+                .andThen(new IntakeAutoDigest()).repeatedly()).withTimeout(4.5),
             new SuperstructureAutoInterpolation().alongWith(new IntakeDeploy()),
 
             // NZ Trip 2

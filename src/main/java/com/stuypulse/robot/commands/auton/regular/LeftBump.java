@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-public class RightMiddy extends SequentialCommandGroup {
+public class LeftBump extends SequentialCommandGroup {
     
-    public RightMiddy(PathPlannerPath... paths) {
+    public LeftBump(PathPlannerPath... paths) {
 
         addCommands(
             
@@ -51,7 +51,7 @@ public class RightMiddy extends SequentialCommandGroup {
             new HandoffRun().alongWith(new SpindexerRun()),
             new ParallelCommandGroup(
                 CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]),
-                new WaitCommand(6.0).andThen(
+                new WaitCommand(5.0).andThen(
                     new HandoffStop().alongWith(new SpindexerStop())
                 )
             ),
@@ -61,7 +61,7 @@ public class RightMiddy extends SequentialCommandGroup {
             // Off Depot
             new ParallelCommandGroup(
                 new HandoffRun().alongWith(new SpindexerRun()),
-                new WaitCommand(3.0).andThen(new IntakeAutoDigest().repeatedly())
+                new WaitCommand(5.0).andThen(new IntakeAutoDigest().repeatedly())
             )
 
         );

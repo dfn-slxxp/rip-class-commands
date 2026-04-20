@@ -46,7 +46,7 @@ public class RightTwoCycle extends SequentialCommandGroup {
             new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
             new HandoffRun().andThen(
                 new SpindexerRun()
-            ).andThen(new WaitCommand(1.75)
+            ).andThen(new WaitCommand(0.5)
                 .andThen(new IntakeAutoDigest()).repeatedly()).withTimeout(4.0),
             new SuperstructureAutoInterpolation().alongWith(new IntakeDeploy()),
 
@@ -61,7 +61,7 @@ public class RightTwoCycle extends SequentialCommandGroup {
             new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
             new HandoffRun().andThen(
                 new SpindexerRun()
-            ).andThen(new WaitCommand(1.75)
+            ).andThen(new WaitCommand(0.5)
                 .andThen(new IntakeAutoDigest()).repeatedly()).withTimeout(15.0),
             new SuperstructureAutoInterpolation().alongWith(new IntakeDeploy()),
 

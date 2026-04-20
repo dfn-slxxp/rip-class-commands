@@ -160,18 +160,19 @@ public interface Settings {
 
         public interface FerryRPMInterpolation {
             double[][] ferryDistanceRPMInterpolation = {
+                //Lab
                 {1, 2000},
                 {5.16, 3300.0},
-                {6.94, 3600.0},
-                {7.87, 3800.0},
-                {9.77, 4300.0},
+                {6.94, 3400},
+                {9.77, 3400}, //TODO: USE THE BELOW THREE LINES INTEAD OF THESE
+                // {6.94, 3600.0},
+                // {7.87, 3800.0},
+                // {9.77, 4300.0},
                 {10.694, 4700.0},       //STARTING FROM HERE THE DATA IS UNRELIABLE!!!
                 {11.516, 4900.0},
                 {12.416, 5200.0},
                 {13.316, 5500.0},
                 {14.216, 5600.0}
-                // {15.148, 5200.0},
-                // {16.54, 5300}           //FIELD LENGTH
             };
         }
 

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.850470756062768,
-        "y": 5.503537803138374
+        "x": 8.489957203994294,
+        "y": 7.4572753209700435
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.268338214575557,
-        "y": 5.5146770668110285
+        "x": 7.907824662507084,
+        "y": 7.468414584642698
       },
       "isLocked": false,
       "linkedName": "Left Follower Bump"
     },
     {
       "anchor": {
-        "x": 2.9651497860199716,
-        "y": 5.477660485021398
+        "x": 1.1666761768901568,
+        "y": 7.4572753209700435
       },
       "prevControl": {
-        "x": 4.136040206997414,
-        "y": 5.467941169189516
+        "x": 2.3375665978676,
+        "y": 7.4475560051381615
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Follower",
+  "folder": "Follow",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

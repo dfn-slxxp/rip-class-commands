@@ -20,9 +20,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-public class RightFollower extends SequentialCommandGroup {
+public class LeftFollow extends SequentialCommandGroup {
     
-    public RightFollower(PathPlannerPath... paths) {
+    public LeftFollow(PathPlannerPath... paths) {
 
         addCommands(
             
@@ -56,8 +56,7 @@ public class RightFollower extends SequentialCommandGroup {
             new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
             new ParallelCommandGroup(
                 new HandoffRun(),
-                new SpindexerRun(),
-                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2])
+                new SpindexerRun()
             )
 
         );
