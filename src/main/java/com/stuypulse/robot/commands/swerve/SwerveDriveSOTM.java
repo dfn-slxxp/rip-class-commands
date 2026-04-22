@@ -89,10 +89,10 @@ public class SwerveDriveSOTM extends Command {
         DogLog.log("Swerve/SOTM/Idle?", isIdle.get());
 
         if (isIdle.get()) {
-            if (!isIdleInit) {
-                CommandScheduler.getInstance().schedule(new IntakeAutoDigest().repeatedly().onlyWhile(() -> isIdle.get()).andThen(new IntakeDeploy()));
+            // if (!isIdleInit) {
+            //     CommandScheduler.getInstance().schedule(new IntakeAutoDigest().repeatedly().onlyWhile(() -> isIdle.get()).andThen(new IntakeDeploy()));
                 swerve.setControl(new SwerveRequest.SwerveDriveBrake());
-            }
+            // }
             isIdleInit = true;
         } else {
             Vector2D velocity = speed.get();

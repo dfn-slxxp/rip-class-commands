@@ -52,7 +52,20 @@ public class LeftFollow extends SequentialCommandGroup {
             Commands.defer(() -> new WaitCommand(RobotContainer.getWaitTimeTwo()), Set.of()),
 
             // Back
-            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]),
+            new ParallelCommandGroup(
+                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]),
+                new WaitCommand(2.0).andThen(
+                    new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance())
+                        .andThen(
+                            new ParallelCommandGroup(
+                                new HandoffRun(),
+                                new SpindexerRun())
+                                )
+                )
+            ),
+
+            new HandoffStop().alongWith(new SpindexerStop()),
+
             CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]),
 
             // SOTM To Corner

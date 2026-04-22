@@ -51,16 +51,20 @@ public class RightFollow extends SequentialCommandGroup {
 
             Commands.defer(() -> new WaitCommand(RobotContainer.getWaitTimeTwo()), Set.of()),
 
-            // Back
-            CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]),
-
             // SOTM To Corner
-            new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
             new ParallelCommandGroup(
-                new HandoffRun(),
-                new SpindexerRun(),
-                new IntakeAutoDigest().repeatedly()
-            )
+                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]),
+                new WaitCommand(2.0).andThen(
+                    new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance())
+                        .andThen(
+                            new ParallelCommandGroup(
+                                new HandoffRun(),
+                                new SpindexerRun())
+                                )
+                )
+            ),
+
+            new IntakeAutoDigest().repeatedly()
 
         );
 

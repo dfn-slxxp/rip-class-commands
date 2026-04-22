@@ -77,14 +77,6 @@ public class LeftTwoCycle extends SequentialCommandGroup {
                 new HandoffStop(),
                 new SpindexerStop()
             )
-
-            // new SuperstructureSOTM(),
-            // new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
-            // new HandoffRun().andThen(
-            //     new SpindexerRun()
-            // ).andThen(new WaitCommand(2.5)
-            //     .andThen(new IntakeAutoDigest()).repeatedly()).withTimeout(4.5),
-            // new SuperstructureAutoInterpolation().alongWith(new IntakeDeploy())
         
         );
 

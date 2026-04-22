@@ -56,6 +56,7 @@ public class IntakeImpl extends Intake {
     private PositionVoltage positionVoltage;
 
     private BStream pivotStalling;
+    private final BStream isPivotBelowPushDownThreshold;
 
     StatusSignal<Current> pivotSupplyCurrent;
     StatusSignal<Current> pivotStatorCurrent;
@@ -139,6 +140,9 @@ public class IntakeImpl extends Intake {
         pivotStalling = BStream.create(
                 () -> Math.abs(pivotSupplyCurrent.getValueAsDouble()) > Settings.Intake.PIVOT_STALL_CURRENT)
                 .filtered(new BDebounce.Both(Settings.Intake.PIVOT_STALL_DEBOUNCE));
+        isPivotBelowPushDownThreshold = BStream.create(() -> isBelowPushDownThreshold())
+            .filtered(new BDebounce.Rising(0.5))
+            .filtered(new BDebounce.Falling(0.1));
     }
 
     @Override
@@ -167,6 +171,10 @@ public class IntakeImpl extends Intake {
         pivot.setPosition(Settings.Intake.PIVOT_MIN_ANGLE.getRotations());
     }
 
+    private boolean isBelowPushDownThreshold() {
+        return getPivotAngle().getDegrees() <= Settings.Intake.ANGLE_THRESHOLD_FOR_HOLDING_VOLTAGE.getDegrees();
+    }
+
     @Override
     public void periodicAfterScheduler() {
         super.periodicAfterScheduler();
@@ -191,7 +199,7 @@ public class IntakeImpl extends Intake {
             } else {
                 // PIVOT
                 if (pivotState == PivotState.DEPLOY && 
-                    getPivotAngle().getDegrees() <= Settings.Intake.ANGLE_THRESHOLD_FOR_HOLDING_VOLTAGE.getDegrees()
+                    isPivotBelowPushDownThreshold.get()
                     && rollerState != RollerState.STOP) {
                         // pivot.setControl(new VoltageOut(Settings.Intake.PUSHDOWN_VOLTAGE)); // applying 3 volts
                         double pushdownCurrent = 
@@ -263,6 +271,7 @@ public class IntakeImpl extends Intake {
                         pivotSupplyCurrent.getValueAsDouble());
                 DogLog.log("Intake/Pivot Stator Current (amps)",
                         pivotStatorCurrent.getValueAsDouble());
+                DogLog.log("Intake/Pivot is below pushdown Threshold", isPivotBelowPushDownThreshold.get());
 
                 if (Robot.getMode() == RobotMode.DISABLED && !Robot.fmsAttached) {
                     DogLog.log("Robot/CAN/Main/Intake Pivot Motor Connected? (ID "
