@@ -11,7 +11,6 @@ import com.stuypulse.robot.commands.handoff.HandoffStop;
 import com.stuypulse.robot.commands.intake.IntakeAutoDigest;
 import com.stuypulse.robot.commands.intake.IntakeDeploy;
 import com.stuypulse.robot.commands.intake.IntakeDigest;
-import com.stuypulse.robot.commands.intake.IntakeStopRollers;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
 import com.stuypulse.robot.commands.superstructure.SuperstructureAutoInterpolation;
@@ -43,22 +42,29 @@ public class LeftTwoCorner extends SequentialCommandGroup {
 
             // NZ Trip 1
             CommandSwerveDrivetrain.getInstance().followPathCommand(paths[0]).alongWith(
-                (new WaitCommand(0.2)).andThen(new IntakeDeploy())),
+                new WaitCommand(0.2).andThen(new IntakeDeploy())
+            ),
 
             // Trip 1 To Score
             CommandSwerveDrivetrain.getInstance().followPathCommand(paths[1]).alongWith(
-                new SuperstructureAutoInterpolation()),
+                new SuperstructureAutoInterpolation()
+            ),
             new SuperstructureSOTM(),
             new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
-            new HandoffRun().andThen(
-                new SpindexerRun()
-            ).andThen(new WaitCommand(0.5)
-                .andThen(new IntakeAutoDigest()).repeatedly()).withTimeout(5.0),
+            new ParallelCommandGroup(
+                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]).repeatedly().until(() -> Superstructure.getInstance().isHopperEmpty()).withTimeout(3.5),
+                new HandoffRun(),
+                new SpindexerRun(),
+                new WaitCommand(0.5)
+                    .andThen(new IntakeAutoDigest()).repeatedly().until(() -> Superstructure.getInstance().isHopperEmpty()).withTimeout(3.0),
+                new WaitCommand(1.0).andThen(
+                    new WaitUntilCommand(() -> Superstructure.getInstance().isHopperEmpty()).withTimeout(2.5))
+            ),
             new SuperstructureAutoInterpolation().alongWith(new IntakeDeploy()),
 
             // NZ Trip 2
             new ParallelCommandGroup(
-                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]),
+                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[3]),
                 new HandoffStop(),
                 new SpindexerStop()
             ),
@@ -66,12 +72,11 @@ public class LeftTwoCorner extends SequentialCommandGroup {
             new SuperstructureSOTM(),
             new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
             new ParallelCommandGroup(
-                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[3]),
+                CommandSwerveDrivetrain.getInstance().followPathCommand(paths[2]).repeatedly(),
                 new HandoffRun().andThen(
                     new SpindexerRun()
                         ).andThen(new WaitCommand(0.5)
                     .andThen(new IntakeAutoDigest()).repeatedly()).withTimeout(15.0)
-                    // .andThen(new IntakeAutoDigest()).repeatedly()).alongWith(new WaitUntilCommand(() -> !Superstructure.getInstance().isShooting()).withTimeout(4.0)),
             )
         
         );

@@ -7,6 +7,8 @@ package com.stuypulse.robot.commands.auton.test;
 
 import com.stuypulse.robot.commands.handoff.HandoffRun;
 import com.stuypulse.robot.commands.handoff.HandoffStop;
+import com.stuypulse.robot.commands.intake.IntakeAutoDigest;
+import com.stuypulse.robot.commands.intake.IntakeDeploy;
 import com.stuypulse.robot.commands.spindexer.SpindexerRun;
 import com.stuypulse.robot.commands.spindexer.SpindexerStop;
 import com.stuypulse.robot.commands.superstructure.SuperstructureSOTM;
@@ -28,9 +30,9 @@ public class EmptyTest extends SequentialCommandGroup {
             new SuperstructureSOTM(),
             new WaitUntilCommand(() -> Superstructure.getInstance().atTolerance()),
             new HandoffRun().alongWith(new SpindexerRun()).andThen(new WaitCommand(0.5))
-                .andThen(new WaitUntilCommand(() -> Superstructure.getInstance().isHopperEmpty())),
+                .andThen(new IntakeAutoDigest().alongWith(new WaitUntilCommand(() -> Superstructure.getInstance().isHopperEmpty()))),
 
-            new HandoffStop().alongWith(new SpindexerStop()),
+            new IntakeDeploy().alongWith(new HandoffStop()).alongWith(new SpindexerStop()),
 
             CommandSwerveDrivetrain.getInstance().followPathCommand(paths[0])
 

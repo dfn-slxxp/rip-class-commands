@@ -94,6 +94,9 @@
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
     "transitory": {
       "SmartDashboard": {
         "FieldPositions": {
@@ -105,8 +108,7 @@
         "Robot": {
           "Auton": {
             "open": true
-          },
-          "open": true
+          }
         },
         "Spindexer": {
           "open": true
@@ -115,6 +117,9 @@
           "open": false
         },
         "Superstructure": {
+          "Turret": {
+            "open": true
+          },
           "open": true
         },
         "open": true

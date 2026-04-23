@@ -90,7 +90,7 @@ public interface Settings {
     }
 
     public interface Spindexer {
-        double FORWARD_DUTY_CYCLE = 1.0; //TODO: GET
+        double FORWARD_DUTY_CYCLE = 1.0;
         double ANTI_POPCORN_DUTY_CYCLE = 0.2;
         double REVERSE_DUTY_CYCLE = -1.0;
         double STOP_SPEED = 0.0;
