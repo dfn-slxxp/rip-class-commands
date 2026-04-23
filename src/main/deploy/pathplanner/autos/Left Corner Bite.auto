@@ -7,31 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Trench To NZ"
+            "pathName": "Left Corner Bite"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left NZ To Score"
+            "pathName": "Left Corner Bite To Score"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left Score To Score"
+            "pathName": "Left Trench Score Jiggle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left Score To NZ (F)"
+            "pathName": "Left Bite Score To Score"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left NZ To Score"
+            "pathName": "Left Trench Score Jiggle"
           }
         }
       ]

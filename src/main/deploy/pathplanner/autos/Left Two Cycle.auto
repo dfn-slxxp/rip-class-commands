@@ -7,25 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Bump To NZ"
+            "pathName": "Left Trench To NZ"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Right Middy To Bump Score"
+            "pathName": "Left NZ To Score"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Right Bump Score To Depot"
+            "pathName": "Left Trench Score Jiggle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Depot To Score"
+            "pathName": "Left Score To Score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Trench Score Jiggle"
           }
         }
       ]
